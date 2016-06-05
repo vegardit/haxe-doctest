@@ -113,7 +113,7 @@ class MyDocTestSuite extends massive.munit.TestSuite {
 }
 ```
 
-<a name="doctest-testrunner"></a> Using the doctest Testrunner
+<a name="doctest-testrunner"></a>Using the doctest Testrunner
 ----------------------------
 
 doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as clickable errors that directly navigate your to the location in your source code.
@@ -146,12 +146,14 @@ echo Testing...
 neko target/neko/TestRunner.n
 ```
 
-In FlashDevelop create a new macro in the macro editor, which is reachable via the menu **Macros -> Edit Macros...**. There create a new macro containing:
+In FlashDevelop create a new macro in the macro editor (which is reachable via the menu **Macros -> Edit Macros...**) containing 
+the following statements.
 ```bat
 InvokeMenuItem|FileMenu.Save
 RunProcessCaptured|$(SystemDir)\cmd.exe;/c cd $(ProjectDir) & $(ProjectDir)\test-docs.cmd
 ```
-and assign it a short cut, e.g. [F4]. 
+
+Then assign the macro a short cut, e.g. [F4]. 
 
 Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doctests assertions will be tested. Errors will showup as navigable events in the FlashDevelop's result panel.
 
