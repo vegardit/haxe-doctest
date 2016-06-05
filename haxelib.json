@@ -6,7 +6,7 @@
     "tags": [ "testing","unittest","vegardit" ],
     "description": "Python inspired doctesting for Haxe",
     "contributors": [
-        "Sebastian Thomschke, Vegard IT GmbH"
+        "vegardit"
     ],
     "releasenote": "Initial release",
     "version": "0.1.0",
