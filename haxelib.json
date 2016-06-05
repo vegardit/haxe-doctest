@@ -1,0 +1,14 @@
+{
+    "name": "haxe-doctest",
+    "url": "https://github.com/vegardit/haxe-doctest",
+	"license": "MIT",
+	"classPath": "src/",
+    "tags": [ "testing","unittest","vegardit" ],
+    "description": "Python inspired doctesting for Haxe",
+    "contributors": [
+        "Sebastian Thomschke, Vegard IT GmbH"
+    ],
+    "releasenote": "Initial release",
+    "version": "1.0.0-SNAPSHOT",
+    "dependencies": { }
+}
