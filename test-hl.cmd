@@ -9,12 +9,6 @@ if errorlevel 1 (
     haxelib install munit
 )
 
-haxelib list | findstr hxcs >NUL
-if errorlevel 1 (
-    echo Installing [hxcs]...
-    haxelib install hxcs
-)
-
 echo Compiling and Testing...
 haxe -main hx.doctest.TestRunner ^
 -lib munit ^
