@@ -7,7 +7,7 @@ A [haxelib](http://lib.haxe.org/documentation/using-haxelib/) inspired by
 Python's [doctest](https://docs.python.org/2/library/doctest.html) command that generates 
 unit tests based on assertions specified within the source code.
 
-`haxe-doctest` supports the generation of test cases for:[Haxe Unit](http://haxe.org/manual/std-unit-testing.html), [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
+`haxe-doctest` supports the generation of test cases for [Haxe Unit](http://haxe.org/manual/std-unit-testing.html), [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
 
 How to specify test assertions
 ------------------------------
@@ -34,16 +34,23 @@ class MyTools {
 The test expression and the expected value must be separated by the equality operator `==`. Other comparison operators are not supported but can be used as part of the test expression itself as outlined in the following example:
 
 ```haxe
-class MyTools {
+class MyObject {
+
     /**
      * <pre><code>
-     * >>> MyTools.length("abc") > 1      == true
-     * >>> MyTools.length("abc") >= 4     == false
-     * >>> MyTools.length("abc") <= 2     == false
+     * >>> new MyObject("ab").length()  > 1    == true
+     * >>> new MyObject("ab").length()  <= 2   == true
+     * >>> new MyObject("abc").length() >= 4   == false
      * </code></pre>
      */
-    public static function length(str:String):Int {
+    public function length(str:String):Int {
         return str == null ? 0 : str.length;
+    }
+    
+    var data:String;
+    
+    public function new(data:String) {
+        this.data = data;
     }
 }
 ```
