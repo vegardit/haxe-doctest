@@ -70,11 +70,11 @@ Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTest
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
-class HaxeUnitTest extends haxe.unit.TestCase {
+class MyHaxeUnitTest extends haxe.unit.TestCase {
 
     public static function main() {
         var runner = new haxe.unit.TestRunner();
-        runner.add(new HaxeUnitTest());
+        runner.add(new MyHaxeUnitTest());
         runner.run();
     }
 
@@ -92,23 +92,23 @@ The doctest assertions from your sourcecode will then be added as test methods t
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
-class MyDocTests {
+class MyMUnitDocTests {
     public function new() { }
 }
 ```
 
 Then add the test class to a testsuite
 ```haxe
-class MyDocTestSuite extends massive.munit.TestSuite {
+class MyMUnitDocTestSuite extends massive.munit.TestSuite {
     public static function main() {
         var client = new massive.munit.RichPrintClient();
         var runner = new massive.munit.TestRunner(client);
-        runner.run([MyDocTestSuite]);
+        runner.run([MyMUnitDocTestSuite]);
     }
     
     public function new() {
         super();
-        add(MyDocTests);
+        add(MyMUnitDocTests);
     }
 }
 ```
