@@ -3,7 +3,7 @@
     "url": "https://github.com/vegardit/haxe-doctest",
 	"license": "MIT",
 	"classPath": "src/",
-    "tags": [ "testing","unittest","vegardit" ],
+    "tags": [ "test", "testing","unittest","vegardit" ],
     "description": "Python inspired doctesting for Haxe",
     "contributors": [
         "vegardit"
