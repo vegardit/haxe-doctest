@@ -11,7 +11,7 @@
 
 
 <a name="what-is-it"></a>What is it?
------------
+---------------------
 
 A [haxelib](http://lib.haxe.org/documentation/using-haxelib/) inspired by
 Python's [doctest](https://docs.python.org/2/library/doctest.html) command that generates 
@@ -21,7 +21,7 @@ unit tests based on assertions specified within the source code.
 
     
 <a name="declaring-test-assertions"></a>Declaring test assertions
---------------------------
+---------------------
 
 Doctest assertions are written as part of the source code documentation and are
 identified by three leading right angle brackets `>>>` before the assertion.
@@ -68,7 +68,7 @@ class MyObject {
 
 
 <a name="why-doctests"></a>Why to use doctests?
--------------------
+---------------------
 
 1) doctests supports super fast test-driven development: First you write your method header, 
    then the in-place documentation including your test assertions defining the expected behavior
@@ -84,7 +84,8 @@ class MyObject {
 
 
 <a name="doctest-with-haxeunit"></a>Using doctest with Haxe Unit
-----------------------------
+---------------------
+
 Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doctest assertions from your sourcecode will then be added as test methods to this class.
 
 ```haxe
@@ -105,7 +106,8 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 
 
 <a name="doctest-with-munit"></a>Using doctest with MUnit
-------------------------
+---------------------
+
 Annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
 The doctest assertions from your sourcecode will then be added as test methods to this class.
 
@@ -134,7 +136,7 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
 
 
 <a name="doctest-testrunner"></a>Using the doctest Testrunner
-----------------------------
+---------------------
 
 doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as clickable errors that directly navigate your to the location in your source code.
 
@@ -201,7 +203,7 @@ Now you can write your methods, document their behavior in the doc and by pressi
   * for free-style projects add `-lib haxe-doctest`  to `your *.hxml` file or as command line option when running the [Haxe compiler](http://haxe.org/manual/compiler-usage.html)
 
 
-<a name="license></a>License
--------
+<a name="license"></a>License
+---------------------
 
 All files are released under the [MIT license](https://github.com/vegardit/haxe-strings/blob/master/LICENSE.txt).
