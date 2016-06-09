@@ -1,14 +1,14 @@
 # haxe-doctest - Haxedoc based unit testing.
 
-1) [What is it?](#what-is-it)
-1) [Declaring test assertions](#declaring-test-assertions)
-1) [Why to use doctests?](#why-doctests)
-1) [Using doctest with Haxe Unit](#doctest-with-haxeunit)
-1) [Using doctest with MUnit](#doctest-with-munit)
-1) [Using doctest with Haxe Unit](#doctest-with-haxeunit)
-1) [Using the doctest Testrunner](#doctest-testrunner)
-1) [Using the latest code](#latest)
-1) [License](#license)
+1. [What is it?](#what-is-it)
+1. [Declaring test assertions](#declaring-test-assertions)
+1. [Why to use doctests?](#why-doctests)
+1. [Using doctest with Haxe Unit](#doctest-with-haxeunit)
+1. [Using doctest with MUnit](#doctest-with-munit)
+1. [Using doctest with Haxe Unit](#doctest-with-haxeunit)
+1. [Using the doctest Testrunner](#doctest-testrunner)
+1. [Using the latest code](#latest)
+1. [License](#license)
 
 <a name="what-is-it"></a>What is it?
 -----------
