@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "better error reporting, support for comparing anonymous structures",
-    "version": "0.2.0",
+    "releasenote": "comparing anonymous structures on C# results in System.NullReferenceException",
+    "version": "0.2.1",
     "dependencies": { }
 }

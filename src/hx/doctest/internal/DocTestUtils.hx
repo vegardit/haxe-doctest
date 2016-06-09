@@ -30,9 +30,9 @@ class DocTestUtils {
         // compare anonymous structures
         if (Reflect.isObject(left) && Reflect.isObject(right)) {
             var clsLeft = Type.getClass(left);
-            var clsNameLeft = Type.getClassName(clsLeft);
+            var clsNameLeft = clsLeft == null ? null : Type.getClassName(clsLeft);
             var clsRight = Type.getClass(right);
-            var clsRightName = Type.getClassName(clsRight);
+            var clsRightName = clsRight == null ? null : Type.getClassName(clsRight);
 
             if (clsNameLeft == null && clsRightName == null) {
                 var clsLeftFields = Reflect.fields(left);
