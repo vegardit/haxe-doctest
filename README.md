@@ -3,12 +3,12 @@
 1. [What is it?](#what-is-it)
 1. [Declaring test assertions](#declaring-test-assertions)
 1. [Why to use doctests?](#why-doctests)
-1. [Using doctest with Haxe Unit](#doctest-with-haxeunit)
 1. [Using doctest with MUnit](#doctest-with-munit)
 1. [Using doctest with Haxe Unit](#doctest-with-haxeunit)
 1. [Using the doctest Testrunner](#doctest-testrunner)
 1. [Using the latest code](#latest)
 1. [License](#license)
+
 
 <a name="what-is-it"></a>What is it?
 -----------
@@ -19,6 +19,7 @@ unit tests based on assertions specified within the source code.
 
 `haxe-doctest` supports the generation of test cases for [Haxe Unit](http://haxe.org/manual/std-unit-testing.html), [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
 
+    
 <a name="declaring-test-assertions"></a>Declaring test assertions
 --------------------------
 
@@ -64,6 +65,7 @@ class MyObject {
     }
 }
 ```
+
 
 <a name="why-doctests"></a>Why to use doctests?
 -------------------
@@ -129,6 +131,7 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
     }
 }
 ```
+
 
 <a name="doctest-testrunner"></a>Using the doctest Testrunner
 ----------------------------
@@ -197,6 +200,8 @@ Now you can write your methods, document their behavior in the doc and by pressi
   * for [OpenFL](http://www.openfl.org/)/[Lime](https://github.com/openfl/lime) projects add `<haxelib name="haxe-doctest" />` to your [project.xml](http://www.openfl.org/documentation/projects/project-files/xml-format/)
   * for free-style projects add `-lib haxe-doctest`  to `your *.hxml` file or as command line option when running the [Haxe compiler](http://haxe.org/manual/compiler-usage.html)
 
+
 <a name="license></a>License
 -------
+
 All files are released under the [MIT license](https://github.com/vegardit/haxe-strings/blob/master/LICENSE.txt).
