@@ -14,6 +14,8 @@ using StringTools;
 class DocTestUtils {
 
     public static function equals(left:Dynamic, right:Dynamic):Bool {
+        
+        // compare arrays
         if (Std.is(left, Array) && Std.is(right, Array)) {
             if (left.length == right.length) {
                 for (i in 0...left.length) {
@@ -24,6 +26,29 @@ class DocTestUtils {
             }
             return false;
         }
+        
+        // compare anonymous structures
+        if (Reflect.isObject(left) && Reflect.isObject(right)) {
+            var clsLeft = Type.getClass(left);
+            var clsNameLeft = Type.getClassName(clsLeft);
+            var clsRight = Type.getClass(right);
+            var clsRightName = Type.getClassName(clsRight);
+
+            if (clsNameLeft == null && clsRightName == null) {
+                var clsLeftFields = Reflect.fields(left);
+                clsLeftFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
+                var clsRightFields = Reflect.fields(left);
+                clsRightFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
+                if (equals(clsLeftFields, clsRightFields)) {
+                    for (f in clsLeftFields) {
+                        if (!equals(Reflect.field(clsLeft, f), Reflect.field(clsRight, f)))
+                            return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        
         return left == right;
     }
     

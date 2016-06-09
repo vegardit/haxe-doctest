@@ -30,4 +30,18 @@ class ExampleTools {
         }
         return arr;
     }
+    
+    /**
+     * <pre><code>
+     * >>> ExampleTools.toPos(null, null) == { x:null, y:null }
+     * >>> ExampleTools.toPos(1, 2)       == { x:1, y:2 }
+     * >>> ExampleTools.toPos(1, 2)       == { y:2, x:1 }
+     * </code></pre>
+     */
+    public static function toPos(x: Int, y: Int): { x:Int, y:Int } {
+        return {
+            x: x,
+            y: y
+        }
+    }
 }

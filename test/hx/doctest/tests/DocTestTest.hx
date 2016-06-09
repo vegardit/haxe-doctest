@@ -18,10 +18,25 @@ class DocTestTest extends DocTestRunner {
 
     public static function main() {
         var runner = new DocTestTest();
-        runner.runAndExit();
+        runner.runAndExit(21);
     }
     
     function new() {
         super();
+    }
+    
+    /**
+     * Manually added test method to do some additional non-doctest based testing
+     */
+    @:keep
+    function testManual() {
+        assertEquals("a", "a");
+        try {
+            var s:String = null;
+            s.toLowerCase(); // throws NPE
+            fail(); // should never be reached
+        } catch (e:Dynamic) {
+            // expected
+        }
     }
 }

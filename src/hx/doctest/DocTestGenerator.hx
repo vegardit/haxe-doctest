@@ -111,18 +111,77 @@ class DocTestGenerator {
 
                 } else if (doctestLine.indexOf("==") > -1) {
                     // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg('$srcFileModuleName(\\s?[(.])', "g").replace(doctestLine, srcFileModuleFQName + "$1");
-
+                    var doctestLineFQ = new EReg('$srcFileModuleName(\\s?[(.<])', "g").replace(doctestLine, srcFileModuleFQName + "$1");
+                    
+                    totalAssertionsCount++;
+                    
                     var left = doctestLineFQ.substringBeforeLast("==").trim();
                     var right = doctestLineFQ.substringAfterLast("==").trim();
-                    var leftExpr = Context.parse(left, Context.currentPos());
-                    var rightExpr = Context.parse(right, Context.currentPos());
-                    
+                    var leftExpr = try {
+                        Context.parse(left, Context.currentPos());
+                    } catch (e:Dynamic) {
+                        switch(testFramework) {
+                            case DOCTEST:
+                                testMethodAssertions.push(macro {
+                                    var pos = { fileName: '$srcFileName', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
+                                    haxe.Log.trace('$doctestLine', pos);
+                                    var msg = '  |--> FAIL: Failed to parse left side [$left]: $e';
+                                    haxe.Log.trace(msg, pos);
+                                    testsFailed.push('  $srcFileName:$srcFileLineNr: $doctestLine\n  ' + msg);
+                                });
+                            case HAXE_UNIT:
+                                testMethodAssertions.push(macro {
+                                    currentTest.done = true;
+                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
+                                    currentTest.success = false;
+                                    currentTest.error   = 'Failed to parse left side [$left]: $e';
+                                    currentTest.posInfos = pos;
+                                    throw currentTest;
+                                });
+                            case MUNIT:
+                                testMethodAssertions.push(macro {
+                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
+                                    massive.munit.Assert.fail('Failed to parse left side [$left]: $e', pos);
+                                });
+                        }
+                        continue;
+                    }
+
+                    var rightExpr = try {
+                        Context.parse(right, Context.currentPos());
+                    } catch (e:Dynamic) {
+                        switch(testFramework) {
+                            case DOCTEST:
+                                testMethodAssertions.push(macro {
+                                    var pos = { fileName: '$srcFileName', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
+                                    haxe.Log.trace('$doctestLine', pos);
+                                    var msg = '  |--> FAIL: Failed to parse right side [$right]: $e';
+                                    haxe.Log.trace(msg, pos);
+                                    testsFailed.push('  $srcFileName:$srcFileLineNr: $doctestLine\n  ' + msg);
+                                });
+                            case HAXE_UNIT:
+                                testMethodAssertions.push(macro {
+                                    currentTest.done = true;
+                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
+                                    currentTest.success = false;
+                                    currentTest.error   = 'Failed to parse right side [$right]: $e';
+                                    currentTest.posInfos = pos;
+                                    throw currentTest;
+                                });
+                            case MUNIT:
+                                testMethodAssertions.push(macro {
+                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
+                                    massive.munit.Assert.fail('Failed to parse right side [$right]: $e', pos);
+                                });
+                        }
+                        continue;
+                    }
+
                     switch(testFramework) {
                         case DOCTEST:
                             testMethodAssertions.push(macro {
-                                var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
-                                compareResults('$doctestLine', pos, $leftExpr, $rightExpr);
+                                var pos = { fileName: '$srcFilePath', lineNumber: $v { srcFileLineNr }, className: "", methodName:"" };
+                                _compareResults($leftExpr, $rightExpr, '$doctestLine', pos);
                             });
                         case HAXE_UNIT:
                             testMethodAssertions.push(macro {
@@ -132,7 +191,7 @@ class DocTestGenerator {
                                 } else {
                                     var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
                                     currentTest.success = false;
-                                    currentTest.error   = "expected '" +  $rightExpr + "' but was '" + $leftExpr + "'";
+                                    currentTest.error   = "expected `" +  $rightExpr + "` but was `" + $leftExpr + "`";
                                     currentTest.posInfos = pos;
                                     throw currentTest;
                                 }
@@ -143,11 +202,10 @@ class DocTestGenerator {
                                     mconsole.Console.info('\n$srcFileName:$srcFileLineNr [OK] ' + $v{doctestLine});
                                 } else {
                                     var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
-                                    massive.munit.Assert.fail('expected `' + $rightExpr + '` but was `' + $leftExpr + '`', pos);
+                                    massive.munit.Assert.fail("expected `" + $rightExpr + "` but was `" + $leftExpr + "`", pos);
                                 }
                             });
                     }
-                    totalAssertionsCount++;
                     
                 } else if (doctestLine != "") {
                     

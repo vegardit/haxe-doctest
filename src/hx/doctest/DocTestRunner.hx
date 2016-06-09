@@ -21,41 +21,19 @@ class DocTestRunner {
     var testsOK = 0;
     var testsFailed = [];
     
-    /**
-     * Runs the accumulated doc tests and exits the process with exit code 0 in case all 
-     * tests were passed or 1 in case test failures occured.
-     */
-    function runAndExit():Void {
-        if (run() == 0) {
-            #if js
-                untyped __js__("phantom.exit(0)");
-            #elseif (flash)
-                // do nothing
-            #else
-                Sys.exit(0);
-            #end
-        } else {
-            #if js
-                untyped __js__("phantom.exit(1)");
-            #elseif (flash)
-                // do nothing
-            #else
-                Sys.exit(1);
-            #end
-        }
+    public function new() {
     }
     
     /**
      * Runs the accumulated doc tests.
-     * 
      * @return number of failing tests
      */
-    function run():Int {
+    function run(expectedMinNumberOfTests = 0):Int {
         var startTime = Timer.stamp();
-        
+        var thisClass = Type.getClass(this);
         // look for functions starting with "test" and invoke them
-        trace('[INFO] Looking for test cases...');
-        for (f in Type.getInstanceFields(Type.getClass(this))) {
+        trace('[INFO] Looking for test cases in [${Type.getClassName(thisClass)}]...');
+        for (f in Type.getInstanceFields(thisClass)) {
             if (f.startsWith("test")) {
                 var func:Dynamic = Reflect.field(this, f);
                 if (Reflect.isFunction(func)) {
@@ -65,45 +43,89 @@ class DocTestRunner {
         }
         var timeSpent:Float = Math.round(1000 * (Timer.stamp() - startTime)) / 1000;
         if (testsFailed.length == 0) {
-            if (testsOK == 0) {
+            if (expectedMinNumberOfTests > 0 && testsOK + testsFailed.length < expectedMinNumberOfTests) {
+                #if sys
+                    Sys.stderr().writeString('[ERROR] **********************************************************\n');
+                    Sys.stderr().writeString('[ERROR] $expectedMinNumberOfTests tests expected but only ${testsOK + testsFailed.length} found!\n');
+                    Sys.stderr().writeString('[ERROR] **********************************************************\n');
+                #else
+                    trace('[ERROR] **********************************************************');
+                    trace('[ERROR] $expectedMinNumberOfTests tests expected but only ${testsOK + testsFailed.length} executed.');
+                    trace('[ERROR] **********************************************************');
+                #end
+                return 1;
+            } else if (testsOK == 0) {
                 trace('[WARN] **********************************************************');
-                trace('[WARN] No doctests were found!');
+                trace('[WARN] No tests were found!');
                 trace('[WARN] **********************************************************');                
             } else {
                 trace('[INFO] **********************************************************');
                 trace('[INFO] All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds');
                 trace('[INFO] **********************************************************');
             }
-		} else {
-            var sb = new StringBuf();
-            sb.add('\n[ERROR] ${testsFailed.length} of $testsOK test(s) FAILED:');
-            var i = 0;
-			for (msg in testsFailed) {
-                i++;
-                sb.add('\n');
-                sb.add(msg);
-			}
-            #if !(flash || js)
-                Sys.stderr().writeString(sb.toString());
-            #else
-                trace(sb);
-            #end
+            return 0;
 		}
+        
+        var sb = new StringBuf();
+        sb.add('\n[ERROR] ${testsFailed.length} of $testsOK test(s) FAILED:');
+        var i = 0;
+        for (msg in testsFailed) {
+            i++;
+            sb.add('\n');
+            sb.add(msg);
+        }
+        #if sys
+            Sys.stderr().writeString(sb.toString());
+        #else
+            trace(sb);
+        #end
         return testsFailed.length;
 	}
     
-    function compareResults(doctestLine:String, pos:PosInfos, leftResult:Dynamic, rightResult:Dynamic):Void {
-        if (leftResult.equals(rightResult)) {
-            pos.fileName = DocTestUtils.substringAfterLast("/" + pos.fileName, "/");
-            haxe.Log.trace('[OK] ' + doctestLine, pos);
-            testsOK++;
-        } else {
-            haxe.Log.trace('[FAIL] $doctestLine\n     |--> [$leftResult] != [$rightResult]', pos);
-            testsFailed.push('${pos.fileName}:${pos.lineNumber}: $doctestLine\n   |--> [$leftResult] != [$rightResult]');
-        }
+    /**
+     * Runs the accumulated doc tests and exits the process with exit code 0 in case all 
+     * tests were passed or 1 in case test failures occured.
+     */
+    function runAndExit(expectedMinNumberOfTests = 0):Void {
+        var exitCode = run(expectedMinNumberOfTests) == 0 ? 0 : 1;
+        
+        #if sys
+            Sys.exit(exitCode);
+        #elseif js
+            untyped __js__('phantom.exit($exitCode)');
+        #end
     }
     
-    public function new() {
-        
+    /**
+     * for use within manually created test method
+     */
+    function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+        if (leftResult.equals(rightResult)) {
+            haxe.Log.trace('[OK] assertEquals($leftResult, $rightResult)', pos);
+            testsOK++;
+        } else {
+            haxe.Log.trace('[FAIL] [$leftResult] != [$rightResult]', pos);
+            testsFailed.push('${pos.fileName}:${pos.lineNumber}: [FAIL] [$leftResult] != [$rightResult]');
+        }
+    }
+
+    /**
+     * for use within manually created test method
+     */
+    function fail(?msg:String, ?pos:PosInfos):Void {
+        if (msg == null) msg = "This code location should not never be reached.";
+        haxe.Log.trace('[FAIL] $msg', pos);
+        testsFailed.push('${pos.fileName}:${pos.lineNumber}: [FAIL] $msg');
+    }
+    
+    function _compareResults(leftResult:Dynamic, rightResult:Dynamic, assertion:String, pos:PosInfos):Void {
+        if (leftResult.equals(rightResult)) {
+            pos.fileName = ("/" + pos.fileName).substringAfterLast("/");
+            haxe.Log.trace('[OK] ' + assertion, pos);
+            testsOK++;
+        } else {
+            haxe.Log.trace('[FAIL] $assertion\n     |--> [$leftResult] != [$rightResult]', pos);
+            testsFailed.push('${pos.fileName}:${pos.lineNumber}: [FAIL] $assertion\n   |--> [$leftResult] != [$rightResult]');
+        }
     }
 }
