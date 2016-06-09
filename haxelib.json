@@ -9,6 +9,6 @@
         "vegardit"
     ],
     "releasenote": "Initial release",
-    "version": "0.2.0-SNAPSHOT",
+    "version": "0.2.0",
     "dependencies": { }
 }
