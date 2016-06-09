@@ -180,8 +180,13 @@ class DocTestGenerator {
                     switch(testFramework) {
                         case DOCTEST:
                             testMethodAssertions.push(macro {
-                                var pos = { fileName: '$srcFilePath', lineNumber: $v { srcFileLineNr }, className: "", methodName:"" };
-                                _compareResults($leftExpr, $rightExpr, '$doctestLine', pos);
+                                var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
+                                try {
+                                    _compareResults($leftExpr, $rightExpr, '$doctestLine', pos);
+                                } catch (e:Dynamic) {
+                                    haxe.Log.trace('[FAIL] $doctestLine\n     |--> exception occured: ' + e, pos);
+                                    testsFailed.push(pos.fileName + ":" + pos.lineNumber + ': [FAIL] $doctestLine\n   |--> exception occured: ' + e);
+                                }
                             });
                         case HAXE_UNIT:
                             testMethodAssertions.push(macro {
