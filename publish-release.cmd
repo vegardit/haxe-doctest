@@ -33,7 +33,7 @@ set RELEASE_NOTE=%RELEASE_NOTE:",=%
   echo "prerelease":%PREPRELEASE%
   echo }
 )>target/github_release.json
-wget --post-file=target/github_release.json "https://api.github.com/repos/%REPO%/releases?access_token=%GITHUB_ACCESS_TOKEN%" || goto :eof
+wget -qO- --post-file=target/github_release.json "https://api.github.com/repos/%REPO%/releases?access_token=%GITHUB_ACCESS_TOKEN%" || goto :eof
 
 :: create haxelib release
 zip target/haxelib-upload.zip src haxelib.json LICENSE.txt CONTRIBUTING.md README.md -r -9 || goto :eof
