@@ -1,6 +1,16 @@
 # haxe-doctest - Haxedoc based unit testing.
 
-What is it?
+1) [What is it?](#what-is-it)
+1) [Declaring test assertions](#declaring-test-assertions)
+1) [Why to use doctests?](#why-doctests)
+1) [Using doctest with Haxe Unit](#doctest-with-haxeunit)
+1) [Using doctest with MUnit](#doctest-with-munit)
+1) [Using doctest with Haxe Unit](#doctest-with-haxeunit)
+1) [Using the doctest Testrunner](#doctest-testrunner)
+1) [Using the latest code](#latest)
+1) [License](#license)
+
+<a name="what-is-it"></a>What is it?
 -----------
 
 A [haxelib](http://lib.haxe.org/documentation/using-haxelib/) inspired by
@@ -9,8 +19,8 @@ unit tests based on assertions specified within the source code.
 
 `haxe-doctest` supports the generation of test cases for [Haxe Unit](http://haxe.org/manual/std-unit-testing.html), [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
 
-How to specify test assertions
-------------------------------
+<a name="declaring-test-assertions"></a>Declaring test assertions
+--------------------------
 
 Doctest assertions are written as part of the source code documentation and are
 identified by three leading right angle brackets `>>>` before the assertion.
@@ -55,7 +65,7 @@ class MyObject {
 }
 ```
 
-Why to use doctests?
+<a name="why-doctests"></a>Why to use doctests?
 -------------------
 
 1) doctests supports super fast test-driven development: First you write your method header, 
@@ -71,7 +81,7 @@ Why to use doctests?
    the actual behaviour of the method implementation.
 
 
-Using doctest with Haxe Unit
+<a name="doctest-with-haxeunit"></a>Using doctest with Haxe Unit
 ----------------------------
 Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doctest assertions from your sourcecode will then be added as test methods to this class.
 
@@ -92,7 +102,7 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 ```
 
 
-Using doctest with MUnit
+<a name="doctest-with-munit"></a>Using doctest with MUnit
 ------------------------
 Annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
 The doctest assertions from your sourcecode will then be added as test methods to this class.
@@ -165,7 +175,7 @@ Then assign the macro a short cut, e.g. [F4].
 Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doctests assertions will be tested. Errors will showup as navigable events in the FlashDevelop's result panel.
 
    
-Using the latest code
+<a name="latest"></a>Using the latest code
 ---------------------
 
 1. check-out the trunk
@@ -187,6 +197,6 @@ Using the latest code
   * for [OpenFL](http://www.openfl.org/)/[Lime](https://github.com/openfl/lime) projects add `<haxelib name="haxe-doctest" />` to your [project.xml](http://www.openfl.org/documentation/projects/project-files/xml-format/)
   * for free-style projects add `-lib haxe-doctest`  to `your *.hxml` file or as command line option when running the [Haxe compiler](http://haxe.org/manual/compiler-usage.html)
 
-License
+<a name="license></a>License
 -------
 All files are released under the [MIT license](https://github.com/vegardit/haxe-strings/blob/master/LICENSE.txt).
