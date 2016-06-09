@@ -5,7 +5,7 @@
 1. [Why to use doctests?](#why-doctests)
 1. [Using doctest with MUnit](#doctest-with-munit)
 1. [Using doctest with Haxe Unit](#doctest-with-haxeunit)
-1. [Using the doctest Testrunner](#doctest-testrunner)
+1. [Using doctest with FlashDevelop](#doctest-testrunner)
 1. [Using the latest code](#latest)
 1. [License](#license)
 
@@ -70,16 +70,16 @@ class MyObject {
 <a name="why-doctests"></a>Why to use doctests?
 ---------------------
 
-1) doctests supports super fast test-driven development: First you write your method header, 
+1. doctests supports super fast test-driven development: First you write your method header, 
    then the in-place documentation including your test assertions defining the expected behavior
    and then implement until all your defined tests pass.
 
    No need to create separate test classes with individual test methods.
    Implementing and testing happens at the same code location.
    
-2) For users of your code, the doctest assertions act as method documentation and code examples.
+1. For users of your code, the doctest assertions act as method documentation and code examples.
 
-3) Since doctest actually tests your documentation, your documentation always represents 
+1. Since doctest actually tests your documentation, your documentation always represents 
    the actual behaviour of the method implementation.
 
 
