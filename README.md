@@ -6,12 +6,12 @@
 1. [Using doctest with MUnit](#doctest-with-munit)
 1. [Using doctest with Haxe Unit](#doctest-with-haxeunit)
 1. [Using doctest with FlashDevelop](#doctest-testrunner)
+1. [Installation](#installation)
 1. [Using the latest code](#latest)
 1. [License](#license)
 
 
-<a name="what-is-it"></a>What is it?
----------------------
+## <a name="what-is-it"></a>What is it?
 
 A [haxelib](http://lib.haxe.org/documentation/using-haxelib/) inspired by
 Python's [doctest](https://docs.python.org/2/library/doctest.html) command that generates 
@@ -20,8 +20,7 @@ unit tests based on assertions specified within the source code.
 `haxe-doctest` supports the generation of test cases for [Haxe Unit](http://haxe.org/manual/std-unit-testing.html), [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
 
     
-<a name="declaring-test-assertions"></a>Declaring test assertions
----------------------
+## <a name="declaring-test-assertions"></a>Declaring test assertions
 
 Doctest assertions are written as part of the source code documentation and are
 identified by three leading right angle brackets `>>>` before the assertion.
@@ -67,8 +66,7 @@ class MyObject {
 ```
 
 
-<a name="why-doctests"></a>Why to use doctests?
----------------------
+## <a name="why-doctests"></a>Why to use doctests?
 
 1. doctests supports super fast test-driven development: First you write your method header, 
    then the in-place documentation including your test assertions defining the expected behavior
@@ -83,8 +81,7 @@ class MyObject {
    the actual behaviour of the method implementation.
 
 
-<a name="doctest-with-haxeunit"></a>Using doctest with Haxe Unit
----------------------
+## <a name="doctest-with-haxeunit"></a>Using doctest with Haxe Unit
 
 Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doctest assertions from your sourcecode will then be added as test methods to this class.
 
@@ -105,8 +102,7 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 ```
 
 
-<a name="doctest-with-munit"></a>Using doctest with MUnit
----------------------
+## <a name="doctest-with-munit"></a>Using doctest with MUnit
 
 Annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
 The doctest assertions from your sourcecode will then be added as test methods to this class.
@@ -135,8 +131,7 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
 ```
 
 
-<a name="doctest-testrunner"></a>Using the doctest Testrunner
----------------------
+## <a name="doctest-testrunner"></a>Using the doctest Testrunner
 
 doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as clickable errors that directly navigate your to the location in your source code.
 
@@ -179,16 +174,31 @@ Then assign the macro a short cut, e.g. [F4].
 
 Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doctests assertions will be tested. Errors will showup as navigable events in the FlashDevelop's result panel.
 
-   
-<a name="latest"></a>Using the latest code
----------------------
+
+## <a name="installation"></a>Installation
+
+1. install the library via haxelib using the command:
+    ```
+    haxelib install haxe-doctest
+    ```
+
+2. use in your Haxe project
+
+   * for [OpenFL](http://www.openfl.org/)/[Lime](https://github.com/openfl/lime) projects add `<haxelib name="haxe-doctest" />` to your [project.xml](http://www.openfl.org/documentation/projects/project-files/xml-format/)
+   * for free-style projects add `-lib haxe-doctest`  to `your *.hxml` file or as command line option when running the [Haxe compiler](http://haxe.org/manual/compiler-usage.html)
+
+
+## <a name="latest"></a>Using the latest code
+
+### Using `haxelib git`
+
+```
+haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest.git master
+```
+
+###  Using Subversion
 
 1. check-out the trunk
-    ```
-    haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest.git src
-    ```
-
-    or with Subversion
     ```
     svn checkout https://github.com/vegardit/haxe-doctest/trunk D:\haxe-projects\haxe-doctest
     ```
@@ -198,12 +208,7 @@ Now you can write your methods, document their behavior in the doc and by pressi
     haxelib dev haxe-doctest D:\haxe-projects\haxe-doctest
     ```
 
-3. use in your Haxe project
-  * for [OpenFL](http://www.openfl.org/)/[Lime](https://github.com/openfl/lime) projects add `<haxelib name="haxe-doctest" />` to your [project.xml](http://www.openfl.org/documentation/projects/project-files/xml-format/)
-  * for free-style projects add `-lib haxe-doctest`  to `your *.hxml` file or as command line option when running the [Haxe compiler](http://haxe.org/manual/compiler-usage.html)
-
-
-<a name="license"></a>License
----------------------
+    
+## <a name="license"></a>License
 
 All files are released under the [MIT license](https://github.com/vegardit/haxe-strings/blob/master/LICENSE.txt).
