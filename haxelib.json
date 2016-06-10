@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "fixes for Java and Javascript",
-    "version": "0.2.2",
+    "releasenote": "",
+    "version": "0.2.3-SNAPSHOT",
     "dependencies": { }
 }

@@ -7,6 +7,8 @@
 :: requires wget to be installed https://eternallybored.org/misc/wget/
 ::
 setlocal
+set PROJECT_ROOT=%~dp0
+cd %PROJECT_ROOT%
 set ARTIFACT=haxe-doctest
 set REPO=vegardit/%ARTIFACT%
 set DRAFT=false
@@ -21,6 +23,8 @@ REM extract release note
 for /f "tokens=*" %%a in ( 'findstr releasenote haxelib.json' ) do (set releaseNoteLine=%%a)
 set RELEASE_NOTE=%releaseNoteLine:"releasenote": "=%
 set RELEASE_NOTE=%RELEASE_NOTE:",=%
+
+if not exist target mkdir target
 
 :: create github release https://developer.github.com/v3/repos/releases/#create-a-release
 (
