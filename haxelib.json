@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "comparing anonymous structures on C# results in System.NullReferenceException",
-    "version": "0.2.1",
+    "releasenote": "fixes for Java and Javascript",
+    "version": "0.2.2",
     "dependencies": { }
 }

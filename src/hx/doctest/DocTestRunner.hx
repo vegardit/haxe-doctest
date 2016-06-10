@@ -92,7 +92,7 @@ class DocTestRunner {
         #if sys
             Sys.exit(exitCode);
         #elseif js
-            untyped __js__('phantom.exit($exitCode)');
+            untyped phantom.exit(exitCode);
         #end
     }
     

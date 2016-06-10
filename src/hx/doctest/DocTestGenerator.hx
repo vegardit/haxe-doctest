@@ -26,7 +26,7 @@ using hx.doctest.internal.DocTestUtils;
 class DocTestGenerator {
 
     static inline var DOCTEST_IDENTIFIER = "* >>>";
-    static inline var MAX_ASSERTIONS_PER_TEST_METHOD = 300; // to avoid "error: code too large" for java target
+    static inline var MAX_ASSERTIONS_PER_TEST_METHOD = 200; // to avoid "error: code too large" for java target
     static var REGEX_PACKAGE_NAME = ~/package\s+(([a-zA-Z_]{1}[a-zA-Z]*){2,10}\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,30}((\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,61})*)?)\s?;/g;
     
     /**
