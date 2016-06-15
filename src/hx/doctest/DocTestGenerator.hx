@@ -13,6 +13,8 @@ import haxe.macro.Expr;
 import haxe.macro.Type;
 import sys.io.File;
 import sys.FileSystem;
+import hx.doctest.internal.Logger;
+import hx.doctest.internal.SourceFile;
 
 using StringTools;
 using hx.doctest.internal.DocTestUtils;
@@ -24,10 +26,8 @@ using hx.doctest.internal.DocTestUtils;
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class DocTestGenerator {
-
-    static inline var DOCTEST_IDENTIFIER = "* >>>";
-    static inline var MAX_ASSERTIONS_PER_TEST_METHOD = 200; // to avoid "error: code too large" for java target
-    static var REGEX_PACKAGE_NAME = ~/package\s+(([a-zA-Z_]{1}[a-zA-Z]*){2,10}\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,30}((\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,61})*)?)\s?;/g;
+    
+    static inline var MAX_ASSERTIONS_PER_TEST_METHOD = 100; // to avoid "error: code too large" for java target
     
     /**
      * <pre><code>
@@ -50,25 +50,10 @@ class DocTestGenerator {
         /*
          * iterate over all matched files
          */
-        trace('[INFO] Activated via @:build on [${Context.getLocalClass().get().module}]');
-        trace('[INFO] Generating test cases for test framework [$testFramework]...');
+        Logger.log(INFO, 'Activated via @:build on [${Context.getLocalClass().get().module}]');
+        Logger.log(INFO, 'Generating test cases for test framework [${testFramework}]...');
         DocTestUtils.walkDirectory(srcFolder, new EReg(srcFilePathPattern, ""), function(srcFilePath) {
-                       
-            trace('[INFO] Scanning [$srcFilePath]...');
-            var srcFileContent = File.getContent(srcFilePath);
-            
-            /*
-             * extract package name and import it's classes
-             */
-            if (!REGEX_PACKAGE_NAME.match(srcFileContent)) {
-                throw '[$srcFilePath] is missing the package declaration.';
-            }
-            var srcFileName = srcFilePath.substringAfterLast("/");
-            var srcFilePackage = REGEX_PACKAGE_NAME.matched(1);
-            var srcFileModuleName = srcFileName.substringBefore(".");
-            var srcFileModuleFQName = srcFilePackage + "." + srcFileModuleName;
-            //trace("FOOO" + srcFilePackage);
-            // Compiler.include(srcFileModuleFQName, false);
+            var src = new SourceFile(srcFilePath);
 
             var testMethodsCount = 0;
             var testMethodAssertions = new Array<Expr>();
@@ -76,43 +61,37 @@ class DocTestGenerator {
             /*
              * iterate over all code lines of the Haxe file
              */
-            var srcFileLines = srcFileContent.split("\n");
-            for (i in 0...srcFileLines.length) {
-                var srcFileLineNr = i + 1;
-                
-                // check for doctest assertions
-                var doctestLine = srcFileLines[i].substringAfter(DOCTEST_IDENTIFIER).trim();
+            while(src.gotoNextDocTestAssertion()) {
 
-                if (doctestLine.endsWith(";")) {
+                if (src.currentDocTestAssertion.assertion.endsWith(";")) {
                     switch(testFramework) {
                         case DOCTEST:
                             testMethodAssertions.push(macro {
-                                var pos = { fileName: '$srcFileName', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
-                                haxe.Log.trace('$doctestLine', pos);
-                                var msg = "  |--> FAIL: test assertion must not end with a semicolon (;)";
-                                haxe.Log.trace(msg, pos);
-                                testsFailed.push('  $srcFileName:$srcFileLineNr: $doctestLine\n  ' + msg);
+                                testsFailed.push(
+                                    hx.doctest.internal.Logger.log(ERROR, 
+                                        '${src.currentDocTestAssertion.assertion} --> test assertion must not end with a semicolon (;)',
+                                        $v{src.currentDocTestAssertion.getSourceLocation()}
+                                    )
+                                );
                             });
                         case HAXE_UNIT:
                             testMethodAssertions.push(macro {
                                 currentTest.done = true;
-                                var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
                                 currentTest.success = false;
                                 currentTest.error   = "test assertion must not end with a semicolon (;)";
-                                currentTest.posInfos = pos;
+                                currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
                                 throw currentTest;
                             });
                         case MUNIT:
                             testMethodAssertions.push(macro {
-                                var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
-                                massive.munit.Assert.fail("test assertion must not end with a semicolon (;)", pos);
+                                massive.munit.Assert.fail("test assertion must not end with a semicolon (;)", $v{src.currentDocTestAssertion.getPosInfos()});
                             });
                     }
 
-                } else if (doctestLine.indexOf("==") > -1) {
+
+                } else if (src.currentDocTestAssertion.assertion.indexOf("==") > -1) {
                     // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg('$srcFileModuleName(\\s?[(.<])', "g").replace(doctestLine, srcFileModuleFQName + "$1");
-                    
+                    var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
                     totalAssertionsCount++;
                     
                     var left = doctestLineFQ.substringBeforeLast("==").trim();
@@ -123,25 +102,24 @@ class DocTestGenerator {
                         switch(testFramework) {
                             case DOCTEST:
                                 testMethodAssertions.push(macro {
-                                    var pos = { fileName: '$srcFileName', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
-                                    haxe.Log.trace('$doctestLine', pos);
-                                    var msg = '  |--> FAIL: Failed to parse left side [$left]: $e';
-                                    haxe.Log.trace(msg, pos);
-                                    testsFailed.push('  $srcFileName:$srcFileLineNr: $doctestLine\n  ' + msg);
+                                    testsFailed.push(
+                                        hx.doctest.internal.Logger.log(ERROR, 
+                                            '${src.currentDocTestAssertion.assertion} --> failed to parse left side [$left]: $e',
+                                            $v{src.currentDocTestAssertion.getSourceLocation()}
+                                        )
+                                    );
                                 });
                             case HAXE_UNIT:
                                 testMethodAssertions.push(macro {
                                     currentTest.done = true;
-                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
                                     currentTest.success = false;
                                     currentTest.error   = 'Failed to parse left side [$left]: $e';
-                                    currentTest.posInfos = pos;
+                                    currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
                                     throw currentTest;
                                 });
                             case MUNIT:
                                 testMethodAssertions.push(macro {
-                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
-                                    massive.munit.Assert.fail('Failed to parse left side [$left]: $e', pos);
+                                    massive.munit.Assert.fail('Failed to parse left side [$left]: $e', $v{src.currentDocTestAssertion.getPosInfos()});
                                 });
                         }
                         continue;
@@ -153,25 +131,24 @@ class DocTestGenerator {
                         switch(testFramework) {
                             case DOCTEST:
                                 testMethodAssertions.push(macro {
-                                    var pos = { fileName: '$srcFileName', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
-                                    haxe.Log.trace('$doctestLine', pos);
-                                    var msg = '  |--> FAIL: Failed to parse right side [$right]: $e';
-                                    haxe.Log.trace(msg, pos);
-                                    testsFailed.push('  $srcFileName:$srcFileLineNr: $doctestLine\n  ' + msg);
+                                    testsFailed.push(
+                                        hx.doctest.internal.Logger.log(ERROR, 
+                                            '${src.currentDocTestAssertion.assertion} --> failed to parse right side [$right]: $e',
+                                            $v{src.currentDocTestAssertion.getSourceLocation()}
+                                        )
+                                    );
                                 });
                             case HAXE_UNIT:
                                 testMethodAssertions.push(macro {
                                     currentTest.done = true;
-                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
                                     currentTest.success = false;
                                     currentTest.error   = 'Failed to parse right side [$right]: $e';
-                                    currentTest.posInfos = pos;
+                                    currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
                                     throw currentTest;
                                 });
                             case MUNIT:
                                 testMethodAssertions.push(macro {
-                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
-                                    massive.munit.Assert.fail('Failed to parse right side [$right]: $e', pos);
+                                    massive.munit.Assert.fail('Failed to parse right side [$right]: $e', $v{src.currentDocTestAssertion.getPosInfos()});
                                 });
                         }
                         continue;
@@ -180,82 +157,86 @@ class DocTestGenerator {
                     switch(testFramework) {
                         case DOCTEST:
                             testMethodAssertions.push(macro {
-                                var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
                                 try {
-                                    _compareResults($leftExpr, $rightExpr, '$doctestLine', pos);
+                                    var left:Dynamic = $leftExpr;
+                                    var right:Dynamic = $rightExpr;
+                                    if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
+                                        haxe.Log.trace('[OK] ${src.currentDocTestAssertion.assertion}', $v{src.currentDocTestAssertion.getPosInfos(false)});
+                                        testsOK++;
+                                    } else {
+                                        testsFailed.push(hx.doctest.internal.Logger.log(ERROR, '${src.currentDocTestAssertion.assertion} --> expected [' + right + '] but was [' + left + ']', $v{src.currentDocTestAssertion.getSourceLocation()}));
+                                    }
                                 } catch (e:Dynamic) {
-                                    haxe.Log.trace('[FAIL] $doctestLine\n     |--> exception occured: ' + e, pos);
-                                    testsFailed.push(pos.fileName + ":" + pos.lineNumber + ': [FAIL] $doctestLine\n   |--> exception occured: ' + e);
+                                    testsFailed.push(
+                                        hx.doctest.internal.Logger.log(ERROR, 
+                                            '${src.currentDocTestAssertion.assertion} --> exception occured: ' + e,
+                                            $v{src.currentDocTestAssertion.getSourceLocation()}
+                                        )
+                                    );
                                 }
                             });
                         case HAXE_UNIT:
                             testMethodAssertions.push(macro {
                                 currentTest.done = true;
                                 if (hx.doctest.internal.DocTestUtils.equals($leftExpr, $rightExpr)) {
-                                    print('\n$srcFileName:$srcFileLineNr [OK] ' + $v{doctestLine});
+                                    print('\n${src.fileName}:${src.currentLineNumber} [OK] ' + $v{src.currentDocTestAssertion.assertion});
                                 } else {
-                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
                                     currentTest.success = false;
                                     currentTest.error   = "expected `" +  $rightExpr + "` but was `" + $leftExpr + "`";
-                                    currentTest.posInfos = pos;
+                                    currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
                                     throw currentTest;
                                 }
                             });
                         case MUNIT:
                             testMethodAssertions.push(macro {
                                 if (hx.doctest.internal.DocTestUtils.equals($leftExpr, $rightExpr)) {
-                                    mconsole.Console.info('\n$srcFileName:$srcFileLineNr [OK] ' + $v{doctestLine});
+                                    mconsole.Console.info('\n${src.fileName}:${src.currentLineNumber} [OK] ' + $v{src.currentDocTestAssertion.assertion});
                                 } else {
-                                    var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
-                                    massive.munit.Assert.fail("expected `" + $rightExpr + "` but was `" + $leftExpr + "`", pos);
+                                    massive.munit.Assert.fail("expected `" + $rightExpr + "` but was `" + $leftExpr + "`", $v{src.currentDocTestAssertion.getPosInfos()});
                                 }
                             });
                     }
                     
-                } else if (doctestLine != "") {
-                    
+                } else {
                     switch(testFramework) {
                         case DOCTEST:
                             testMethodAssertions.push(macro {
-                                var pos = { fileName: '$srcFileName', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
-                                haxe.Log.trace('$doctestLine', pos);
-                                var msg = "  |--> FAIL: test assertion is missing equals operator (==)";
-                                haxe.Log.trace(msg, pos);
-                                testsFailed.push('  $srcFileName:$srcFileLineNr: $doctestLine\n  ' + msg);
+                                testsFailed.push(
+                                    hx.doctest.internal.Logger.log(ERROR, 
+                                        '${src.currentDocTestAssertion.assertion} --> test assertion is missing equals operator (==)', 
+                                        $v{src.currentDocTestAssertion.getSourceLocation()}
+                                    )
+                                );
                             });
                         case HAXE_UNIT:
                             testMethodAssertions.push(macro {
                                 currentTest.done = true;
-                                var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: "", methodName:"" };
                                 currentTest.success = false;
                                 currentTest.error   = "test assertion is missing equals operator (==)";
-                                currentTest.posInfos = pos;
+                                currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
                                 throw currentTest;
                             });
                         case MUNIT:
                             testMethodAssertions.push(macro {
-                                var pos = { fileName: '$srcFilePath', lineNumber: $v{srcFileLineNr}, className: '${srcFileModuleName}', methodName:"?" };
-                                massive.munit.Assert.fail('test assertion is missing equals operator (==)', pos);
+                                massive.munit.Assert.fail('test assertion is missing equals operator (==)', $v{src.currentDocTestAssertion.getPosInfos()});
                             });
                     }
                 }
 
                 if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
                     (testFramework != DOCTEST && testMethodAssertions.length > 0) ||
-                    (testFramework == DOCTEST && testMethodAssertions.length > 0 && srcFileLineNr == srcFileLines.length)
+                    (testFramework == DOCTEST && testMethodAssertions.length > 0 && src.isLastLine())
                 ) {
                     testMethodsCount++;
-                    var testMethodName = 'test${srcFileModuleName}_$testMethodsCount';
-                    #if debug
-                    trace('[DEBUG] |--> Generating "${testMethodName}()"...');
-                    #end
+                    var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
+                    Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
 
                     if(testFramework == DOCTEST) {
                         testMethodAssertions.unshift(macro {
                             var pos = { fileName:  $v{Context.getLocalModule()}, lineNumber: 1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
-                            haxe.Log.trace('[INFO] **********************************************************', pos);
-                            haxe.Log.trace('[INFO] Doc Testing [$srcFilePath] #${testMethodsCount}...', pos);
-                            haxe.Log.trace('[INFO] **********************************************************', pos);
+                            hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
+                            hx.doctest.internal.Logger.log(INFO, 'Doc Testing [${src.filePath}] #${testMethodsCount}...', pos);
+                            hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
                         });
                     }
                     var meta = [{name:":keep", pos: contextPos}];
@@ -264,7 +245,7 @@ class DocTestGenerator {
                     }
                     contextFields.push({
                         name: testMethodName,
-                        doc: 'Doc Tests #${testMethodsCount} of $srcFilePath',
+                        doc: 'Doc Tests #${testMethodsCount} of ${src.fileName}',
                         meta: meta,
                         access: [APublic],
                         kind: FFun({
@@ -277,9 +258,40 @@ class DocTestGenerator {
                     testMethodAssertions = new Array<Expr>();
                 }
             }
+            
+            if (testMethodAssertions.length > 0) {
+                testMethodsCount++;
+                var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
+                Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
+
+                if(testFramework == DOCTEST) {
+                    testMethodAssertions.unshift(macro {
+                        var pos = { fileName:  $v{Context.getLocalModule()}, lineNumber: 1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
+                        hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
+                        hx.doctest.internal.Logger.log(INFO, 'Doc Testing [${src.filePath}] #${testMethodsCount}...', pos);
+                        hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
+                    });
+                }
+                var meta = [{name:":keep", pos: contextPos}];
+                if (testFramework == MUNIT) {
+                    meta.push({name: "Test", pos: contextPos});
+                }
+                contextFields.push({
+                    name: testMethodName,
+                    doc: 'Doc Tests #${testMethodsCount} of ${src.fileName}',
+                    meta: meta,
+                    access: [APublic],
+                    kind: FFun({
+                        ret:null, 
+                        args:[], 
+                        expr: { expr: EBlock(testMethodAssertions), pos: contextPos}
+                    }),
+                    pos: contextPos
+                });
+            }
         });
-        
-        trace('[INFO] Generated $totalAssertionsCount test assertions.');
+            
+        Logger.log(INFO, 'Generated $totalAssertionsCount test assertions.');
         return contextFields;
     }
     
@@ -302,5 +314,4 @@ private enum TestFramework {
     HAXE_UNIT;
     MUNIT;
 }
-
 #end

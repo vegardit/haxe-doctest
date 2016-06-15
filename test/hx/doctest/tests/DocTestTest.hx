@@ -33,8 +33,10 @@ class DocTestTest extends DocTestRunner {
         assertEquals("a", "a");
         try {
             var s:String = null;
-            s.toLowerCase(); // throws NPE
+            s.toLowerCase(); // throws NPE ... except on PHP
+            #if !php
             fail(); // should never be reached
+            #end
         } catch (e:Dynamic) {
             // expected
         }

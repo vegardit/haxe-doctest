@@ -11,6 +11,7 @@ import haxe.Timer;
 
 using StringTools;
 using hx.doctest.internal.DocTestUtils;
+using hx.doctest.internal.Logger;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -19,7 +20,7 @@ using hx.doctest.internal.DocTestUtils;
 class DocTestRunner {
 
     var testsOK = 0;
-    var testsFailed = [];
+    var testsFailed:Array<LogEvent> = [];
     
     public function new() {
     }
@@ -32,7 +33,7 @@ class DocTestRunner {
         var startTime = Timer.stamp();
         var thisClass = Type.getClass(this);
         // look for functions starting with "test" and invoke them
-        trace('[INFO] Looking for test cases in [${Type.getClassName(thisClass)}]...');
+        Logger.log(INFO, 'Looking for test cases in [${Type.getClassName(thisClass)}]...');
         for (f in Type.getInstanceFields(thisClass)) {
             if (f.startsWith("test")) {
                 var func:Dynamic = Reflect.field(this, f);
@@ -44,41 +45,26 @@ class DocTestRunner {
         var timeSpent:Float = Math.round(1000 * (Timer.stamp() - startTime)) / 1000;
         if (testsFailed.length == 0) {
             if (expectedMinNumberOfTests > 0 && testsOK + testsFailed.length < expectedMinNumberOfTests) {
-                #if sys
-                    Sys.stderr().writeString('[ERROR] **********************************************************\n');
-                    Sys.stderr().writeString('[ERROR] $expectedMinNumberOfTests tests expected but only ${testsOK + testsFailed.length} found!\n');
-                    Sys.stderr().writeString('[ERROR] **********************************************************\n');
-                #else
-                    trace('[ERROR] **********************************************************');
-                    trace('[ERROR] $expectedMinNumberOfTests tests expected but only ${testsOK + testsFailed.length} executed.');
-                    trace('[ERROR] **********************************************************');
-                #end
+                Logger.log(ERROR, '**********************************************************');
+                Logger.log(ERROR, '$expectedMinNumberOfTests tests expected but only ${testsOK + testsFailed.length} found!');
+                Logger.log(ERROR, '**********************************************************');
                 return 1;
             } else if (testsOK == 0) {
-                trace('[WARN] **********************************************************');
-                trace('[WARN] No tests were found!');
-                trace('[WARN] **********************************************************');                
+                Logger.log(WARN, '**********************************************************');
+                Logger.log(WARN, 'No tests were found!');
+                Logger.log(WARN, '**********************************************************');                
             } else {
-                trace('[INFO] **********************************************************');
-                trace('[INFO] All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds');
-                trace('[INFO] **********************************************************');
+                Logger.log(INFO, '**********************************************************');
+                Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds');
+                Logger.log(INFO, '**********************************************************');
             }
             return 0;
 		}
         
-        var sb = new StringBuf();
-        sb.add('\n[ERROR] ${testsFailed.length} of $testsOK test(s) FAILED:');
-        var i = 0;
-        for (msg in testsFailed) {
-            i++;
-            sb.add('\n');
-            sb.add(msg);
+        Logger.log(ERROR, '${testsFailed.length} of $testsOK test(s) FAILED:');
+        for (event in testsFailed) {
+            event.log(true);
         }
-        #if sys
-            Sys.stderr().writeString(sb.toString());
-        #else
-            trace(sb);
-        #end
         return testsFailed.length;
 	}
     
@@ -104,8 +90,7 @@ class DocTestRunner {
             haxe.Log.trace('[OK] assertEquals($leftResult, $rightResult)', pos);
             testsOK++;
         } else {
-            haxe.Log.trace('[FAIL] [$leftResult] != [$rightResult]', pos);
-            testsFailed.push('${pos.fileName}:${pos.lineNumber}: [FAIL] [$leftResult] != [$rightResult]');
+            testsFailed.push(Logger.log(ERROR, '[$leftResult] != [$rightResult]', null, pos));
         }
     }
 
@@ -114,18 +99,6 @@ class DocTestRunner {
      */
     function fail(?msg:String, ?pos:PosInfos):Void {
         if (msg == null) msg = "This code location should not never be reached.";
-        haxe.Log.trace('[FAIL] $msg', pos);
-        testsFailed.push('${pos.fileName}:${pos.lineNumber}: [FAIL] $msg');
-    }
-    
-    function _compareResults(leftResult:Dynamic, rightResult:Dynamic, assertion:String, pos:PosInfos):Void {
-        if (leftResult.equals(rightResult)) {
-            pos.fileName = ("/" + pos.fileName).substringAfterLast("/");
-            haxe.Log.trace('[OK] ' + assertion, pos);
-            testsOK++;
-        } else {
-            haxe.Log.trace('[FAIL] $assertion\n     |--> [$leftResult] != [$rightResult]', pos);
-            testsFailed.push('${pos.fileName}:${pos.lineNumber}: [FAIL] $assertion\n   |--> [$leftResult] != [$rightResult]');
-        }
+        testsFailed.push(Logger.log(ERROR, msg, null, pos));
     }
 }

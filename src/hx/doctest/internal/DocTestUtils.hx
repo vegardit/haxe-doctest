@@ -12,7 +12,7 @@ using StringTools;
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class DocTestUtils {
-
+    
     public static function equals(left:Dynamic, right:Dynamic):Bool {
         
         // compare arrays
@@ -76,7 +76,7 @@ class DocTestUtils {
         return str.substring(0, foundAt);
     }
 
-    #if macro
+    #if sys
 	public static function walkDirectory(directory:String, filePattern:EReg, onFile:String -> Void):Void {
 		var files:Array<String> = sys.FileSystem
 			.readDirectory(directory)
