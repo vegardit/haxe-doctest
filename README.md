@@ -174,6 +174,8 @@ Then assign the macro a short cut, e.g. [F4].
 
 Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doctests assertions will be tested. Errors will showup as navigable events in the FlashDevelop's result panel.
 
+![](doc/flashdevelop_integration.png "doctest Error Highlighting in FlashDevelop")
+
 
 ## <a name="installation"></a>Installation
 
