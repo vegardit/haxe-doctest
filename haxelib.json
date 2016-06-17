@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "",
-    "version": "0.3.0-SNAPSHOT",
+    "releasenote": "added support for asserting exceptions and to use other types of comparison operators",
+    "version": "0.3.0",
     "dependencies": { }
 }
