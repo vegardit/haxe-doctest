@@ -39,28 +39,30 @@ class MyTools {
         return str != null && str.length > 0;
     }
 }
-```
 
-The test expression and the expected value must be separated by the equality operator `==`. Other comparison operators are not supported but can be used as part of the test expression itself as outlined in the following example:
-
-```haxe
 class MyObject {
 
-    /**
-     * <pre><code>
-     * >>> new MyObject("ab").length()  > 1    == true
-     * >>> new MyObject("ab").length()  <= 2   == true
-     * >>> new MyObject("abc").length() >= 4   == false
-     * </code></pre>
-     */
-    public function length(str:String):Int {
-        return str == null ? 0 : str.length;
-    }
-    
     var data:String;
     
+    /**
+     * <pre><code>
+     * >>> new MyObject(null).length() throws "[data] must not be null!"
+     * </code></pre>
+     */
     public function new(data:String) {
+        if(data == null) throw "[data] must not be null!";
         this.data = data;
+    }
+    
+    /**
+     * <pre><code>
+     * >>> new MyObject("ab").length()  > 1
+     * >>> new MyObject("ab").length()  <= 2
+     * >>> new MyObject("abc").length() != 2
+     * </code></pre>
+     */
+    public function length():Int {
+        return data == null ? 0 : data.length;
     }
 }
 ```

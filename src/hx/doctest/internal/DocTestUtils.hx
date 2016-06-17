@@ -14,7 +14,7 @@ using StringTools;
 class DocTestUtils {
     
     public static function equals(left:Dynamic, right:Dynamic):Bool {
-        
+
         // compare arrays
         if (Std.is(left, Array) && Std.is(right, Array)) {
             if (left.length == right.length) {

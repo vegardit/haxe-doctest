@@ -44,7 +44,8 @@ class SourceFile {
     public function gotoNextDocTestAssertion():Bool {
         while (!isLastLine()) {
             currentLineNumber++;
-            var line = lines[currentLineNumber - 1].substringAfter(DOCTEST_IDENTIFIER).trim();
+            var line = lines[currentLineNumber - 1];
+            var line = line.substringAfter(DOCTEST_IDENTIFIER).trim();
             if (line == "") continue;
             currentDocTestAssertion = new DocTestAssertion(filePath, fileName, currentLineNumber, line, lines[currentLineNumber - 1].indexOf(DOCTEST_IDENTIFIER) + DOCTEST_IDENTIFIER.length, lines[currentLineNumber - 1].length);
             return true;

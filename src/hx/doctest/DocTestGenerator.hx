@@ -11,10 +11,12 @@ import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
+
 import sys.io.File;
 import sys.FileSystem;
-import hx.doctest.internal.Logger;
-import hx.doctest.internal.SourceFile;
+
+import hx.doctest.internal.*;
+import hx.doctest.internal.adapters.*;
 
 using StringTools;
 using hx.doctest.internal.DocTestUtils;
@@ -41,8 +43,8 @@ class DocTestGenerator {
      */
     public static function generateDocTests(srcFolder:String = "src", srcFilePathPattern:String = ".+\\.hx$"):Array<Field> {
 
-        var testFramework = determineTestFramework();
-
+        var doctestAdapter = getDocTestAdapter();
+        
         var contextFields = Context.getBuildFields();
         var contextPos = Context.currentPos();
         var totalAssertionsCount = 0;
@@ -51,7 +53,7 @@ class DocTestGenerator {
          * iterate over all matched files
          */
         Logger.log(INFO, 'Activated via @:build on [${Context.getLocalClass().get().module}]');
-        Logger.log(INFO, 'Generating test cases for test framework [${testFramework}]...');
+        Logger.log(INFO, 'Generating test cases for test framework [${doctestAdapter.getFrameworkName()}]...');
         DocTestUtils.walkDirectory(srcFolder, new EReg(srcFilePathPattern, ""), function(srcFilePath) {
             var src = new SourceFile(srcFilePath);
 
@@ -64,254 +66,160 @@ class DocTestGenerator {
             while(src.gotoNextDocTestAssertion()) {
 
                 if (src.currentDocTestAssertion.assertion.endsWith(";")) {
-                    switch(testFramework) {
-                        case DOCTEST:
-                            testMethodAssertions.push(macro {
-                                testsFailed.push(
-                                    hx.doctest.internal.Logger.log(ERROR, 
-                                        '${src.currentDocTestAssertion.assertion} --> test assertion must not end with a semicolon (;)',
-                                        $v{src.currentDocTestAssertion.getSourceLocation()}
-                                    )
-                                );
-                            });
-                        case HAXE_UNIT:
-                            testMethodAssertions.push(macro {
-                                currentTest.done = true;
-                                currentTest.success = false;
-                                currentTest.error   = "test assertion must not end with a semicolon (;)";
-                                currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
-                                throw currentTest;
-                            });
-                        case MUNIT:
-                            testMethodAssertions.push(macro {
-                                massive.munit.Assert.fail("test assertion must not end with a semicolon (;)", $v{src.currentDocTestAssertion.getPosInfos()});
-                            });
-                    }
+                    testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'test assertion must not end with a semicolon (;)'));
 
-
-                } else if (src.currentDocTestAssertion.assertion.indexOf("==") > -1) {
+                } else if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
                     // poor man's solution until I figure out how to add import statements
                     var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
                     totalAssertionsCount++;
                     
-                    var left = doctestLineFQ.substringBeforeLast("==").trim();
-                    var right = doctestLineFQ.substringAfterLast("==").trim();
-                    var leftExpr = try {
+                    var left = doctestLineFQ.substringBeforeLast("throws ").trim();
+                    var right = doctestLineFQ.substringAfterLast("throws ").trim();
+                    
+                    var leftExpr:Expr = try {
                         Context.parse(left, Context.currentPos());
                     } catch (e:Dynamic) {
-                        switch(testFramework) {
-                            case DOCTEST:
-                                testMethodAssertions.push(macro {
-                                    testsFailed.push(
-                                        hx.doctest.internal.Logger.log(ERROR, 
-                                            '${src.currentDocTestAssertion.assertion} --> failed to parse left side [$left]: $e',
-                                            $v{src.currentDocTestAssertion.getSourceLocation()}
-                                        )
-                                    );
-                                });
-                            case HAXE_UNIT:
-                                testMethodAssertions.push(macro {
-                                    currentTest.done = true;
-                                    currentTest.success = false;
-                                    currentTest.error   = 'Failed to parse left side [$left]: $e';
-                                    currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
-                                    throw currentTest;
-                                });
-                            case MUNIT:
-                                testMethodAssertions.push(macro {
-                                    massive.munit.Assert.fail('Failed to parse left side [$left]: $e', $v{src.currentDocTestAssertion.getPosInfos()});
-                                });
-                        }
+                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse left side [$left]: $e'));
                         continue;
                     }
 
-                    var rightExpr = try {
+                    var rightExpr:Expr = try {
                         Context.parse(right, Context.currentPos());
                     } catch (e:Dynamic) {
-                        switch(testFramework) {
-                            case DOCTEST:
-                                testMethodAssertions.push(macro {
-                                    testsFailed.push(
-                                        hx.doctest.internal.Logger.log(ERROR, 
-                                            '${src.currentDocTestAssertion.assertion} --> failed to parse right side [$right]: $e',
-                                            $v{src.currentDocTestAssertion.getSourceLocation()}
-                                        )
-                                    );
-                                });
-                            case HAXE_UNIT:
-                                testMethodAssertions.push(macro {
-                                    currentTest.done = true;
-                                    currentTest.success = false;
-                                    currentTest.error   = 'Failed to parse right side [$right]: $e';
-                                    currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
-                                    throw currentTest;
-                                });
-                            case MUNIT:
-                                testMethodAssertions.push(macro {
-                                    massive.munit.Assert.fail('Failed to parse right side [$right]: $e', $v{src.currentDocTestAssertion.getPosInfos()});
-                                });
-                        }
+                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse right side [$right]: $e'));
                         continue;
                     }
+                    
+                    var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
+                    var testFailedExpr = doctestAdapter.generateTestFail(src, 'expected `$right` but was `$leftExpr`');
 
-                    switch(testFramework) {
-                        case DOCTEST:
-                            testMethodAssertions.push(macro {
-                                try {
-                                    var left:Dynamic = $leftExpr;
-                                    var right:Dynamic = $rightExpr;
-                                    if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
-                                        haxe.Log.trace('[OK] ${src.currentDocTestAssertion.assertion}', $v{src.currentDocTestAssertion.getPosInfos(false)});
-                                        testsOK++;
-                                    } else {
-                                        testsFailed.push(hx.doctest.internal.Logger.log(ERROR, '${src.currentDocTestAssertion.assertion} --> expected [' + right + '] but was [' + left + ']', $v{src.currentDocTestAssertion.getSourceLocation()}));
-                                    }
-                                } catch (e:Dynamic) {
-                                    testsFailed.push(
-                                        hx.doctest.internal.Logger.log(ERROR, 
-                                            '${src.currentDocTestAssertion.assertion} --> exception occured: ' + e,
-                                            $v{src.currentDocTestAssertion.getSourceLocation()}
-                                        )
-                                    );
-                                }
-                            });
-                        case HAXE_UNIT:
-                            testMethodAssertions.push(macro {
-                                currentTest.done = true;
-                                if (hx.doctest.internal.DocTestUtils.equals($leftExpr, $rightExpr)) {
-                                    print('\n${src.fileName}:${src.currentLineNumber} [OK] ' + $v{src.currentDocTestAssertion.assertion});
-                                } else {
-                                    currentTest.success = false;
-                                    currentTest.error   = "expected `" +  $rightExpr + "` but was `" + $leftExpr + "`";
-                                    currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
-                                    throw currentTest;
-                                }
-                            });
-                        case MUNIT:
-                            testMethodAssertions.push(macro {
-                                if (hx.doctest.internal.DocTestUtils.equals($leftExpr, $rightExpr)) {
-                                    mconsole.Console.info('\n${src.fileName}:${src.currentLineNumber} [OK] ' + $v{src.currentDocTestAssertion.assertion});
-                                } else {
-                                    massive.munit.Assert.fail("expected `" + $rightExpr + "` but was `" + $leftExpr + "`", $v{src.currentDocTestAssertion.getPosInfos()});
-                                }
-                            });
+                    testMethodAssertions.push(macro {
+                        var left:Dynamic = null;
+                        try {
+                           $leftExpr;
+                        } catch (e:Dynamic) {
+                            left = e;
+                        }
+                        if (hx.doctest.internal.DocTestUtils.equals(left, $rightExpr)) {
+                            $testSuccessExpr;
+                        } else {
+                            $testFailedExpr;
+                        }
+                    });
+                    
+                } else { 
+                    // poor man's solution until I figure out how to add import statements
+                    var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
+                    totalAssertionsCount++;
+
+                    var doctestExpr = try {
+                        Context.parse(doctestLineFQ, Context.currentPos());
+                    } catch (e:Dynamic) {
+                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse assertion [${src.currentDocTestAssertion.assertion}]: $e'));
+                        continue;
                     }
                     
-                } else {
-                    switch(testFramework) {
-                        case DOCTEST:
-                            testMethodAssertions.push(macro {
-                                testsFailed.push(
-                                    hx.doctest.internal.Logger.log(ERROR, 
-                                        '${src.currentDocTestAssertion.assertion} --> test assertion is missing equals operator (==)', 
-                                        $v{src.currentDocTestAssertion.getSourceLocation()}
-                                    )
-                                );
-                            });
-                        case HAXE_UNIT:
-                            testMethodAssertions.push(macro {
-                                currentTest.done = true;
-                                currentTest.success = false;
-                                currentTest.error   = "test assertion is missing equals operator (==)";
-                                currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
-                                throw currentTest;
-                            });
-                        case MUNIT:
-                            testMethodAssertions.push(macro {
-                                massive.munit.Assert.fail('test assertion is missing equals operator (==)', $v{src.currentDocTestAssertion.getPosInfos()});
-                            });
+                    var leftExpr:Expr = null;
+                    var rightExpr:Expr = null;
+                    var comparator:Binop = null;
+                    switch(doctestExpr.expr) {
+                        case EBinop(op, l, r):
+                            switch (op) {
+                                case OpEq, OpNotEq, OpLte, OpLt, OpGt, OpGte:
+                                    comparator = op;
+                                default:
+                                    testMethodAssertions.push(doctestAdapter.generateTestFail(src, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
+                                    continue;
+                            }
+                            leftExpr = l;
+                            rightExpr = r;
+                        default:
+                            testMethodAssertions.push(doctestAdapter.generateTestFail(src, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
+                            continue;
                     }
+
+                    
+                    var comparisonExpr:Expr = null;
+                    var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
+                    var testFailedExpr = null;
+                    switch(comparator) {
+                        case OpEq:
+                            comparisonExpr = macro hx.doctest.internal.DocTestUtils.equals(left, right);
+                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' does not equal '$right'.");
+                        case OpNotEq: 
+                            comparisonExpr = macro !hx.doctest.internal.DocTestUtils.equals(left, right);
+                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' equals '$right'.");
+                        case OpLte:
+                            comparisonExpr = macro left <= right;
+                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not lower than or equal '$right'.");
+                        case OpLt:
+                            comparisonExpr = macro left < right;
+                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not lower than '$right'.");
+                        case OpGt:
+                            comparisonExpr = macro left > right;
+                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than'$right'.");
+                        case OpGte:
+                            comparisonExpr = macro left >= right;
+                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than or equal '$right'.");
+                        default: throw "Should never be reached";
+                    }
+                    
+                    testMethodAssertions.push(macro {
+                        var left:Dynamic;
+                        try {
+                            left = $leftExpr;
+                        } catch (ex:Dynamic) 
+                            left = "exception: " + ex;
+                        var right:Dynamic;
+                        try {
+                            right = $rightExpr;
+                        } catch (ex:Dynamic) 
+                            right = "exception: " + ex;
+                            
+                        if ($comparisonExpr) {
+                            $testSuccessExpr;
+                        } else {
+                            $testFailedExpr;
+                        }
+                    });
                 }
 
                 if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
-                    (testFramework != DOCTEST && testMethodAssertions.length > 0) ||
-                    (testFramework == DOCTEST && testMethodAssertions.length > 0 && src.isLastLine())
+                    (!Std.is(doctestAdapter, TestrunnerDocTestAdapter) && testMethodAssertions.length > 0) ||  // for haxe-unit and munit we create a new test-method per assertion
+                    (Std.is(doctestAdapter, TestrunnerDocTestAdapter) && testMethodAssertions.length > 0 && src.isLastLine())
                 ) {
                     testMethodsCount++;
                     var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
                     Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
-
-                    if(testFramework == DOCTEST) {
-                        testMethodAssertions.unshift(macro {
-                            var pos = { fileName:  $v{Context.getLocalModule()}, lineNumber: 1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
-                            hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
-                            hx.doctest.internal.Logger.log(INFO, 'Doc Testing [${src.filePath}] #${testMethodsCount}...', pos);
-                            hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
-                        });
-                    }
-                    var meta = [{name:":keep", pos: contextPos}];
-                    if (testFramework == MUNIT) {
-                        meta.push({name: "Test", pos: contextPos});
-                    }
-                    contextFields.push({
-                        name: testMethodName,
-                        doc: 'Doc Tests #${testMethodsCount} of ${src.fileName}',
-                        meta: meta,
-                        access: [APublic],
-                        kind: FFun({
-                            ret:null, 
-                            args:[], 
-                            expr: { expr: EBlock(testMethodAssertions), pos: contextPos}
-                        }),
-                        pos: contextPos
-                    });
+                    contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
                     testMethodAssertions = new Array<Expr>();
                 }
             }
-            
+
             if (testMethodAssertions.length > 0) {
                 testMethodsCount++;
                 var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
                 Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
-
-                if(testFramework == DOCTEST) {
-                    testMethodAssertions.unshift(macro {
-                        var pos = { fileName:  $v{Context.getLocalModule()}, lineNumber: 1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
-                        hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
-                        hx.doctest.internal.Logger.log(INFO, 'Doc Testing [${src.filePath}] #${testMethodsCount}...', pos);
-                        hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
-                    });
-                }
-                var meta = [{name:":keep", pos: contextPos}];
-                if (testFramework == MUNIT) {
-                    meta.push({name: "Test", pos: contextPos});
-                }
-                contextFields.push({
-                    name: testMethodName,
-                    doc: 'Doc Tests #${testMethodsCount} of ${src.fileName}',
-                    meta: meta,
-                    access: [APublic],
-                    kind: FFun({
-                        ret:null, 
-                        args:[], 
-                        expr: { expr: EBlock(testMethodAssertions), pos: contextPos}
-                    }),
-                    pos: contextPos
-                });
+                contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
             }
         });
             
         Logger.log(INFO, 'Generated $totalAssertionsCount test assertions.');
         return contextFields;
     }
-    
-    static function determineTestFramework():TestFramework {
+
+    static function getDocTestAdapter():DocTestAdapter {
         var clazz:ClassType = Context.getLocalClass().get();
 
         while (true) {
-            if (clazz.module == "hx.doctest.DocTestRunner") return DOCTEST;
-            if (clazz.module == "haxe.unit.TestCase") return HAXE_UNIT;
+            if (clazz.module == "hx.doctest.DocTestRunner") return new TestrunnerDocTestAdapter();
+            if (clazz.module == "haxe.unit.TestCase") return new HaxeUnitDocTestAdapter();
             if (clazz.superClass == null) break;
             clazz = clazz.superClass.t.get();
         }
         // if no known super class was found, we expect it to be a MUnit test case
-        return MUNIT;
+         return new MUnitDocTestAdapter();
     }
 }
 
-private enum TestFramework {
-    DOCTEST;
-    HAXE_UNIT;
-    MUNIT;
-}
 #end
