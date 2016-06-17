@@ -73,7 +73,7 @@ class MyObject {
 
 ## <a name="why-doc-testing"></a>Why doc-testing?
 
-1. doc-tests support super fast test-driven development: First you write your method header, 
+1. Doc-testing supports super fast test-driven development: First you write your method header, 
    then the in-place documentation including your test assertions defining the expected behavior
    and then implement until all your defined tests pass.
 
