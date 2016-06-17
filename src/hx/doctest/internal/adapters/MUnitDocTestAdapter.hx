@@ -29,7 +29,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
     override
     public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
         return macro {
-            massive.munit.Assert.fail($v{errorMsg}, $v{src.currentDocTestAssertion.getPosInfos()});
+            massive.munit.Assert.fail('${src.currentDocTestAssertion.assertion} --> $errorMsg', $v{src.currentDocTestAssertion.getPosInfos()});
         };
     }
     

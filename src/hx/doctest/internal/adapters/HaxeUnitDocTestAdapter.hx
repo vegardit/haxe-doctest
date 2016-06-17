@@ -31,7 +31,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
         return macro {
             currentTest.done = true;
             currentTest.success = false;
-            currentTest.error = $v{errorMsg};
+            currentTest.error = '${src.currentDocTestAssertion.assertion} --> $errorMsg';
             currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
             throw currentTest;
         };

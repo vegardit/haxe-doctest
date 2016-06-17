@@ -63,14 +63,10 @@ class DocTestGenerator {
             /*
              * iterate over all code lines of the Haxe file
              */
-            while(src.gotoNextDocTestAssertion()) {
-
-                // fail if line ends with ;
-                if (src.currentDocTestAssertion.assertion.endsWith(";")) {
-                    testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'test assertion must not end with a semicolon (;)'));
-
+            while (src.gotoNextDocTestAssertion()) {
+                
                 // process "throws" assertion
-                } else if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
+                if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
                     // poor man's solution until I figure out how to add import statements
                     var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
                     totalAssertionsCount++;
@@ -81,28 +77,27 @@ class DocTestGenerator {
                     var leftExpr:Expr = try {
                         Context.parse(left, Context.currentPos());
                     } catch (e:Dynamic) {
-                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse left side [$left]: $e'));
+                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse left side: $e'));
                         continue;
                     }
 
                     var rightExpr:Expr = try {
                         Context.parse(right, Context.currentPos());
                     } catch (e:Dynamic) {
-                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse right side [$right]: $e'));
+                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse right side: $e'));
                         continue;
                     }
                     
                     var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
-                    var testFailedExpr = doctestAdapter.generateTestFail(src, 'expected `$right` but was `$leftExpr`');
+                    var testFailedExpr = doctestAdapter.generateTestFail(src, "Expected `$right` but was `$left`.");
 
                     testMethodAssertions.push(macro {
                         var left:Dynamic = null;
-                        try {
-                            $leftExpr;
-                        } catch (e:Dynamic) {
-                            left = e;
-                        }
-                        if (hx.doctest.internal.DocTestUtils.equals(left, $rightExpr)) {
+                        try { $leftExpr; } catch (ex:Dynamic) left = ex;
+                        var right:Dynamic;
+                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
+
+                        if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
                             $testSuccessExpr;
                         } else {
                             $testFailedExpr;
@@ -118,7 +113,7 @@ class DocTestGenerator {
                     var doctestExpr = try {
                         Context.parse(doctestLineFQ, Context.currentPos());
                     } catch (e:Dynamic) {
-                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse assertion [${src.currentDocTestAssertion.assertion}]: $e'));
+                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse assertion: $e'));
                         continue;
                     }
                     
@@ -141,7 +136,6 @@ class DocTestGenerator {
                             continue;
                     }
 
-                    
                     var comparisonExpr:Expr = null;
                     var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
                     var testFailedExpr = null;
@@ -169,15 +163,9 @@ class DocTestGenerator {
                     
                     testMethodAssertions.push(macro {
                         var left:Dynamic;
-                        try {
-                            left = $leftExpr;
-                        } catch (ex:Dynamic) 
-                            left = "exception: " + ex;
+                        try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex;
                         var right:Dynamic;
-                        try {
-                            right = $rightExpr;
-                        } catch (ex:Dynamic) 
-                            right = "exception: " + ex;
+                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
                             
                         if ($comparisonExpr) {
                             $testSuccessExpr;
