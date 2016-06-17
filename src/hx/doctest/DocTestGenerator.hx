@@ -65,9 +65,11 @@ class DocTestGenerator {
              */
             while(src.gotoNextDocTestAssertion()) {
 
+                // fail if line ends with ;
                 if (src.currentDocTestAssertion.assertion.endsWith(";")) {
                     testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'test assertion must not end with a semicolon (;)'));
 
+                // process "throws" assertion
                 } else if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
                     // poor man's solution until I figure out how to add import statements
                     var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
@@ -96,7 +98,7 @@ class DocTestGenerator {
                     testMethodAssertions.push(macro {
                         var left:Dynamic = null;
                         try {
-                           $leftExpr;
+                            $leftExpr;
                         } catch (e:Dynamic) {
                             left = e;
                         }
@@ -106,7 +108,8 @@ class DocTestGenerator {
                             $testFailedExpr;
                         }
                     });
-                    
+                
+                // process comparison assertion
                 } else { 
                     // poor man's solution until I figure out how to add import statements
                     var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
@@ -184,6 +187,7 @@ class DocTestGenerator {
                     });
                 }
 
+                // generate a new testMethod if required
                 if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
                     (!Std.is(doctestAdapter, TestrunnerDocTestAdapter) && testMethodAssertions.length > 0) ||  // for haxe-unit and munit we create a new test-method per assertion
                     (Std.is(doctestAdapter, TestrunnerDocTestAdapter) && testMethodAssertions.length > 0 && src.isLastLine())
@@ -196,6 +200,7 @@ class DocTestGenerator {
                 }
             }
 
+            // generate a new testMethod if required
             if (testMethodAssertions.length > 0) {
                 testMethodsCount++;
                 var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
@@ -221,5 +226,4 @@ class DocTestGenerator {
          return new MUnitDocTestAdapter();
     }
 }
-
 #end
