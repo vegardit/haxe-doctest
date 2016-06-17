@@ -13,7 +13,6 @@ class ExampleEntity {
 
     /**
      * <pre><code>
-     * >>> new ExampleEntity(null).name    == null
      * >>> new ExampleEntity("").name      == ""
      * >>> new ExampleEntity(" ").name     == " "
      * >>> new ExampleEntity(" foo ").name == " foo "
@@ -21,7 +20,15 @@ class ExampleEntity {
      */
     public var name(default, null):String;
     
+    /**
+     * <pre>code>
+     * >>> new ExampleEntity(null)  throws "[name] must not be null"
+     * >>> new ExampleEntity("foo") throws nothing
+     * </code></pre>
+     */
     public function new(name:String) {
+        if (name == null)
+            throw "[name] must not be null";
         this.name = name;
     }
 
@@ -30,7 +37,6 @@ class ExampleEntity {
      * <br/>
      * <b>Examples:</b>
      * <pre><code>
-     * >>> new ExampleEntity(null).isValidName()    == false
      * >>> new ExampleEntity("").isValidName()      == false
      * >>> new ExampleEntity(" ").isValidName()     == false
      * >>> new ExampleEntity(" foo ").isValidName() == true
@@ -45,7 +51,6 @@ class ExampleEntity {
      * <br/>
      * <b>Examples:</b>
      * <pre><code>
-     * >>> new ExampleEntity(null).toString()    == 'ExampleEntity[name=null]'
      * >>> new ExampleEntity("").toString()      == 'ExampleEntity[name=]'
      * >>> new ExampleEntity(" ").toString()     == 'ExampleEntity[name= ]'
      * >>> new ExampleEntity(" foo ").toString() == 'ExampleEntity[name= foo ]'

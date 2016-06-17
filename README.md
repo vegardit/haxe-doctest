@@ -48,7 +48,8 @@ class MyObject {
     
     /**
      * <pre><code>
-     * >>> new MyObject(null).length() throws "[data] must not be null!"
+     * >>> new MyObject(null) throws "[data] must not be null!"
+     * >>> new MyObject("ab") throws nothing
      * </code></pre>
      */
     public function new(data:String) {

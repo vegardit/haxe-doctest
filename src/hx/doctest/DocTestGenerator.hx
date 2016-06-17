@@ -81,18 +81,19 @@ class DocTestGenerator {
                         continue;
                     }
 
-                    var rightExpr:Expr = try {
+                    var rightExpr:Expr = right == "nothing" ? macro "nothing": try {
                         Context.parse(right, Context.currentPos());
                     } catch (e:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse right side: $e'));
                         continue;
                     }
+                    trace(rightExpr);
                     
                     var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
                     var testFailedExpr = doctestAdapter.generateTestFail(src, "Expected `$right` but was `$left`.");
 
                     testMethodAssertions.push(macro {
-                        var left:Dynamic = null;
+                        var left:Dynamic = "nothing";
                         try { $leftExpr; } catch (ex:Dynamic) left = ex;
                         var right:Dynamic;
                         try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
@@ -173,6 +174,7 @@ class DocTestGenerator {
                             $testFailedExpr;
                         }
                     });
+
                 }
 
                 // generate a new testMethod if required
