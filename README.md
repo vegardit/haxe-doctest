@@ -2,7 +2,7 @@
 
 1. [What is it?](#what-is-it)
 1. [Declaring test assertions](#declaring-test-assertions)
-1. [Why doc-testings?](#why-doc-testings)
+1. [Why doc-testing?](#why-doc-testing)
 1. [Doc-testing with MUnit](#doctest-with-munit)
 1. [Doc-testing with Haxe Unit](#doctest-with-haxeunit)
 1. [Doc-testing with FlashDevelop](#doctest-testrunner)
@@ -71,7 +71,7 @@ class MyObject {
 ```
 
 
-## <a name="why-doc-testing"></a>Why doc-testings?
+## <a name="why-doc-testing"></a>Why doc-testing?
 
 1. doc-tests support super fast test-driven development: First you write your method header, 
    then the in-place documentation including your test assertions defining the expected behavior
