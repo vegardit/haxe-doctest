@@ -25,6 +25,8 @@ unit tests based on assertions specified within the source code.
 Doc-test assertions are written as part of the source code documentation and are
 identified by three leading right angle brackets `>>>` before the assertion.
 
+The left and the right side of the assertion must be separated by one of the comparison operators `<`, `>`, `!=`, `<=`, `>=` or the `throws` keyword.
+
 ```haxe
 class MyTools {
     
