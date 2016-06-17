@@ -2,10 +2,10 @@
 
 1. [What is it?](#what-is-it)
 1. [Declaring test assertions](#declaring-test-assertions)
-1. [Why use doctests?](#why-doctests)
-1. [Using doctest with MUnit](#doctest-with-munit)
-1. [Using doctest with Haxe Unit](#doctest-with-haxeunit)
-1. [Using doctest with FlashDevelop](#doctest-testrunner)
+1. [Why doc-testings?](#why-doc-testings)
+1. [Doc-testing with MUnit](#doctest-with-munit)
+1. [Doc-testing with Haxe Unit](#doctest-with-haxeunit)
+1. [Doc-testing with FlashDevelop](#doctest-testrunner)
 1. [Installation](#installation)
 1. [Using the latest code](#latest)
 1. [License](#license)
@@ -22,7 +22,7 @@ unit tests based on assertions specified within the source code.
     
 ## <a name="declaring-test-assertions"></a>Declaring test assertions
 
-Doctest assertions are written as part of the source code documentation and are
+Doc-test assertions are written as part of the source code documentation and are
 identified by three leading right angle brackets `>>>` before the assertion.
 
 ```haxe
@@ -68,24 +68,23 @@ class MyObject {
 ```
 
 
-## <a name="why-doctests"></a>Why use doctests?
+## <a name="why-doc-testing"></a>Why doc-testings?
 
-1. doctests supports super fast test-driven development: First you write your method header, 
+1. doc-tests support super fast test-driven development: First you write your method header, 
    then the in-place documentation including your test assertions defining the expected behavior
    and then implement until all your defined tests pass.
 
    No need to create separate test classes with individual test methods.
    Implementing and testing happens at the same code location.
    
-1. For users of your code, the doctest assertions act as method documentation and code examples.
+1. For users of your code, the doc-test assertions act as method documentation and code examples.
 
-1. Since doctest actually tests your documentation, your documentation always represents 
-   the actual behaviour of the method implementation.
+1. Since doc-testing actually means testing the documentation against the documented code, a method's documentation always represents the actual behavior of it's implementation and can't get accidently outdated.
 
 
-## <a name="doctest-with-haxeunit"></a>Using doctest with Haxe Unit
+## <a name="doctest-with-haxeunit"></a>Doc-testing with Haxe Unit
 
-Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doctest assertions from your sourcecode will then be added as test methods to this class.
+Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your sourcecode will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -104,10 +103,10 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 ```
 
 
-## <a name="doctest-with-munit"></a>Using doctest with MUnit
+## <a name="doctest-with-munit"></a>Doc-testing with MUnit
 
 Annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
-The doctest assertions from your sourcecode will then be added as test methods to this class.
+The doc-test assertions from your sourcecode will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -133,12 +132,12 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
 ```
 
 
-## <a name="doctest-testrunner"></a>Using the doctest Testrunner
+## <a name="doctest-testrunner"></a>Doc-testing with hx.doctest.DocTestRunner
 
-doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as clickable errors that directly navigate your to the location in your source code.
+haxe-doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as clickable errors that directly navigate your to the location in your source code.
 
 To use it, annotate a class extending `hx.doctest.DocTestRunner`  with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
-The doctest assertions from your sourcecode will then be added as test methods to this class.
+The doc-test assertions from your sourcecode will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -174,9 +173,9 @@ RunProcessCaptured|$(SystemDir)\cmd.exe;/c cd $(ProjectDir) & $(ProjectDir)\test
 
 Then assign the macro a short cut, e.g. [F4]. 
 
-Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doctests assertions will be tested. Errors will showup as navigable events in the FlashDevelop's result panel.
+Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doc-test assertions will be tested. Errors will showup as navigable events in the FlashDevelop's result panel.
 
-![](doc/flashdevelop_integration.png "doctest Error Highlighting in FlashDevelop")
+![](doc/flashdevelop_integration.png "haxe-doctest Error Highlighting in FlashDevelop")
 
 
 ## <a name="installation"></a>Installation
