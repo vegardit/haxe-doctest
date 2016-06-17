@@ -4,11 +4,11 @@
 	"license": "MIT",
 	"classPath": "src/",
     "tags": [ "test", "testing","unittest","vegardit" ],
-    "description": "Python inspired doctesting for Haxe",
+    "description": "Python inspired doc-testing for Haxe",
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "added support for asserting exceptions and to use other types of comparison operators",
-    "version": "0.3.0",
+    "releasenote": "",
+    "version": "0.4.0-SNAPSHOT",
     "dependencies": { }
 }
