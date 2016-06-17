@@ -32,12 +32,14 @@ class DocTestRunner {
     function run(expectedMinNumberOfTests = 0):Int {
         var startTime = Timer.stamp();
         var thisClass = Type.getClass(this);
+        var thisClassName = Type.getClassName(thisClass);
         // look for functions starting with "test" and invoke them
-        Logger.log(INFO, 'Looking for test cases in [${Type.getClassName(thisClass)}]...');
-        for (f in Type.getInstanceFields(thisClass)) {
-            if (f.startsWith("test")) {
-                var func:Dynamic = Reflect.field(this, f);
+        Logger.log(INFO, 'Looking for test cases in [${thisClassName}]...');
+        for (funcName in Type.getInstanceFields(thisClass)) {
+            if (funcName.startsWith("test")) {
+                var func:Dynamic = Reflect.field(this, funcName);
                 if (Reflect.isFunction(func)) {
+                    Logger.log(INFO, 'Invoking [${thisClassName}#$funcName()]...');
                     Reflect.callMethod(this, func, []);
                 }
             }
@@ -51,7 +53,7 @@ class DocTestRunner {
                 return 1;
             } else if (testsOK == 0) {
                 Logger.log(WARN, '**********************************************************');
-                Logger.log(WARN, 'No tests were found!');
+                Logger.log(WARN, 'No test assertions were found!');
                 Logger.log(WARN, '**********************************************************');                
             } else {
                 Logger.log(INFO, '**********************************************************');
@@ -80,6 +82,18 @@ class DocTestRunner {
         #elseif js
             untyped phantom.exit(exitCode);
         #end
+    }
+    
+    /**
+     * for use within manually created test method
+     */
+    function assertTrue(result:Bool, ?pos:PosInfos):Void {
+        if (result) {
+            haxe.Log.trace('[OK] assertTrue(true)', pos);
+            testsOK++;
+        } else {
+            testsFailed.push(Logger.log(ERROR, '[true] != [false]', null, pos));
+        }
     }
     
     /**
