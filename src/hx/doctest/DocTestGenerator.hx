@@ -7,7 +7,6 @@
 package hx.doctest;
 
 #if macro
-import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
@@ -68,7 +67,7 @@ class DocTestGenerator {
                 // process "throws" assertion
                 if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
                     // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
+                    var doctestLineFQ = new EReg("(^|[\\s(=<>!])" + src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
                     totalAssertionsCount++;
                     
                     var left = doctestLineFQ.substringBeforeLast("throws ").trim();
@@ -87,7 +86,6 @@ class DocTestGenerator {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse right side: $e'));
                         continue;
                     }
-                    trace(rightExpr);
                     
                     var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
                     var testFailedExpr = doctestAdapter.generateTestFail(src, "Expected `$right` but was `$left`.");
@@ -108,7 +106,7 @@ class DocTestGenerator {
                 // process comparison assertion
                 } else { 
                     // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg(src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, src.haxeModuleFQName + "$1");
+                    var doctestLineFQ = new EReg("(^|[\\s(=<>!])" + src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
                     totalAssertionsCount++;
 
                     var doctestExpr = try {
