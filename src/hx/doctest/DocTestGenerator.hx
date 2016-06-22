@@ -28,8 +28,10 @@ using hx.doctest.internal.DocTestUtils;
  */
 class DocTestGenerator {
     
-    static inline var MAX_ASSERTIONS_PER_TEST_METHOD = 100; // to avoid "error: code too large" for java target
-    
+    static var MAX_ASSERTIONS_PER_TEST_METHOD = 
+        Context.defined("lua") ?  30 : // to avoid "too many local variables" with Lua target
+        100; // to avoid "error: code too large" with Java target
+
     /**
      * <pre><code>
      * @:build(hx.doctest.DocTestGenerator.generateDocTests("src", ".*\\.hx"))
