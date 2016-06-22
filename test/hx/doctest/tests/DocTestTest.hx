@@ -32,7 +32,12 @@ class DocTestTest extends DocTestRunner {
     function testManual() {
         assertEquals("a", "a");
         try {
-            var s:String = null;
+            /*
+             * assigning null not on first assignment to make code work in Lua, otherwise
+             * the block will be transpiled into `nil:toLowerCase()` which doesn't compile in Lua
+             */
+            var s = ""; 
+            s = null;
             s.toLowerCase(); // throws NPE ... except on PHP
             #if !php
             fail(); // should never be reached
