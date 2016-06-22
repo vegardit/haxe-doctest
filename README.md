@@ -87,7 +87,7 @@ class MyObject {
 
 ## <a name="doctest-with-haxeunit"></a>Doc-testing with Haxe Unit
 
-Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your sourcecode will then be added as test methods to this class.
+Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -109,7 +109,7 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 ## <a name="doctest-with-munit"></a>Doc-testing with MUnit
 
 Annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
-The doc-test assertions from your sourcecode will then be added as test methods to this class.
+The doc-test assertions from your source code will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -140,7 +140,7 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
 haxe-doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as clickable errors that directly navigate your to the location in your source code.
 
 To use it, annotate a class extending `hx.doctest.DocTestRunner`  with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
-The doc-test assertions from your sourcecode will then be added as test methods to this class.
+The doc-test assertions from your source code will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
