@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and
 [Keep a CHANGELOG](http://keepachangelog.com/).
 
+## [0.3.2] - 2016-06-22
+### Changed
+- improved Lua support
+
 ## [0.3.1] - 2016-06-20
 ### Changed
 - improved parsing
