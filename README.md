@@ -199,9 +199,21 @@ Now you can write your methods, document their behavior in the doc and by pressi
 ### Using `haxelib git`
 
 ```
-haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest.git master
+haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest master D:\haxe-projects\haxe-doctest
 ```
 
+###  Using Git
+
+1. check-out the master branch
+    ```
+    git clone https://github.com/vegardit/haxe-doctest --branch master --single-branch D:\haxe-projects\haxe-doctest
+    ```
+
+2. register the development release with haxe
+    ```
+    haxelib dev haxe-doctest D:\haxe-projects\haxe-doctest
+    ```
+  
 ###  Using Subversion
 
 1. check-out the trunk
@@ -217,4 +229,4 @@ haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest.git master
     
 ## <a name="license"></a>License
 
-All files are released under the [MIT license](https://github.com/vegardit/haxe-strings/blob/master/LICENSE.txt).
+All files are released under the [Apache License 2.0](https://github.com/vegardit/haxe-doctest/blob/master/LICENSE.txt).

@@ -1,8 +1,17 @@
 /*
  * Copyright (c) 2016 Vegard IT GmbH, http://vegardit.com
  * 
- * This software may be modified and distributed under the terms
- * of the MIT license. See the LICENSE.txt file for details.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package hx.doctest.internal;
 
@@ -12,10 +21,12 @@ using hx.doctest.internal.DocTestUtils;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:dox(hide)
 class SourceFile {
     static var REGEX_PACKAGE_NAME = ~/package\s+(([a-zA-Z_]{1}[a-zA-Z]*){2,10}\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,30}((\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,61})*)?)\s?;/g;
     static inline var DOCTEST_IDENTIFIER = "* >>>";
     
+    var fileInput:sys.io.FileInput;
     public var filePath:String;
     public var fileName:String;
     public var haxePackage:String;
@@ -31,29 +42,41 @@ class SourceFile {
         this.filePath = filePath;
         fileName = filePath.substringAfterLast("/");
 
-        var fileContent = sys.io.File.getContent(filePath);
-        lines = fileContent.split("\n");
-        if (!REGEX_PACKAGE_NAME.match(fileContent))
-            haxePackage = "";
-        else
-            haxePackage = REGEX_PACKAGE_NAME.matched(1);
+        fileInput = sys.io.File.read(filePath, false);
+        haxePackage = "";
+        
+        while (!fileInput.eof()) {
+            var line = fileInput.readLine();
+            if (REGEX_PACKAGE_NAME.match(line)) {
+                haxePackage = REGEX_PACKAGE_NAME.matched(1);
+                break;
+            }
+        }
+        fileInput.seek(0, SeekBegin);
+
         haxeModuleName = fileName.substringBefore(".");
         haxeModuleFQName = haxePackage.length > 0 ? haxePackage + "." + haxeModuleName : haxeModuleName;
     }
     
     public function gotoNextDocTestAssertion():Bool {
-        while (!isLastLine()) {
-            currentLineNumber++;
-            var line = lines[currentLineNumber - 1];
-            var line = line.substringAfter(DOCTEST_IDENTIFIER).trim();
-            if (line == "") continue;
-            currentDocTestAssertion = new DocTestAssertion(filePath, fileName, currentLineNumber, line, lines[currentLineNumber - 1].indexOf(DOCTEST_IDENTIFIER) + DOCTEST_IDENTIFIER.length, lines[currentLineNumber - 1].length);
-            return true;
+        try {
+            while (!isLastLine()) {
+                currentLineNumber++;
+                var line = fileInput.readLine();
+                var line = line.substringAfter(DOCTEST_IDENTIFIER).trim();
+                if (line == "") continue;
+                currentDocTestAssertion = new DocTestAssertion(filePath, fileName, currentLineNumber, line, line.indexOf(DOCTEST_IDENTIFIER) + DOCTEST_IDENTIFIER.length, line.length);
+                return true;
+            }
+        } catch(e:haxe.io.Eof) {
+            // ignore --> bug in Haxe http://old.haxe.org/forum/thread/4494
         }
+        fileInput.close();
+        fileInput = null;
         return false;
     }
     
     public function isLastLine():Bool {
-        return currentLineNumber == lines.length;
+        return fileInput == null || fileInput.eof();
     }
 }

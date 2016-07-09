@@ -1,14 +1,14 @@
 {
     "name": "haxe-doctest",
     "url": "https://github.com/vegardit/haxe-doctest",
-	"license": "MIT",
+	"license": "Apache",
 	"classPath": "src/",
     "tags": [ "test", "testing","unittest","vegardit" ],
     "description": "Python inspired doc-testing for Haxe",
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "improved Lua support",
-    "version": "0.3.2",
+    "releasenote": "license changed to Apache License 2.0, fixed out-of-memory error",
+    "version": "0.4.0",
     "dependencies": { }
 }
