@@ -75,14 +75,16 @@ class MyObject {
 
 1. Doc-testing supports super fast test-driven development: First you write your method header, 
    then the in-place documentation including your test assertions defining the expected behavior
-   and then implement until all your defined tests pass.
+   and then implement until all your declared tests pass.
 
    No need to create separate test classes with individual test methods.
    Implementing and testing happens at the same code location.
    
-1. For users of your code, the doc-test assertions act as method documentation and code examples.
+2. For users of your code, the doc-test assertions act as method documentation and code examples.
 
-1. Since doc-testing actually means testing the documentation against the documented code, a method's documentation always represents the actual behavior of it's implementation and can't get accidently outdated.
+3. Since doc-testing actually means testing the documentation against the documented code, 
+   a method's documentation always represents the actual behavior of it's implementation and 
+   can't get accidently outdated.
 
 
 ## <a name="doctest-with-haxeunit"></a>Doc-testing with Haxe Unit
