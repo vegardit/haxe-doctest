@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [0.4.0] - 2016-07-09
 
+### Added
+- the doc-test identifier string is now configurable
+
 ### Changed
 - changed license from MIT to Apache License 2.0
 

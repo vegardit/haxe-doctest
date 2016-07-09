@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "license changed to Apache License 2.0, fixed out-of-memory error",
+    "releasenote": "license changed to Apache License 2.0, fixed out-of-memory error, configurable doc-test identifier string",
     "version": "0.4.0",
     "dependencies": { }
 }

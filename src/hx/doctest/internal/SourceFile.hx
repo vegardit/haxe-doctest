@@ -24,9 +24,9 @@ using hx.doctest.internal.DocTestUtils;
 @:dox(hide)
 class SourceFile {
     static var REGEX_PACKAGE_NAME = ~/package\s+(([a-zA-Z_]{1}[a-zA-Z]*){2,10}\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,30}((\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,61})*)?)\s?;/g;
-    static inline var DOCTEST_IDENTIFIER = "* >>>";
-    
+
     var fileInput:sys.io.FileInput;
+    public var docTestIdentifier:String;
     public var filePath:String;
     public var fileName:String;
     public var haxePackage:String;
@@ -37,9 +37,10 @@ class SourceFile {
     
     var lines:Array<String>;
     
-    public function new(filePath:String) {
+    public function new(filePath:String, docTestIdentifier:String) {
         trace('[INFO] Scanning [$filePath]...');
         this.filePath = filePath;
+        this.docTestIdentifier = docTestIdentifier;
         fileName = filePath.substringAfterLast("/");
 
         fileInput = sys.io.File.read(filePath, false);
@@ -63,9 +64,9 @@ class SourceFile {
             while (!isLastLine()) {
                 currentLineNumber++;
                 var line = fileInput.readLine();
-                var line = line.substringAfter(DOCTEST_IDENTIFIER).trim();
+                var line = line.substringAfter(docTestIdentifier).trim();
                 if (line == "") continue;
-                currentDocTestAssertion = new DocTestAssertion(filePath, fileName, currentLineNumber, line, line.indexOf(DOCTEST_IDENTIFIER) + DOCTEST_IDENTIFIER.length, line.length);
+                currentDocTestAssertion = new DocTestAssertion(filePath, fileName, currentLineNumber, line, line.indexOf(docTestIdentifier) + docTestIdentifier.length, line.length);
                 return true;
             }
         } catch(e:haxe.io.Eof) {
