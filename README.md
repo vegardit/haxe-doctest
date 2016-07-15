@@ -149,7 +149,7 @@ The doc-test assertions from your source code will then be added as test methods
 class MyDocTestRunner extends hx.doctest.DocTestRunner {
 
     public static function main() {
-        var runner = new DocTestTest();
+        var runner = new MyDocTestRunner();
         runner.runAndExit();
     }
     
