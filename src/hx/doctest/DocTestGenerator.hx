@@ -78,7 +78,7 @@ class DocTestGenerator {
                 // process "throws" assertion
                 if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
                     // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg("(^|[\\s(=<>!])" + src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
+                    var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
                     totalAssertionsCount++;
                     
                     var left = doctestLineFQ.substringBeforeLast("throws ").trim();
@@ -117,7 +117,7 @@ class DocTestGenerator {
                 // process comparison assertion
                 } else { 
                     // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg("(^|[\\s(=<>!])" + src.haxeModuleName + "(\\s?[(.<])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
+                    var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
                     totalAssertionsCount++;
 
                     var doctestExpr = try {

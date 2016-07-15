@@ -16,6 +16,10 @@
 package hx.doctest.example;
 
 /**
+ * <pre><code>
+ * >>> (switch(1){default:var e:ExampleEntity = new ExampleEntity("foo"); e.name="bar"; e;}).name == "bar"
+ * </code></pre>
+ * 
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class ExampleEntity {
@@ -27,7 +31,7 @@ class ExampleEntity {
      * >>> new ExampleEntity(" foo ").name == " foo "
      * </code></pre>
      */
-    public var name(default, null):String;
+    public var name:String;
     
     /**
      * <pre>code>
