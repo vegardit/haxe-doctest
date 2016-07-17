@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "license changed to Apache License 2.0, fixed out-of-memory error, configurable doc-test identifier string",
+    "releasenote": "fixed 'Type not found' error",
     "version": "1.0.1",
     "dependencies": { }
 }
