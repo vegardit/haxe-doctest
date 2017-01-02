@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "fixed 'Type not found' error",
-    "version": "1.0.1",
+    "releasenote": "added DocTestRunner#assertFalse()/#assertNotEquals(). DocTestUtils#equals() now handles EnumValues.",
+    "version": "1.0.2",
     "dependencies": { }
 }
