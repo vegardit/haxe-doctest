@@ -36,7 +36,14 @@ class DocTestUtils {
             }
             return false;
         }
-        
+
+        // compare enums
+        if (Reflect.isEnumValue(left) && Reflect.isEnumValue(right)) {
+            var leftEnum:EnumValue = left;
+            var rightEnum:EnumValue = right;
+            return leftEnum.equals(rightEnum);
+        }
+
         // compare anonymous structures
         if (Reflect.isObject(left) && Reflect.isObject(right)) {
             var clsLeft = Type.getClass(left);
@@ -58,10 +65,10 @@ class DocTestUtils {
                 }
             }
         }
-        
+
         return left == right;
     }
-    
+
     public static function substringAfter(str:String, sep:String):String {
         var foundAt = str.indexOf(sep);
         if (foundAt == -1) return "";
