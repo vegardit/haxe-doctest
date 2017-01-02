@@ -101,7 +101,19 @@ class DocTestRunner {
             haxe.Log.trace('[OK] assertTrue(true)', pos);
             testsOK++;
         } else {
-            testsFailed.push(Logger.log(ERROR, '[true] != [false]', null, pos));
+            testsFailed.push(Logger.log(ERROR, 'assertTrue($result)', null, pos));
+        }
+    }
+    
+    /**
+     * for use within manually created test method
+     */
+    function assertFalse(result:Bool, ?pos:PosInfos):Void {
+        if (!result) {
+            haxe.Log.trace('[OK] assertFalse(false)', pos);
+            testsOK++;
+        } else {
+            testsFailed.push(Logger.log(ERROR, 'assertFalse($result)', null, pos));
         }
     }
     
@@ -113,7 +125,19 @@ class DocTestRunner {
             haxe.Log.trace('[OK] assertEquals($leftResult, $rightResult)', pos);
             testsOK++;
         } else {
-            testsFailed.push(Logger.log(ERROR, '[$leftResult] != [$rightResult]', null, pos));
+            testsFailed.push(Logger.log(ERROR, 'assertEquals($leftResult, $rightResult)', null, pos));
+        }
+    }
+    
+    /**
+     * for use within manually created test method
+     */
+    function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+        if (!leftResult.equals(rightResult)) {
+            haxe.Log.trace('[OK] assertNotEquals($leftResult, $rightResult)', pos);
+            testsOK++;
+        } else {
+            testsFailed.push(Logger.log(ERROR, 'assertNotEquals($leftResult, $rightResult)', null, pos));
         }
     }
 
