@@ -20,4 +20,4 @@ haxe -main hx.doctest.TestRunner ^
 -php target\php || goto :eof
 
 echo Testing...
-php target\php\index.php
+%PHP5_HOME%\php target\php\index.php
