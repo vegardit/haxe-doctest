@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and
 [Keep a CHANGELOG](http://keepachangelog.com/).
 
+## [1.0.3] - 2017-02-23
+
+### Added
+- Support for Node.js
+
 ## [1.0.2] - 2017-01-02
   
 ### Added

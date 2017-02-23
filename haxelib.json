@@ -8,7 +8,7 @@
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "added DocTestRunner#assertFalse()/#assertNotEquals(). DocTestUtils#equals() now handles EnumValues.",
+    "releasenote": "added support for Node.js",
     "version": "1.0.2",
     "dependencies": { }
 }

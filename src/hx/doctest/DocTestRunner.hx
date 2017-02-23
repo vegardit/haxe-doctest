@@ -89,7 +89,12 @@ class DocTestRunner {
         #if sys
             Sys.exit(exitCode);
         #elseif js
-            untyped phantom.exit(exitCode);
+            var isNodeJS = untyped __js__("(typeof process !== 'undefined') && (process.release.name === 'node')");
+            if(isNodeJS) {
+                untyped __js__("process.exit(exitCode)");
+            } else {
+                untyped __js__("phantom.exit(exitCode)");
+            }
         #end
     }
     
