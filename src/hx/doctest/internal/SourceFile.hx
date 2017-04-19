@@ -46,12 +46,16 @@ class SourceFile {
         fileInput = sys.io.File.read(filePath, false);
         haxePackage = "";
         
-        while (!fileInput.eof()) {
-            var line = fileInput.readLine();
-            if (REGEX_PACKAGE_NAME.match(line)) {
-                haxePackage = REGEX_PACKAGE_NAME.matched(1);
-                break;
+        try {
+            while (!isLastLine()) {
+                var line = fileInput.readLine();
+                if (REGEX_PACKAGE_NAME.match(line)) {
+                    haxePackage = REGEX_PACKAGE_NAME.matched(1);
+                    break;
+                }
             }
+        } catch(e:haxe.io.Eof) {
+            // ignore --> bug in Haxe http://old.haxe.org/forum/thread/4494
         }
         fileInput.seek(0, SeekBegin);
 
@@ -77,6 +81,7 @@ class SourceFile {
         return false;
     }
     
+    inline
     public function isLastLine():Bool {
         return fileInput == null || fileInput.eof();
     }

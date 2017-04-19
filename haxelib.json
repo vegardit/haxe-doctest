@@ -3,12 +3,12 @@
     "url": "https://github.com/vegardit/haxe-doctest",
 	"license": "Apache",
 	"classPath": "src/",
-    "tags": [ "test", "testing","unittest","vegardit","cross","cs","flash","java","js","neko","lua","php","python"],
+    "tags": [ "test", "testing","unittest","vegardit","cross","cpp","cs","flash","java","js","neko","lua","php","python"],
     "description": "Python inspired doc-testing for Haxe",
     "contributors": [
         "vegardit"
     ],
-    "releasenote": "added support for Node.js",
-    "version": "1.0.3",
+    "releasenote": "See https://github.com/vegardit/haxe-doctest/blob/master/CHANGELOG.md",
+    "version": "1.0.4",
     "dependencies": { }
 }
