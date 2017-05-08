@@ -15,6 +15,8 @@
  */
 package hx.doctest.internal;
 
+import haxe.CallStack;
+
 using StringTools;
 
 /**
@@ -22,6 +24,37 @@ using StringTools;
  */
 @:dox(hide)
 class DocTestUtils {
+    
+    public static function exceptionStackAsString():String {
+        var stack = CallStack.exceptionStack();
+        var i = -1;
+        for (elem in stack) {
+            i++;
+            switch(elem) {
+                case FilePos(elem2, file, line):
+                    if (file.startsWith("hx/doctest")) {
+                        stack = stack.slice(0, i);
+                        break;                        
+                    }
+                    if (elem2 == null) continue;
+                    switch(elem2) {
+                        case Method(classname, method):
+                            if (classname.startsWith("hx.doctest.")) {
+                                stack = stack.slice(0, i);
+                                break;
+                            }
+                        default:
+                    }
+                case Method(classname, method):
+                    if (classname.startsWith("hx.doctest.")) {
+                        stack = stack.slice(0, i);
+                        break;
+                    }
+                default:
+            }
+        }
+        return "  " + CallStack.toString(stack).split("\n").join("\n  ") + "\n";
+    }
     
     public static function equals(left:Dynamic, right:Dynamic):Bool {
 

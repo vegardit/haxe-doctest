@@ -173,9 +173,9 @@ class DocTestGenerator {
                     
                     testMethodAssertions.push(macro {
                         var left:Dynamic;
-                        try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex;
+                        try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
                         var right:Dynamic;
-                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
+                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
                             
                         if ($comparisonExpr) {
                             $testSuccessExpr;
@@ -183,7 +183,6 @@ class DocTestGenerator {
                             $testFailedExpr;
                         }
                     });
-
                 }
 
                 // generate a new testMethod if required
