@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,23 +30,23 @@ using StringTools;
 using hx.doctest.internal.DocTestUtils;
 
 /**
- * The class contains the <code>generateDocTests</code> macro that inserts  unit test 
+ * The class contains the <code>generateDocTests</code> macro that inserts  unit test
  * methods in the annotated class based on assertions found in the Haxedoc of module files.
- * 
+ *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class DocTestGenerator {
-    
-    static var MAX_ASSERTIONS_PER_TEST_METHOD = 
+
+    static var MAX_ASSERTIONS_PER_TEST_METHOD(default, never) =
         Context.defined("lua") ?  30 : // to avoid "too many local variables" with Lua target
         100; // to avoid "error: code too large" with Java target
 
     /**
      * <pre><code>
      * @:build(hx.doctest.DocTestGenerator.generateDocTests("src", ".*\\.hx"))
-     * 
+     *
      * </code></pre>
-     * 
+     *
      * @param srcFolder location of the source folder to scan for doctests
      * @param srcFilePathPattern only files matching the given pattern are scanned for doctest assertions.
      *                           By default all files with the extension <code>.hx</code> are scanned.
@@ -54,11 +54,11 @@ class DocTestGenerator {
     public static function generateDocTests(srcFolder:String = "src", srcFilePathPattern:String = ".+\\.hx$", docTestIdentifier:String = "* >>>"):Array<Field> {
 
         var doctestAdapter = getDocTestAdapter();
-        
+
         var contextFields = Context.getBuildFields();
         var contextPos = Context.currentPos();
         var totalAssertionsCount = 0;
-        
+
         /*
          * iterate over all matched files
          */
@@ -74,16 +74,16 @@ class DocTestGenerator {
              * iterate over all code lines of the Haxe file
              */
             while (src.gotoNextDocTestAssertion()) {
-                
+
                 // process "throws" assertion
                 if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
                     // poor man's solution until I figure out how to add import statements
                     var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
                     totalAssertionsCount++;
-                    
+
                     var left = doctestLineFQ.substringBeforeLast("throws ").trim();
                     var right = doctestLineFQ.substringAfterLast("throws ").trim();
-                    
+
                     var leftExpr:Expr = try {
                         Context.parse(left, Context.currentPos());
                     } catch (e:Dynamic) {
@@ -97,7 +97,7 @@ class DocTestGenerator {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse right side: $e'));
                         continue;
                     }
-                    
+
                     var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
                     var testFailedExpr = doctestAdapter.generateTestFail(src, "Expected `$right` but was `$left`.");
 
@@ -113,9 +113,9 @@ class DocTestGenerator {
                             $testFailedExpr;
                         }
                     });
-                
+
                 // process comparison assertion
-                } else { 
+                } else {
                     // poor man's solution until I figure out how to add import statements
                     var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
                     totalAssertionsCount++;
@@ -126,7 +126,7 @@ class DocTestGenerator {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse assertion: $e'));
                         continue;
                     }
-                    
+
                     var leftExpr:Expr = null;
                     var rightExpr:Expr = null;
                     var comparator:Binop = null;
@@ -153,7 +153,7 @@ class DocTestGenerator {
                         case OpEq:
                             comparisonExpr = macro hx.doctest.internal.DocTestUtils.equals(left, right);
                             testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' does not equal '$right'.");
-                        case OpNotEq: 
+                        case OpNotEq:
                             comparisonExpr = macro !hx.doctest.internal.DocTestUtils.equals(left, right);
                             testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' equals '$right'.");
                         case OpLte:
@@ -170,13 +170,13 @@ class DocTestGenerator {
                             testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than or equal '$right'.");
                         default: throw "Should never be reached";
                     }
-                    
+
                     testMethodAssertions.push(macro {
                         var left:Dynamic;
                         try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
                         var right:Dynamic;
                         try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
-                            
+
                         if ($comparisonExpr) {
                             $testSuccessExpr;
                         } else {
@@ -206,7 +206,7 @@ class DocTestGenerator {
                 contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
             }
         });
-            
+
         Logger.log(INFO, 'Generated $totalAssertionsCount test assertions.');
         return contextFields;
     }
