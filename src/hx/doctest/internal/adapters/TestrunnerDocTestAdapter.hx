@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,27 +27,27 @@ using hx.doctest.internal.DocTestUtils;
 @:dox(hide)
 class TestrunnerDocTestAdapter extends DocTestAdapter {
 
+    inline
     public function new() {
-        
     }
 
     override
     public function getFrameworkName():String {
         return "hx.doctest";
     }
-    
+
     override
     public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
         return macro {
             testsFailed.push(
-                hx.doctest.internal.Logger.log(ERROR, 
+                hx.doctest.internal.Logger.log(ERROR,
                     '${src.currentDocTestAssertion.assertion} --> $errorMsg',
                     $v{src.currentDocTestAssertion.getSourceLocation()}
                 )
             );
         };
     }
-    
+
     override
     public function generateTestSuccess(src:SourceFile):Expr {
         return macro {

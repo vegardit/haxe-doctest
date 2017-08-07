@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,18 +24,18 @@ using hx.doctest.internal.DocTestUtils;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:dox(hide)
+@:noDoc @:dox(hide)
 class HaxeUnitDocTestAdapter extends DocTestAdapter {
 
+    inline
     public function new() {
-        
     }
 
     override
     public function getFrameworkName():String {
         return "haxe.unit";
     }
-    
+
     override
     public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
         return macro {
@@ -46,7 +46,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
             throw currentTest;
         };
     }
-    
+
     override
     public function generateTestSuccess(src:SourceFile):Expr {
         return macro {
