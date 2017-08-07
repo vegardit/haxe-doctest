@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,7 +21,7 @@ using hx.doctest.internal.DocTestUtils;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:dox(hide)
+@:noDoc @:dox(hide)
 class SourceFile {
     static var REGEX_PACKAGE_NAME = ~/package\s+(([a-zA-Z_]{1}[a-zA-Z]*){2,10}\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,30}((\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,61})*)?)\s?;/g;
 
@@ -34,9 +34,9 @@ class SourceFile {
     public var haxeModuleFQName:String;
     public var currentDocTestAssertion(default, null):DocTestAssertion = null;
     public var currentLineNumber(default, null) = 0;
-    
+
     var lines:Array<String>;
-    
+
     public function new(filePath:String, docTestIdentifier:String) {
         trace('[INFO] Scanning [$filePath]...');
         this.filePath = filePath;
@@ -45,7 +45,7 @@ class SourceFile {
 
         fileInput = sys.io.File.read(filePath, false);
         haxePackage = "";
-        
+
         try {
             while (!isLastLine()) {
                 var line = fileInput.readLine();
@@ -62,7 +62,7 @@ class SourceFile {
         haxeModuleName = fileName.substringBefore(".");
         haxeModuleFQName = haxePackage.length > 0 ? haxePackage + "." + haxeModuleName : haxeModuleName;
     }
-    
+
     public function gotoNextDocTestAssertion():Bool {
         try {
             while (!isLastLine()) {
@@ -80,7 +80,7 @@ class SourceFile {
         fileInput = null;
         return false;
     }
-    
+
     inline
     public function isLastLine():Bool {
         return fileInput == null || fileInput.eof();

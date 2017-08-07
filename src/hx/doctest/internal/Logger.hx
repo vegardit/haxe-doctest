@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +17,21 @@ package hx.doctest.internal;
 
 using hx.doctest.internal.DocTestUtils;
 
-@:dox(hide)
+/**
+ * @author Sebastian Thomschke, Vegard IT GmbH
+ */
+@:noDoc @:dox(hide)
+class Logger {
+
+    inline
+    public static function log(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos):LogEvent {
+        var event = new LogEvent(level, msg, loc, pos);
+        event.log();
+        return event;
+    }
+}
+
+@:noDoc @:dox(hide)
 enum Level {
     DEBUG;
     INFO;
@@ -25,7 +39,7 @@ enum Level {
     ERROR;
 }
 
-@:dox(hide)
+@:noDoc @:dox(hide)
 typedef SourceLocation = {
 	var filePath : String;
 	var lineNumber : Int;
@@ -33,20 +47,20 @@ typedef SourceLocation = {
     var charEnd: Int;
 }
 
-@:dox(hide)
+@:noDoc @:dox(hide)
 class LogEvent {
     public var level(default, null):Level;
     public var msg(default, null):String;
     public var loc(default, null):SourceLocation;
     public var pos(default, null):haxe.PosInfos;
-    
+
     public function new(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos) {
         this.level = level;
         this.msg = msg;
         this.loc = loc;
         this.pos = pos;
     }
-    
+
     public function log(detailedErrorLocation = false) {
         if (level == DEBUG) {
             #if debug
@@ -78,25 +92,11 @@ class LogEvent {
             }
         }
     }
-    
+
     public function toString() {
         if (loc == null) {
             return '${pos.fileName}:${pos.lineNumber}: [${level}] ${msg}';
         }
         return '${loc.filePath}:${loc.lineNumber}: characters ${loc.charStart}-${loc.charEnd}: [${level}] ${msg}';
-    }
-}
-
-/**
- * @author Sebastian Thomschke, Vegard IT GmbH
- */
-@:dox(hide)
-class Logger {
-
-    inline
-    public static function log(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos):LogEvent {
-        var event = new LogEvent(level, msg, loc, pos);
-        event.log();
-        return event;
     }
 }

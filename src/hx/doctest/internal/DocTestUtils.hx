@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,9 +22,9 @@ using StringTools;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:dox(hide)
+@:noDoc @:dox(hide)
 class DocTestUtils {
-    
+
     public static function exceptionStackAsString():String {
         var stack = CallStack.exceptionStack();
         var i = -1;
@@ -34,7 +34,7 @@ class DocTestUtils {
                 case FilePos(elem2, file, line):
                     if (file.startsWith("hx/doctest")) {
                         stack = stack.slice(0, i);
-                        break;                        
+                        break;
                     }
                     if (elem2 == null) continue;
                     switch(elem2) {
@@ -55,7 +55,7 @@ class DocTestUtils {
         }
         return "  " + CallStack.toString(stack).split("\n").join("\n  ") + "\n";
     }
-    
+
     public static function equals(left:Dynamic, right:Dynamic):Bool {
 
         // compare arrays
@@ -107,44 +107,44 @@ class DocTestUtils {
         if (foundAt == -1) return "";
         return str.substring(foundAt + sep.length);
     }
-    
+
     public static function substringAfterLast(str:String, sep:String):String {
         var foundAt = str.lastIndexOf(sep);
         if (foundAt == -1) return "";
         return str.substring(foundAt + sep.length);
     }
-    
-    public static function substringBefore(str:String, sep:String):String {     
+
+    public static function substringBefore(str:String, sep:String):String {
         var foundAt = str.indexOf(sep);
         if (foundAt == -1) return "";
         return str.substring(0, foundAt);
     }
-    
-    public static function substringBeforeLast(str:String, sep:String):String {       
+
+    public static function substringBeforeLast(str:String, sep:String):String {
         var foundAt = str.lastIndexOf(sep);
         if (foundAt == -1) return "";
         return str.substring(0, foundAt);
     }
 
     #if sys
-	public static function walkDirectory(directory:String, filePattern:EReg, onFile:String -> Void):Void {
-		var files:Array<String> = sys.FileSystem
-			.readDirectory(directory)
-			.map(function(s) return directory + "/" + s);
+    public static function walkDirectory(directory:String, filePattern:EReg, onFile:String -> Void):Void {
+        var files:Array<String> = sys.FileSystem
+            .readDirectory(directory)
+            .map(function(s) return directory + "/" + s);
 
-		while (files.length > 0) {
+        while (files.length > 0) {
             var file = files.shift();
-			if (sys.FileSystem.isDirectory(file)) {
+            if (sys.FileSystem.isDirectory(file)) {
                 files = files.concat(sys.FileSystem
                     .readDirectory(file)
                     .map(function(s) return file + "/" + s)
                 );
-			} else {
+            } else {
                 file = file.replace("\\", "/");
                 if(filePattern.match(file))
                     onFile(file);
             }
-		}
-	}
+        }
+    }
     #end
 }

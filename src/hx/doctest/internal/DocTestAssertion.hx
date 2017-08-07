@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,16 +20,16 @@ import hx.doctest.internal.Logger.SourceLocation;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:dox(hide)
+@:noDoc @:dox(hide)
 class DocTestAssertion {
-    
+
     public var filePath(default, null):String;
     public var fileName(default, null):String;
     public var lineNumber(default,null):Int;
     public var assertion(default,null):String;
     public var charStart(default,null):Int;
     public var charEnd(default, null):Int;
-    
+
     public function new(filePath:String, fileName:String, lineNumber:Int, assertion:String, charStart:Int, charEnd:Int) {
         this.lineNumber = lineNumber;
         this.assertion = assertion;
@@ -38,12 +38,22 @@ class DocTestAssertion {
         this.filePath = filePath;
         this.fileName = fileName;
     }
-    
+
     public function getSourceLocation(fullPath:Bool = true):SourceLocation {
-        return { filePath: fullPath ? filePath : fileName, lineNumber: lineNumber, charStart: charStart, charEnd: charEnd };
+        return {
+            filePath: fullPath ? filePath : fileName,
+            lineNumber: lineNumber,
+            charStart: charStart,
+            charEnd: charEnd
+        };
     }
-    
+
     public function getPosInfos(fullPath:Bool = true):haxe.PosInfos {
-        return { fileName: fullPath ? filePath : fileName, lineNumber: lineNumber, className: "", methodName:"" }
+        return {
+            fileName: fullPath ? filePath : fileName,
+            lineNumber: lineNumber,
+            className: "",
+            methodName: ""
+        }
     }
 }
