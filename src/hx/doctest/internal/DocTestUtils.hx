@@ -36,8 +36,7 @@ class DocTestUtils {
                         stack = stack.slice(0, i);
                         break;
                     }
-                    if (elem2 == null) continue;
-                    switch(elem2) {
+                    if (elem2 != null) switch(elem2) {
                         case Method(classname, method):
                             if (classname.startsWith("hx.doctest.")) {
                                 stack = stack.slice(0, i);

@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and
 [Keep a CHANGELOG](http://keepachangelog.com/).
 
+## [1.0.6] - 2017-07-08
+
+### Fixed
+- Workaround for Lua bug (using 'continue' in for-loop results in: 'until' expected (to close 'repeat' at line 1862) near 'end')
+
 ## [1.0.5] - 2017-05-08
 
 ### Added
@@ -14,7 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 ### Fixed
 - Eof when scanning Haxe files without package declaration [#1](https://github.com/vegardit/haxe-doctest/issues/1)
 
-    
+
 ## [1.0.3] - 2017-02-23
 
 ### Added
@@ -22,7 +27,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 
 ## [1.0.2] - 2017-01-02
-  
+
 ### Added
 - DocTestRunner#assertFalse()
 - DocTestRunner#assertNotEquals()
