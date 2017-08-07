@@ -21,4 +21,4 @@ haxe -main hx.doctest.TestRunner ^
 -lua target/lua/TestRunner.lua || goto :eof
 
 echo Testing...
-lua53 target/lua/TestRunner.lua
+lua target/lua/TestRunner.lua
