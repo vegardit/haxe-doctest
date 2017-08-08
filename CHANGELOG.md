@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 ## [1.0.6] - 2017-08-08
 
 ### Fixed
-- Workaround for Lua bug (using 'continue' in for-loop results in: 'until' expected (to close 'repeat' at line 1862) near 'end')
+- Workaround for Haxe 3.x Lua target bug (using 'continue' in for-loop results in: 'until' expected (to close 'repeat' at line 1862) near 'end')
 
 
 ## [1.0.5] - 2017-05-08
