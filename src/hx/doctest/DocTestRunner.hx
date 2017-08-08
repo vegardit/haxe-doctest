@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,10 +30,10 @@ class DocTestRunner {
 
     var testsOK = 0;
     var testsFailed:Array<LogEvent> = [];
-    
+
     public function new() {
     }
-    
+
     /**
      * Runs the accumulated doc tests.
      * @return number of failing tests
@@ -63,29 +63,29 @@ class DocTestRunner {
             } else if (testsOK == 0) {
                 Logger.log(WARN, '**********************************************************');
                 Logger.log(WARN, 'No test assertions were found!');
-                Logger.log(WARN, '**********************************************************');                
+                Logger.log(WARN, '**********************************************************');
             } else {
                 Logger.log(INFO, '**********************************************************');
                 Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds');
                 Logger.log(INFO, '**********************************************************');
             }
             return 0;
-		}
-        
+        }
+
         Logger.log(ERROR, '${testsFailed.length} of $testsOK test(s) FAILED:');
         for (event in testsFailed) {
             event.log(true);
         }
         return testsFailed.length;
-	}
-    
+    }
+
     /**
-     * Runs the accumulated doc tests and exits the process with exit code 0 in case all 
+     * Runs the accumulated doc tests and exits the process with exit code 0 in case all
      * tests were passed or 1 in case test failures occured.
      */
     function runAndExit(expectedMinNumberOfTests = 0):Void {
         var exitCode = run(expectedMinNumberOfTests) == 0 ? 0 : 1;
-        
+
         #if sys
             Sys.exit(exitCode);
         #elseif js
@@ -97,7 +97,7 @@ class DocTestRunner {
             }
         #end
     }
-    
+
     /**
      * for use within manually created test method
      */
@@ -109,7 +109,7 @@ class DocTestRunner {
             testsFailed.push(Logger.log(ERROR, 'assertTrue($result)', null, pos));
         }
     }
-    
+
     /**
      * for use within manually created test method
      */
@@ -121,7 +121,7 @@ class DocTestRunner {
             testsFailed.push(Logger.log(ERROR, 'assertFalse($result)', null, pos));
         }
     }
-    
+
     /**
      * for use within manually created test method
      */
@@ -133,7 +133,7 @@ class DocTestRunner {
             testsFailed.push(Logger.log(ERROR, 'assertEquals($leftResult, $rightResult)', null, pos));
         }
     }
-    
+
     /**
      * for use within manually created test method
      */
