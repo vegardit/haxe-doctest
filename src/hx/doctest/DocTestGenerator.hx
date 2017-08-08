@@ -20,9 +20,6 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
 
-import sys.io.File;
-import sys.FileSystem;
-
 import hx.doctest.internal.*;
 import hx.doctest.internal.adapters.*;
 
@@ -36,6 +33,12 @@ using hx.doctest.internal.DocTestUtils;
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class DocTestGenerator {
+
+    static var __static_init = {
+        #if (haxe_ver <= 3.2)
+            throw 'ERROR: haxe-doctests requires Haxe 3.2 or higher!';
+        #end
+    };
 
     static var MAX_ASSERTIONS_PER_TEST_METHOD(default, never) =
         Context.defined("lua") ?  30 : // to avoid "too many local variables" with Lua target
@@ -56,7 +59,6 @@ class DocTestGenerator {
         var doctestAdapter = getDocTestAdapter();
 
         var contextFields = Context.getBuildFields();
-        var contextPos = Context.currentPos();
         var totalAssertionsCount = 0;
 
         /*
