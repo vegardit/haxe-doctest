@@ -1,14 +1,14 @@
 {
     "name": "haxe-doctest",
     "url": "https://github.com/vegardit/haxe-doctest",
-	"license": "Apache",
-	"classPath": "src/",
+    "license": "Apache",
+    "classPath": "src/",
     "tags": [ "test", "testing","unittest","vegardit","cross","cpp","cs","flash","java","js","neko","lua","php","python"],
-    "description": "Python inspired doc-testing for Haxe",
+    "description": "Python inspired doc-testing for Haxe. Allows unit-testing based on test assertions in haxedoc.",
     "contributors": [
         "vegardit"
     ],
     "releasenote": "See https://github.com/vegardit/haxe-doctest/blob/master/CHANGELOG.md",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "dependencies": { }
 }
