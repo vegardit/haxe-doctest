@@ -38,7 +38,7 @@ class SourceFile {
     var lines:Array<String>;
 
     public function new(filePath:String, docTestIdentifier:String) {
-        trace('[INFO] Scanning [$filePath]...');
+        Logger.log(INFO, 'Scanning [$filePath]...');
         this.filePath = filePath;
         this.docTestIdentifier = docTestIdentifier;
         fileName = filePath.substringAfterLast("/");

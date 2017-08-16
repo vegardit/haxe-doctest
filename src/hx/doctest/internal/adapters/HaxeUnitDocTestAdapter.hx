@@ -15,11 +15,8 @@
  */
 package hx.doctest.internal.adapters;
 
-import haxe.macro.Context;
 import haxe.macro.Expr;
 
-using StringTools;
-using hx.doctest.internal.DocTestUtils;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH

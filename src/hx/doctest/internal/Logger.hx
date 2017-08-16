@@ -23,6 +23,15 @@ using hx.doctest.internal.DocTestUtils;
 @:noDoc @:dox(hide)
 class Logger {
 
+    #if flash
+    @:keep
+    static var __static_init = {
+        haxe.Log.trace = function(v:Dynamic, ?pos: haxe.PosInfos ):Void {
+            flash.Lib.trace((pos==null ? "" : pos.fileName + ":" + pos.lineNumber + ": ") + v);
+        }
+    }
+    #end
+
     inline
     public static function log(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos):LogEvent {
         var event = new LogEvent(level, msg, loc, pos);
@@ -35,6 +44,7 @@ class Logger {
 enum Level {
     DEBUG;
     INFO;
+    OK;
     WARN;
     ERROR;
 }

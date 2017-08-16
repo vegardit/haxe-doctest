@@ -17,7 +17,6 @@ package hx.doctest;
 
 import haxe.PosInfos;
 import haxe.Timer;
-import haxe.ds.StringMap;
 
 using StringTools;
 using hx.doctest.internal.DocTestUtils;
@@ -33,6 +32,7 @@ class DocTestRunner {
     var results:DocTestResults;
 
     public function new() {
+
     }
 
     /**
@@ -110,12 +110,14 @@ class DocTestRunner {
         #if sys
             Sys.exit(exitCode);
         #elseif js
-            var isNodeJS = untyped __js__("(typeof process !== 'undefined') && (process.release.name === 'node')");
+            var isNodeJS = untyped __js__("(typeof process !== 'undefined') && (typeof process.release !== 'undefined') && (process.release.name === 'node')");
             if(isNodeJS) {
                 untyped __js__("process.exit(exitCode)");
             } else {
                 untyped __js__("phantom.exit(exitCode)");
             }
+        #elseif flash
+            flash.system.System.exit(exitCode);
         #end
     }
 
@@ -177,7 +179,7 @@ class DefaultDocTestResults implements DocTestResults {
 
     public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos) {
         if(success) {
-            haxe.Log.trace('[OK] $msg', pos);
+            Logger.log(OK, msg, null, pos);
             _testsOK++;
         } else {
             _testsFailed.push(Logger.log(ERROR, msg, loc, pos));

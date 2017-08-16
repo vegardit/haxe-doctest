@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and
 [Keep a CHANGELOG](http://keepachangelog.com/).
 
+## [1.0.8] - 2017-08-16
+
+### Added
+- DocTestRunner.runAndExit() now also exists with a proper exit code on Flash
+
+### Fixed
+- "TypeError: undefined is not an object (evaluating 'process.release.name')" when running with phantom.js on Travis
+
+
 ## [1.0.7] - 2017-08-16
 
 ### Added

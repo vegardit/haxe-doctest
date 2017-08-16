@@ -27,6 +27,10 @@ class TestRunner {
 
     public static function main() {
 
+        #if flash
+        var old = haxe.Log.trace;
+        haxe.unit.TestRunner.print = function(v) old(v);
+        #end
         HaxeUnitTest.main();
 
         #if !(php || flash || js)
