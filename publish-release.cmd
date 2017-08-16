@@ -1,4 +1,4 @@
-@echo off
+haxelib@echo off
 :: @author Sebastian Thomschke, Vegard IT GmbH
 ::
 :: creates a new release in GitHub and haxelib.org
@@ -52,8 +52,8 @@ echo RELEASE_NOTE=%RELEASE_NOTE%
 if not exist target mkdir target
 
 :: create haxelib release
-if exist target/haxelib-upload.zip (
-    del target/haxelib-upload.zip
+if exist target\haxelib-upload.zip (
+    del target\haxelib-upload.zip
 )
 echo Building haxelib release...
 zip target\haxelib-upload.zip src haxelib.json LICENSE.txt CONTRIBUTING.md README.md -r -9 || goto :eof
@@ -69,7 +69,7 @@ echo Creating GitHub release https://github.com/%REPO_NAME%/releases/tag/v%PROJE
   echo "draft":%DRAFT%,
   echo "prerelease":%PREPRELEASE%
   echo }
-)>target/github_release.json
+)>target\github_release.json
 wget -qO- --post-file=target/github_release.json "https://api.github.com/repos/%REPO_NAME%/releases?access_token=%GITHUB_ACCESS_TOKEN%" || goto :eof
 
 :: submit haxelib release
