@@ -1,4 +1,4 @@
-haxelib@echo off
+@echo off
 :: @author Sebastian Thomschke, Vegard IT GmbH
 ::
 :: creates a new release in GitHub and haxelib.org
