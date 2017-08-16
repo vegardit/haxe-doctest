@@ -9,6 +9,6 @@
         "vegardit"
     ],
     "releasenote": "See https://github.com/vegardit/haxe-doctest/blob/master/CHANGELOG.md",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "dependencies": { }
 }
