@@ -59,6 +59,12 @@ class DocTestGenerator {
         var doctestAdapter = getDocTestAdapter();
 
         var contextFields = Context.getBuildFields();
+
+        /*
+         * ensure no test method gets DCE-ed by automatically adding @:keep to the class
+         */
+        Context.getLocalClass().get().meta.add(":keep", [], Context.currentPos());
+
         var totalAssertionsCount = 0;
 
         /*
