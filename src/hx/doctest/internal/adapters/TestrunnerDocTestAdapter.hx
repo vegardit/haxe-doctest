@@ -36,27 +36,21 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
     override
     public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
         return macro {
-            testsFailed.push(
-                hx.doctest.internal.Logger.log(ERROR,
-                    '${src.currentDocTestAssertion.assertion} --> $errorMsg',
-                    $v{src.currentDocTestAssertion.getSourceLocation()}
-                )
-            );
+            results.add(false, '${src.currentDocTestAssertion.assertion} --> $errorMsg', $v{src.currentDocTestAssertion.getSourceLocation()}, null);
         };
     }
 
     override
     public function generateTestSuccess(src:SourceFile):Expr {
         return macro {
-            haxe.Log.trace('[OK] ${src.currentDocTestAssertion.assertion}', $v{src.currentDocTestAssertion.getPosInfos(false)});
-            testsOK++;
+            results.add(true, '${src.currentDocTestAssertion.assertion}', null, $v{src.currentDocTestAssertion.getPosInfos(false)});
         };
     }
 
     override
     public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
         assertions.unshift(macro {
-            var pos = { fileName:  $v{Context.getLocalModule()}, lineNumber: 1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
+            var pos = { fileName: $v{Context.getLocalModule()}, lineNumber:1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
             hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
             hx.doctest.internal.Logger.log(INFO, '${descr}...', pos);
             hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);

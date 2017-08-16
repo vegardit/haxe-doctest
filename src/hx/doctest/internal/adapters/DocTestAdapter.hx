@@ -37,7 +37,7 @@ class DocTestAdapter {
         throw "Not implemented";
     }
 
-    public function generateTestMethod(methodName:String, descr:String,assertions:Array<Expr>):Field {
+    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
         var contextPos = Context.currentPos();
         var meta = [{name:":keep", pos: contextPos}];
         return {

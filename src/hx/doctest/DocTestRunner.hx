@@ -17,10 +17,12 @@ package hx.doctest;
 
 import haxe.PosInfos;
 import haxe.Timer;
+import haxe.ds.StringMap;
 
 using StringTools;
 using hx.doctest.internal.DocTestUtils;
 using hx.doctest.internal.Logger;
+
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -28,8 +30,7 @@ using hx.doctest.internal.Logger;
 @:abstract
 class DocTestRunner {
 
-    var testsOK = 0;
-    var testsFailed:Array<LogEvent> = [];
+    var results:DocTestResults;
 
     public function new() {
     }
@@ -38,26 +39,42 @@ class DocTestRunner {
      * Runs the accumulated doc tests.
      * @return number of failing tests
      */
-    function run(expectedMinNumberOfTests = 0):Int {
+    function run(expectedMinNumberOfTests = 0, logResult:Bool = true):Int {
+        if (results == null)
+            results = new DefaultDocTestResults();
+
         var startTime = Timer.stamp();
         var thisClass = Type.getClass(this);
         var thisClassName = Type.getClassName(thisClass);
-        // look for functions starting with "test" and invoke them
+
+        /*
+         * look for functions starting with "test" and invoke them
+         */
         Logger.log(INFO, 'Looking for test cases in [${thisClassName}]...');
+        var funcNames = new Array<String>();
         for (funcName in Type.getInstanceFields(thisClass)) {
             if (funcName.startsWith("test")) {
-                var func:Dynamic = Reflect.field(this, funcName);
-                if (Reflect.isFunction(func)) {
-                    Logger.log(INFO, 'Invoking [${thisClassName}#$funcName()]...');
-                    Reflect.callMethod(this, func, []);
-                }
+                funcNames.push(funcName);
             }
         }
+        funcNames.sort(function(a, b) return a < b ? -1 : a > b ? 1 : 0);
+        for (funcName in funcNames) {
+            var func:Dynamic = Reflect.field(this, funcName);
+            if (Reflect.isFunction(func)) {
+                Logger.log(INFO, '**********************************************************');
+                Logger.log(INFO, 'Invoking [${thisClassName}#$funcName()]...');
+                Logger.log(INFO, '**********************************************************');
+                Reflect.callMethod(this, func, []);
+            }
+        }
+
         var timeSpent:Float = Math.round(1000 * (Timer.stamp() - startTime)) / 1000;
-        if (testsFailed.length == 0) {
-            if (expectedMinNumberOfTests > 0 && testsOK + testsFailed.length < expectedMinNumberOfTests) {
+        var testsOK = results.getSuccessCount();
+        var testsFailed = results.getFailureCount();
+        if (testsFailed == 0) {
+            if (expectedMinNumberOfTests > 0 && testsOK < expectedMinNumberOfTests) {
                 Logger.log(ERROR, '**********************************************************');
-                Logger.log(ERROR, '$expectedMinNumberOfTests tests expected but only ${testsOK + testsFailed.length} found!');
+                Logger.log(ERROR, '$expectedMinNumberOfTests tests expected but only $testsOK found!');
                 Logger.log(ERROR, '**********************************************************');
                 return 1;
             } else if (testsOK == 0) {
@@ -65,19 +82,23 @@ class DocTestRunner {
                 Logger.log(WARN, 'No test assertions were found!');
                 Logger.log(WARN, '**********************************************************');
             } else {
-                Logger.log(INFO, '**********************************************************');
-                Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds');
-                Logger.log(INFO, '**********************************************************');
+                if (logResult) {
+                    Logger.log(INFO, '**********************************************************');
+                    Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds.');
+                    Logger.log(INFO, '**********************************************************');
+                }
             }
             return 0;
         }
 
-        Logger.log(ERROR, '${testsFailed.length} of $testsOK test(s) FAILED:');
-        for (event in testsFailed) {
-            event.log(true);
+        if (logResult) {
+            Logger.log(ERROR, '**********************************************************');
+            Logger.log(ERROR, '$testsFailed of ${testsOK + testsFailed} test(s) FAILED:');
+            results.logFailures();
         }
-        return testsFailed.length;
+        return testsFailed;
     }
+
 
     /**
      * Runs the accumulated doc tests and exits the process with exit code 0 in case all
@@ -102,48 +123,28 @@ class DocTestRunner {
      * for use within manually created test method
      */
     function assertTrue(result:Bool, ?pos:PosInfos):Void {
-        if (result) {
-            haxe.Log.trace('[OK] assertTrue(true)', pos);
-            testsOK++;
-        } else {
-            testsFailed.push(Logger.log(ERROR, 'assertTrue($result)', null, pos));
-        }
+        results.add(result, 'assertTrue($result)', null, pos);
     }
 
     /**
      * for use within manually created test method
      */
     function assertFalse(result:Bool, ?pos:PosInfos):Void {
-        if (!result) {
-            haxe.Log.trace('[OK] assertFalse(false)', pos);
-            testsOK++;
-        } else {
-            testsFailed.push(Logger.log(ERROR, 'assertFalse($result)', null, pos));
-        }
+        results.add(!result, 'assertFalse($result)', null, pos);
     }
 
     /**
      * for use within manually created test method
      */
     function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-        if (leftResult.equals(rightResult)) {
-            haxe.Log.trace('[OK] assertEquals($leftResult, $rightResult)', pos);
-            testsOK++;
-        } else {
-            testsFailed.push(Logger.log(ERROR, 'assertEquals($leftResult, $rightResult)', null, pos));
-        }
+        results.add(leftResult.equals(rightResult), 'assertEquals($leftResult, $rightResult)', null, pos);
     }
 
     /**
      * for use within manually created test method
      */
     function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-        if (!leftResult.equals(rightResult)) {
-            haxe.Log.trace('[OK] assertNotEquals($leftResult, $rightResult)', pos);
-            testsOK++;
-        } else {
-            testsFailed.push(Logger.log(ERROR, 'assertNotEquals($leftResult, $rightResult)', null, pos));
-        }
+        results.add(!leftResult.equals(rightResult), 'assertNotEquals($leftResult, $rightResult)', null, pos);
     }
 
     /**
@@ -151,6 +152,49 @@ class DocTestRunner {
      */
     function fail(?msg:String, ?pos:PosInfos):Void {
         if (msg == null) msg = "This code location should not never be reached.";
-        testsFailed.push(Logger.log(ERROR, msg, null, pos));
+        results.add(false, msg, null, pos);
+    }
+}
+
+
+interface DocTestResults {
+
+    public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos):Void;
+
+    public function getSuccessCount():Int;
+    public function getFailureCount():Int;
+    public function logFailures():Void;
+}
+
+
+class DefaultDocTestResults implements DocTestResults {
+
+    var _testsOK = 0;
+    var _testsFailed = new Array<LogEvent>();
+
+    public function new() {
+    }
+
+    public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos) {
+        if(success) {
+            haxe.Log.trace('[OK] $msg', pos);
+            _testsOK++;
+        } else {
+            _testsFailed.push(Logger.log(ERROR, msg, loc, pos));
+        }
+    }
+
+    public function getSuccessCount():Int {
+        return _testsOK;
+    }
+
+    public function getFailureCount():Int {
+        return _testsFailed.length;
+    }
+
+    public function logFailures():Void {
+        for (event in _testsFailed) {
+            event.log(true);
+        }
     }
 }
