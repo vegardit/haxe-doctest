@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ### Added
 - DocTestRunner.runAndExit() now also exists with a proper exit code on Flash
+- improved support for builds with Travis/travix
 
 ### Fixed
 - "TypeError: undefined is not an object (evaluating 'process.release.name')" when running with phantom.js on Travis
