@@ -46,7 +46,7 @@ class DocTestTest extends DocTestRunner {
              */
             var s = "";
             s = null;
-            s.toLowerCase(); // throws NPE ... except on PHP and C++
+            s = s.toLowerCase(); // throws NPE ... except on PHP and C++
             #if (!php && !cpp)
             fail(); // should never be reached
             #end
