@@ -1,4 +1,5 @@
 # haxe-doctest - Haxedoc based unit testing.
+[![Build Status](https://travis-ci.org/vegardit/haxe-doctest.svg?branch=master)](https://travis-ci.org/vegardit/haxe-doctest)
 
 1. [What is it?](#what-is-it)
 1. [Declaring test assertions](#declaring-test-assertions)
