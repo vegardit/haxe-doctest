@@ -36,7 +36,7 @@ matrix:
       env: HAXE_TARGET=php7
 
 install:
-  - haxelib git travix https://github.com/back2dos/travix && pushd . && cd $(haxelib config)travix/git && git checkout php7 && haxe build-neko.hxml && popd
+  - haxelib git travix https://github.com/back2dos/travix && pushd . && cd $(haxelib config)travix/git && haxe build-neko.hxml && popd
   - haxelib run travix install
   - haxelib install munit
 
