@@ -2,17 +2,18 @@
 REM @author Sebastian Thomschke, Vegard IT GmbH
 REM 
 REM generates API documentation using dox
+
+setlocal
+
+set TOP_LEVEL_PACKAGE=hx.doctest
+set OWNER=http://vegardit.com
+
 set CDP=%~dp0
 
 pushd .
 cd "%CDP%..\target"
 set TARGET=%CD%
 popd
-
-setlocal
-
-set TOP_LEVEL_PACKAGE=hx.doctest
-set OWNER=http://vegardit.com
 
 REM extract GIT URL from haxelib.json
 for /f "tokens=*" %%a in ( 'findstr url "%CDP%..\haxelib.json"' ) do (set textLine=%%a)
