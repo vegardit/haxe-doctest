@@ -3,3 +3,4 @@
 -main hx.doctest.TestRunner
 -lib munit
 -dce full
+-debug
