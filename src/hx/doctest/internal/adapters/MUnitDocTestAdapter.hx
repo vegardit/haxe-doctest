@@ -21,7 +21,7 @@ import haxe.macro.Expr;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:dox(hide)
+@:noDoc @:dox(hide)
 class MUnitDocTestAdapter extends DocTestAdapter {
 
     inline
