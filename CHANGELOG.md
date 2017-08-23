@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and
 [Keep a CHANGELOG](http://keepachangelog.com/).
 
+## [1.0.9] - 2017-08-23
+
+### Added
+- Allow pattern matching with 'throws' assertions
+
+
 ## [1.0.8] - 2017-08-19
 
 ### Added

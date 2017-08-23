@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,7 @@ package hx.doctest.example;
  * <pre><code>
  * >>> (switch(1){default:var e:ExampleEntity = new ExampleEntity("foo"); e.name="bar"; e;}).name == "bar"
  * </code></pre>
- * 
+ *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class ExampleEntity {
@@ -32,10 +32,11 @@ class ExampleEntity {
      * </code></pre>
      */
     public var name:String;
-    
+
     /**
      * <pre>code>
      * >>> new ExampleEntity(null)  throws "[name] must not be null"
+     * >>> new ExampleEntity(null)  throws ~/must not be null/
      * >>> new ExampleEntity("foo") throws nothing
      * </code></pre>
      */

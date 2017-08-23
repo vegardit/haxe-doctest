@@ -118,7 +118,11 @@ class DocTestGenerator {
                         if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
                             $testSuccessExpr;
                         } else {
-                            $testFailedExpr;
+                            if (Std.is(right, EReg) && cast(right, EReg).match(Std.string(left))) {
+                                $testSuccessExpr;
+                            } else {
+                                $testFailedExpr;
+                            }
                         }
                     });
 
