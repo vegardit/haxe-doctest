@@ -1,7 +1,7 @@
 @echo off
 REM @author Sebastian Thomschke, Vegard IT GmbH
 REM 
-REM generates API documentation using dox
+REM generates API documentation using dox at <project_root>\target\site
 
 setlocal
 
@@ -64,7 +64,7 @@ haxelib run dox ^
  -D themeColor 0x00658F ^
  -D version "%PROJECT_VERSION%" ^
  -D website "%OWNER%" ^
- -ex "^%OWNER:.=\.%\.internal" ^
+ -ex "^%TOP_LEVEL_PACKAGE:.=\.%\.internal" ^
  -i "%TARGET%\doc.xml" ^
  -o "%TARGET%\site"
 
