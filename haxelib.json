@@ -4,11 +4,11 @@
     "license": "Apache",
     "classPath": "src/",
     "tags": [ "test", "testing","unittest","vegardit","cross","cpp","cs","flash","java","js","neko","lua","php","python"],
-    "description": "Python inspired doc-testing for Haxe. Allows unit-testing based on test assertions in haxedoc.",
+    "description": "Python inspired doc-testing for Haxe. Allows unit-testing based on test assertions in haxedoc. Integrates with Haxe Unit, MUnit and Tink Testrunner",
     "contributors": [
         "vegardit"
     ],
     "releasenote": "See https://github.com/vegardit/haxe-doctest/blob/master/CHANGELOG.md",
-    "version": "1.0.9",
+    "version": "1.1.0",
     "dependencies": { }
 }
