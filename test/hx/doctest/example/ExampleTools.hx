@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +19,7 @@ package hx.doctest.example;
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class ExampleTools {
-    
+
     /**
      * Returns a new array with size <b>times</b> filled with <b>item</b>.
      * <br/>
@@ -39,7 +39,7 @@ class ExampleTools {
         }
         return arr;
     }
-    
+
     /**
      * <pre><code>
      * >>> ExampleTools.toPos(null, null) == { x:null, y:null }

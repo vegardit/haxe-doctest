@@ -4,8 +4,10 @@
 1. [What is it?](#what-is-it)
 1. [Declaring test assertions](#declaring-test-assertions)
 1. [Why doc-testing?](#why-doc-testing)
-1. [Doc-testing with MUnit](#doctest-with-munit)
+1. [Doc-testing with Tink Testrunner](#doctest-with-tink)
 1. [Doc-testing with Haxe Unit](#doctest-with-haxeunit)
+1. [Doc-testing with MUnit](#doctest-with-munit)
+1. [Doc-testing with hx.doctest.DocTestRunner](#doctest-testrunner)
 1. [Doc-testing with FlashDevelop](#doctest-testrunner)
 1. [Installation](#installation)
 1. [Using the latest code](#latest)
@@ -90,7 +92,7 @@ class MyObject {
    can't get accidently outdated.
 
 
-## <a name="doctest-with-haxeunit"></a>Doc-testing with Haxe Unit
+## <a name="doctest-with-haxeunit"></a>Doc-testing with [Haxe Unit](https://haxe.org/manual/std-unit-testing.html)
 
 Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code will then be added as test methods to this class.
 
@@ -111,7 +113,27 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 ```
 
 
-## <a name="doctest-with-munit"></a>Doc-testing with MUnit
+## <a name="doctest-with-tink"></a>Doc-testing with [Tink Testrunner](https://github.com/haxetink/tink_testrunner)
+
+Annotate a class extending `tink.testrunner.BasicSuite` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code will then be added as test methods to this class.
+
+```haxe
+@:build(hx.doctest.DocTestGenerator.generateDocTests())
+class MyTinkTestrunnerTest extends tink.testrunner.Suite.BasicSuite {
+
+    public static function main() {
+        Runner.run(new MyTinkTestrunnerTest());
+    }
+
+    function new() {
+        super({name: Type.getClassName(Type.getClass(this))}, []);
+    }
+
+}
+```
+
+
+## <a name="doctest-with-munit"></a>Doc-testing with [MUnit](https://github.com/massiveinteractive/MassiveUnit)
 
 Annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
 The doc-test assertions from your source code will then be added as test methods to this class.

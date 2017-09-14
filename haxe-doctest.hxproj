@@ -12,7 +12,6 @@
     <movie minorVersion="0" />
     <movie platform="Neko" />
     <movie background="#FFFFFF" />
-    <movie preferredSDK="Haxe 3.3.0;3.3.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -31,6 +30,7 @@
   <!-- haxelib libraries -->
   <haxelib>
     <library name="munit" />
+    <library name="tink_testrunner" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

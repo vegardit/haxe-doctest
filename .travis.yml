@@ -34,6 +34,8 @@ matrix:
       env: HAXE_TARGET=lua
     - haxe: "3.2.1"
       env: HAXE_TARGET=php7
+    - haxe: development
+      os: osx
 
 install:
   - haxelib git travix https://github.com/back2dos/travix && pushd . && cd $(haxelib config)travix/git && haxe build-neko.hxml && popd

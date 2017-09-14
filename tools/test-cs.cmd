@@ -11,6 +11,12 @@ if errorlevel 1 (
     haxelib install munit
 )
 
+haxelib list | findstr tink_testrunner >NUL
+if errorlevel 1 (
+    echo Installing [tink_testrunner]...
+    haxelib install tink_testrunner
+)
+
 haxelib list | findstr hxcs >NUL
 if errorlevel 1 (
     echo Installing [hxcs]...
@@ -22,6 +28,7 @@ pushd .
 cd "%CDP%.."
 haxe -main hx.doctest.TestRunner ^
   -lib munit ^
+  -lib tink_testrunner ^
   -cp "src" ^
   -cp "test" ^
   -dce full ^

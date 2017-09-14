@@ -57,6 +57,8 @@ class TestRunner {
         MUnitTest.main();
         #end
 
+        TinkTestrunnerUnitTest.main();
+
         DocTestTest.main();
     }
 

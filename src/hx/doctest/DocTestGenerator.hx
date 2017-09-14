@@ -219,21 +219,24 @@ class DocTestGenerator {
             }
         });
 
+        doctestAdapter.onFinish(contextFields);
+
         Logger.log(INFO, 'Generated $totalAssertionsCount test assertions.');
         return contextFields;
     }
 
     static function getDocTestAdapter():DocTestAdapter {
         var clazz:ClassType = Context.getLocalClass().get();
-
         while (true) {
             if (clazz.module == "hx.doctest.DocTestRunner") return new TestrunnerDocTestAdapter();
             if (clazz.module == "haxe.unit.TestCase") return new HaxeUnitDocTestAdapter();
+            if (clazz.module == "tink.testrunner.Suite") return new TinkTestrunnerDocTestAdapter();
             if (clazz.superClass == null) break;
             clazz = clazz.superClass.t.get();
         }
+
         // if no known super class was found, we expect it to be a MUnit test case
-         return new MUnitDocTestAdapter();
+        return new MUnitDocTestAdapter();
     }
 }
 #end

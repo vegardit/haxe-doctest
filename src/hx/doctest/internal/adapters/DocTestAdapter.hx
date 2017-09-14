@@ -53,4 +53,8 @@ class DocTestAdapter {
             pos: contextPos
         };
     }
+
+    public function onFinish(contextFields:Array<Field>) {
+
+    }
 }
