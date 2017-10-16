@@ -18,6 +18,8 @@ package hx.doctest.internal.adapters;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
+#if macro
+
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
@@ -42,7 +44,6 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
         testMethods.push(methodName);
         return super.generateTestMethod(methodName, descr, assertions);
     }
-
 
     override
     public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
@@ -93,9 +94,10 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
                 }
             }
         }
-
     }
 }
+#end
+
 
 @:noDoc @:dox(hide)
 class SingeAssertionCase extends tink.testrunner.Case.BasicCase {
@@ -109,3 +111,4 @@ class SingeAssertionCase extends tink.testrunner.Case.BasicCase {
     function execute():tink.testrunner.Assertions
         return assertion;
 }
+
