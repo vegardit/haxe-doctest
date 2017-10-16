@@ -2,5 +2,6 @@
 -cp test
 -main hx.doctest.TestRunner
 -lib munit
+-lib tink_testrunner
 -dce full
 -debug
