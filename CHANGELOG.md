@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and
 [Keep a CHANGELOG](http://keepachangelog.com/).
 
+## [1.1.1] - 2017-10-16
+
+### Fixed
+- "Type not found : tink.testrunner.Case" when tink_testrunner is not present
+
+
 ## [1.1.0] - 2017-09-14
 
 ### Added
