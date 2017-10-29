@@ -5,6 +5,12 @@ echo Cleaning...
 if exist "%CDP%dump\js" rd /s /q "%CDP%dump\js"
 if exist "%CDP%..\target\js" rd /s /q "%CDP%..\target\js"
 
+haxelib list | findstr hx3compat >NUL
+if errorlevel 1 (
+    echo Installing [hx3compat]...
+    haxelib install hx3compat
+)
+
 haxelib list | findstr munit >NUL
 if errorlevel 1 (
     echo Installing [munit]...
@@ -21,6 +27,7 @@ echo Compiling...
 pushd .
 cd "%CDP%.."
 haxe -main hx.doctest.TestRunner ^
+  -lib hx3compat ^
   -lib munit ^
   -lib tink_testrunner ^
   -cp "src" ^
