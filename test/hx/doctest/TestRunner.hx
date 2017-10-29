@@ -33,7 +33,7 @@ class TestRunner {
         #end
         HaxeUnitTest.main();
 
-        #if !(php || flash || js)
+        #if !(php || flash || js || hl)
         /*
          * MUnit seems broken on some platforms:
          *
@@ -53,6 +53,16 @@ class TestRunner {
          *     phantomjs://code/TestRunner.js:2334 in execute
          *     phantomjs://code/TestRunner.js:2320 in run
          *     phantomjs://code/TestRunner.js:1194 in main
+         *
+         *  4) fails on HL with:
+         *   Uncaught exception: Can't cast #hx.doctest.tests.MUnitDocTests to #massive.munit.TestClassHelper
+         *   Called from @0x4A38D30
+         *   Called from $Reflect.callMethod(C:\apps\dev\haxe\haxe-4.0.0-nightly\std/hl/_std/Reflect.hx:85)
+         *   Called from massive.munit.TestRunner.execute(massive/munit/TestRunner.hx:243)
+         *   Called from massive.munit.TestRunner.run(massive/munit/TestRunner.hx:229)
+         *   Called from hx.doctest.tests.$MUnitTest.main(hx/doctest/tests/MUnitTest.hx:33)
+         *   Called from hx.doctest.$TestRunner.main(hx/doctest/TestRunner.hx:57)
+         *   Called from fun$883(?:1)
          */
         MUnitTest.main();
         #end
