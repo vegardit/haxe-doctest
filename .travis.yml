@@ -44,6 +44,7 @@ matrix:
 install:
   - haxelib git travix https://github.com/back2dos/travix && pushd . && cd $(haxelib config)travix/git && haxe build-neko.hxml && popd
   - haxelib run travix install
+  - haxelib install hx3compat
   - haxelib install munit
   - haxelib install tink_testrunner
 
