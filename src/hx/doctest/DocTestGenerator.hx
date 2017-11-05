@@ -41,7 +41,7 @@ class DocTestGenerator {
     };
 
     static var MAX_ASSERTIONS_PER_TEST_METHOD(default, never) =
-        Context.defined("lua") ?  30 : // to avoid "too many local variables" with Lua target
+        Context.defined("lua") ?  #if (haxe_ver < 4) 20 #else 30 #end : // to avoid "too many local variables" with Lua target
         100; // to avoid "error: code too large" with Java target
 
     /**
