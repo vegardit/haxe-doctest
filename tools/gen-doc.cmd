@@ -6,7 +6,7 @@ REM generates API documentation using dox at <project_root>\target\site
 setlocal
 
 set TOP_LEVEL_PACKAGE=hx.doctest
-set OWNER=http://vegardit.com
+set OWNER=https://vegardit.com
 
 REM cd into project root
 pushd .
