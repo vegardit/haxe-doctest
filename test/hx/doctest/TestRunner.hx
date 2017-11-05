@@ -23,7 +23,6 @@ import hx.doctest.tests.*;
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
 class TestRunner {
-  public function new() { }
 
     public static function main() {
 
