@@ -66,7 +66,9 @@ class TestRunner {
         MUnitTest.main();
         #end
 
+        #if !flash
         TinkTestrunnerUnitTest.main();
+        #end
 
         DocTestTest.main();
     }
