@@ -1,9 +1,16 @@
 @echo off
-set CDP=%~dp0
+REM Copyright (c) 2016-2017 Vegard IT GmbH, http://vegardit.com
+REM SPDX-License-Identifier: Apache-2.0
+REM Author: Sebastian Thomschke, Vegard IT GmbH
+
+pushd .
+
+REM cd into project root
+cd %~dp0..
 
 echo Cleaning...
-if exist "%CDP%dump\php" rd /s /q "%CDP%dump\php"
-if exist "%CDP%..\target\php" rd /s /q "%CDP%..\target\php"
+if exist dump\php rd /s /q dump\php
+if exist target\php rd /s /q target\php
 
 haxelib list | findstr hx3compat >NUL
 if errorlevel 1 (
@@ -24,21 +31,19 @@ if errorlevel 1 (
 )
 
 echo Compiling...
-pushd .
-cd "%CDP%.."
 haxe -main hx.doctest.TestRunner ^
   -lib hx3compat ^
   -lib munit ^
   -lib tink_testrunner ^
-  -cp "src" ^
-  -cp "test" ^
+  -cp src ^
+  -cp test ^
   -dce full ^
   -debug ^
   -D dump=pretty ^
-  -php "target\php"
+  -php target\php
 set rc=%errorlevel%
 popd
 if not %rc% == 0 exit /b %rc%
 
 echo Testing...
-%PHP5_HOME%\php "%CDP%..\target\php\index.php"
+%PHP5_HOME%\php "%~dp0..\target\php\index.php"
