@@ -11,6 +11,7 @@ cd %~dp0..
 echo Cleaning...
 if exist dump\cs rd /s /q dump\cs
 if exist target\cs rd /s /q target\cs
+
 haxelib list | findstr hx3compat >NUL
 if errorlevel 1 (
     echo Installing [hx3compat]...

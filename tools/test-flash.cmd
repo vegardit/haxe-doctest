@@ -56,9 +56,9 @@ REM enable Flash logging
 
 echo Testing...
 flashplayer_27_sa_debug "%~dp0..\target\flash\TestRunner.swf"
-set exitCode=%errorlevel%
+set rc=%errorlevel%
 
 REM printing log file
 type "%HOME%\AppData\Roaming\Macromedia\Flash Player\Logs\flashlog.txt"
 
-exit /b %exitCode%
+exit /b %rc%
