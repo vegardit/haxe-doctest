@@ -73,13 +73,13 @@ class DocTestGenerator {
             while (src.gotoNextDocTestAssertion()) {
 
                 // process "throws" assertion
-                if (src.currentDocTestAssertion.assertion.indexOf("throws ") > -1) {
+                if (src.currentDocTestAssertion.assertion.indexOf(" throws ") > -1) {
                     // poor man's solution until I figure out how to add import statements
                     var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
                     totalAssertionsCount++;
 
-                    var left = doctestLineFQ.substringBeforeLast("throws ").trim();
-                    var right = doctestLineFQ.substringAfterLast("throws ").trim();
+                    var left = doctestLineFQ.substringBeforeLast(" throws ").trim();
+                    var right = doctestLineFQ.substringAfterLast(" throws ").trim();
 
                     var leftExpr:Expr = try {
                         Context.parse(left, Context.currentPos());
@@ -107,11 +107,7 @@ class DocTestGenerator {
                         if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
                             $testSuccessExpr;
                         } else {
-                            if (Std.is(right, EReg) && cast(right, EReg).match(Std.string(left))) {
-                                $testSuccessExpr;
-                            } else {
-                                $testFailedExpr;
-                            }
+                            $testFailedExpr;
                         }
                     });
 
@@ -165,7 +161,7 @@ class DocTestGenerator {
                             testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not lower than '$right'.");
                         case OpGt:
                             comparisonExpr = macro left > right;
-                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than'$right'.");
+                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than '$right'.");
                         case OpGte:
                             comparisonExpr = macro left >= right;
                             testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than or equal '$right'.");

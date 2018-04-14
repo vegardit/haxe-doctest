@@ -58,6 +58,11 @@ class DocTestUtils {
             return false;
         }
 
+        // match regular pattern
+        if (Std.is(right, EReg)) {
+            return cast(right, EReg).match(Std.string(left));
+        }
+
         // compare enums
         if (Reflect.isEnumValue(left) && Reflect.isEnumValue(right)) {
             var leftEnum:EnumValue = left;
