@@ -6,8 +6,12 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+
+## [1.1.3] - 2018-04-14
+
 ### Changed
 - replaced license header by "SPDX-License-Identifier: Apache-2.0"
+- improved regex matching
 
 
 ## [1.1.2] - 2017-10-16
