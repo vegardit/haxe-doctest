@@ -22,13 +22,15 @@ class TestRunner {
 
         HaxeUnitTest.main();
 
-        #if !(flash || js)
+        #if !(flash || js || (php && !php7))
         /*
          * MUnit seems broken on some platforms:
          *
-         * 1) fails on Flash with: hx/doctest/tests/MUnitTest.hx:9: characters 7-31 : Type not found : massive.munit.TestRunner
+         * 1) fails on old PHP target with: munit/2,1,2/massive/munit/TestRunner.hx:384: characters 16-27 : Class<massive.munit.util.Timer> has no field delay
          *
-         * 2) fails on JS with:
+         * 2) fails on Flash with: hx/doctest/tests/MUnitTest.hx:9: characters 7-31 : Type not found : massive.munit.TestRunner
+         *
+         * 3) fails on JS with:
          *   ReferenceError: Can't find variable: addToQueue
          *     undefined:1 in eval code
          *     :0 in eval
@@ -42,12 +44,14 @@ class TestRunner {
          *     phantomjs://code/TestRunner.js:1194 in main
          */
         MUnitTest.main();
+        #end
 
+        #if !(flash || js)
         /*
-         * nodejs fails with:
+         * 1) fails on nodejs with:
          *    tink_testrunner/0,6,2/src/tink/testrunner/Reporter.hx:174: characters 3-14 : Accessing this field requires a system platform (php,php7,neko,cpp,etc.)
          *
-         * flash fails with:
+         * 2) fails on Flash with:
          *    Not supported yet.
          */
         TinkTestrunnerUnitTest.main();
