@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 ### Changed
 - replaced license header by "SPDX-License-Identifier: Apache-2.0"
 - improved regex matching
+- improved exception assertion parsing
 
 
 ## [1.1.2] - 2017-10-16
