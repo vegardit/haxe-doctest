@@ -27,12 +27,15 @@ unit tests based on assertions declared within the Haxedoc comments of source co
 
 Requires Haxe 3.2 or higher.
 
+
 ## <a name="declaring-test-assertions"></a>Declaring test assertions
 
 Doc-test assertions are written as part of the source code documentation and are
 identified by three leading right angle brackets `>>>` before the assertion.
 
 The left and the right side of the assertion must be separated by one of the comparison operators `<`, `>`, `!=`, `<=`, `>=` or the `throws` keyword.
+
+If the right side expression is a regeex, e.g. `~/my string/` then it will be matched against the string representation of the left side expression.
 
 ```haxe
 class MyTools {
