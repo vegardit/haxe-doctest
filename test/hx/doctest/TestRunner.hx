@@ -22,15 +22,17 @@ class TestRunner {
 
         HaxeUnitTest.main();
 
-        #if !(flash || js || (php && !php7))
+        #if !(flash || js || (php && haxe_ver < 3.4) || (cs && haxe_ver < 3.4))
         /*
          * MUnit seems broken on some platforms:
          *
-         * 1) fails on old PHP target with: munit/2,1,2/massive/munit/TestRunner.hx:384: characters 16-27 : Class<massive.munit.util.Timer> has no field delay
+         * 1) fails on PHP and Haxe < 3.4 with: munit/2,2,1/massive/munit/TestRunner.hx:341: characters 42-53 : Class<haxe.Timer> has no field delay
          *
-         * 2) fails on Flash with: hx/doctest/tests/MUnitTest.hx:9: characters 7-31 : Type not found : massive.munit.TestRunner
+         * 2) fails on CS and Haxe < 3.4 with: munit/2,2,1/massive/munit/TestRunner.hx:341: characters 42-53 : Class<haxe.Timer> has no field delay
          *
-         * 3) fails on JS with:
+         * 3) fails on Flash with: hx/doctest/tests/MUnitTest.hx:9: characters 7-31 : Type not found : massive.munit.TestRunner
+         *
+         * 4) fails on JS with:
          *   ReferenceError: Can't find variable: addToQueue
          *     undefined:1 in eval code
          *     :0 in eval
