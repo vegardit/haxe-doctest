@@ -34,11 +34,10 @@ matrix:
       env: HAXE_TARGET=cpp
     - haxe: "3.2.1"
       env: HAXE_TARGET=lua
+    - os: osx
   exclude:
     - haxe: "3.2.1"
       env: HAXE_TARGET=php7
-    - os: osx
-      env: HAXE_TARGET=python
     - haxe: development
       os: osx
 
