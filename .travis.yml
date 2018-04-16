@@ -32,10 +32,10 @@ matrix:
     - env: HAXE_TARGET=flash  # see https://github.com/travis-ci/travis-ci/issues/8481
     - haxe: "3.2.1"
       env: HAXE_TARGET=cpp
-    - haxe: "3.2.1"
-      env: HAXE_TARGET=lua
     - os: osx
   exclude:
+    - haxe: "3.2.1"
+      env: HAXE_TARGET=lua
     - haxe: "3.2.1"
       env: HAXE_TARGET=php7
     - haxe: development

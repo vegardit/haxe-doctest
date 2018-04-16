@@ -23,7 +23,9 @@ A [haxelib](http://lib.haxe.org/documentation/using-haxelib/) inspired by
 Python's [doctest](https://docs.python.org/2/library/doctest.html) command that generates
 unit tests based on assertions declared within the Haxedoc comments of source code.
 
-`haxe-doctest` supports the generation of test cases for [Haxe Unit](http://haxe.org/manual/std-unit-testing.html), [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
+`haxe-doctest` supports the generation of test cases for [Haxe Unit](http://haxe.org/manual/std-unit-testing.html),
+[MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own
+[test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
 
 Requires Haxe 3.2 or higher.
 
@@ -33,9 +35,11 @@ Requires Haxe 3.2 or higher.
 Doc-test assertions are written as part of the source code documentation and are
 identified by three leading right angle brackets `>>>` before the assertion.
 
-The left and the right side of the assertion must be separated by one of the comparison operators `<`, `>`, `!=`, `<=`, `>=` or the `throws` keyword.
+The left and the right side of the assertion must be separated by one of the comparison
+operators `<`, `>`, `!=`, `<=`, `>=` or the `throws` keyword.
 
-If the right side expression is a regeex, e.g. `~/my string/` then it will be matched against the string representation of the left side expression.
+If the right side expression is a regeex, e.g. `~/my string/` then it will be matched
+against the string representation of the left side expression.
 
 ```haxe
 class MyTools {
