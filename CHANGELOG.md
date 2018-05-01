@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+### Added
+- DocTestRunner#exit()
+
 
 ## [1.1.3] - 2018-04-14
 
