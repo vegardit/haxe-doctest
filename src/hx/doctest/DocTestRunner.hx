@@ -20,6 +20,25 @@ class DocTestRunner {
 
     var results:DocTestResults;
 
+    static function exit(exitCode:Int):Void {
+        #if travix
+            travix.Logger.exit(exitCode);
+        #else
+            #if sys
+                Sys.exit(exitCode);
+            #elseif js
+                var isPhantomJS = untyped __js__("(typeof phantom !== 'undefined')");
+                if(isPhantomJS) {
+                    untyped __js__("phantom.exit(exitCode)");
+                } else {
+                    untyped __js__("process.exit(exitCode)");
+                }
+            #elseif flash
+                flash.system.System.exit(exitCode);
+            #end
+        #end
+    }
+
     public function new() {
 
     }
@@ -95,23 +114,7 @@ class DocTestRunner {
      */
     function runAndExit(expectedMinNumberOfTests = 0):Void {
         var exitCode = run(expectedMinNumberOfTests) == 0 ? 0 : 1;
-
-        #if travix
-            travix.Logger.exit(exitCode);
-        #else
-            #if sys
-                Sys.exit(exitCode);
-            #elseif js
-                var isPhantomJS = untyped __js__("(typeof phantom !== 'undefined')");
-                if(isPhantomJS) {
-                    untyped __js__("phantom.exit(exitCode)");
-                } else {
-                    untyped __js__("process.exit(exitCode)");
-                }
-            #elseif flash
-                flash.system.System.exit(exitCode);
-            #end
-        #end
+        exit(exitCode);
     }
 
     /**
