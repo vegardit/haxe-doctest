@@ -27,7 +27,7 @@ unit tests based on assertions declared within the Haxedoc comments of source co
 [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own
 [test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
 
-Requires Haxe 3.2 or higher.
+Requires Haxe 3.4.x or higher.
 
 
 ## <a name="declaring-test-assertions"></a>Declaring test assertions
