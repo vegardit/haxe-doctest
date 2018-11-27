@@ -24,8 +24,8 @@ using hx.doctest.internal.DocTestUtils;
 class DocTestGenerator {
 
     static var __static_init = {
-        #if (haxe_ver <= 3.2)
-            throw 'ERROR: haxe-doctests requires Haxe 3.2 or higher!';
+        #if (haxe_ver < 3.4)
+            throw 'ERROR: haxe-doctests requires Haxe 3.4 or higher!';
         #end
     };
 
