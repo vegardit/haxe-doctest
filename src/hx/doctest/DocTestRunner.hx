@@ -6,10 +6,10 @@ package hx.doctest;
 
 import haxe.PosInfos;
 import haxe.Timer;
+import hx.doctest.internal.Logger;
+import hx.doctest.internal.DocTestUtils;
 
 using StringTools;
-using hx.doctest.internal.DocTestUtils;
-using hx.doctest.internal.Logger;
 
 
 /**
@@ -27,11 +27,17 @@ class DocTestRunner {
             #if sys
                 Sys.exit(exitCode);
             #elseif js
-                var isPhantomJS = untyped __js__("(typeof phantom !== 'undefined')");
-                if(isPhantomJS) {
+                var isPhantomJSDirectExecution = untyped __js__("(typeof phantom !== 'undefined')");
+                if(isPhantomJSDirectExecution) {
                     untyped __js__("phantom.exit(exitCode)");
                 } else {
-                    untyped __js__("process.exit(exitCode)");
+                    var isPhantomJSWebPage = untyped __js__("!!(typeof window != 'undefined' && window.callPhantom && window._phantom)");
+                    if (isPhantomJSWebPage) {
+                        untyped __js__("window.callPhantom({cmd:'doctest:exit', 'exitCode':exitCode})");
+                    } else {
+                        // nodejs
+                        untyped __js__("process.exit(exitCode)");
+                    }
                 }
             #elseif flash
                 flash.system.System.exit(exitCode);
@@ -135,14 +141,14 @@ class DocTestRunner {
      * for use within manually created test method
      */
     function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-        results.add(leftResult.equals(rightResult), 'assertEquals($leftResult, $rightResult)', null, pos);
+        results.add(DocTestUtils.equals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', null, pos);
     }
 
     /**
      * for use within manually created test method
      */
     function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-        results.add(!leftResult.equals(rightResult), 'assertNotEquals($leftResult, $rightResult)', null, pos);
+        results.add(!DocTestUtils.equals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', null, pos);
     }
 
     /**
