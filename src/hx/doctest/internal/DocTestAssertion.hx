@@ -19,6 +19,7 @@ class DocTestAssertion {
     public var charStart(default,null):Int;
     public var charEnd(default, null):Int;
 
+    inline
     public function new(filePath:String, fileName:String, lineNumber:Int, assertion:String, charStart:Int, charEnd:Int) {
         this.lineNumber = lineNumber;
         this.assertion = assertion;

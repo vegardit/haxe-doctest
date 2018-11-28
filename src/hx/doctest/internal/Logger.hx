@@ -53,6 +53,7 @@ class LogEvent {
     public var loc(default, null):SourceLocation;
     public var pos(default, null):haxe.PosInfos;
 
+    inline
     public function new(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos) {
         this.level = level;
         this.msg = msg;

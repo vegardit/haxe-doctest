@@ -5,6 +5,7 @@
 package hx.doctest.internal;
 
 import haxe.CallStack;
+import haxe.macro.MacroStringTools;
 
 using StringTools;
 
@@ -119,7 +120,7 @@ class DocTestUtils {
         return str.substring(0, foundAt);
     }
 
-    #if sys
+    #if (sys || macro)
     public static function walkDirectory(directory:String, filePattern:EReg, onFile:String -> Void):Void {
         var files:Array<String> = sys.FileSystem
             .readDirectory(directory)
