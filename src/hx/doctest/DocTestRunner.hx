@@ -46,7 +46,6 @@ class DocTestRunner {
     }
 
     public function new() {
-
     }
 
     /**
@@ -123,19 +122,6 @@ class DocTestRunner {
         exit(exitCode);
     }
 
-    /**
-     * for use within manually created test method
-     */
-    function assertTrue(result:Bool, ?pos:PosInfos):Void {
-        results.add(result, 'assertTrue($result)', null, pos);
-    }
-
-    /**
-     * for use within manually created test method
-     */
-    function assertFalse(result:Bool, ?pos:PosInfos):Void {
-        results.add(!result, 'assertFalse($result)', null, pos);
-    }
 
     /**
      * for use within manually created test method
@@ -144,12 +130,54 @@ class DocTestRunner {
         results.add(DocTestUtils.equals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', null, pos);
     }
 
+
+    /**
+     * for use within manually created test method
+     */
+    function assertFalse(result:Bool, ?pos:PosInfos):Void {
+        results.add(!result, 'assertFalse($result)', null, pos);
+    }
+
+
+    /**
+     * for use within manually created test method
+     */
+    function assertMax(result:Int, min:Int, max:Int, ?pos:PosInfos):Void {
+        results.add(result <= max, 'assertMax($result, $max)', null, pos);
+    }
+
+
+    /**
+     * for use within manually created test method
+     */
+    function assertMin(result:Int, min:Int, ?pos:PosInfos):Void {
+        results.add(result >= min, 'assertMin($result, $min)', null, pos);
+    }
+
+
+    /**
+     * for use within manually created test method
+     */
+    function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void {
+        results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', null, pos);
+    }
+
+
     /**
      * for use within manually created test method
      */
     function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
         results.add(!DocTestUtils.equals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', null, pos);
     }
+
+
+    /**
+     * for use within manually created test method
+     */
+    function assertTrue(result:Bool, ?pos:PosInfos):Void {
+        results.add(result, 'assertTrue($result)', null, pos);
+    }
+
 
     /**
      * for use within manually created test method
@@ -176,6 +204,7 @@ class DefaultDocTestResults implements DocTestResults {
     var _testsOK = 0;
     var _testsFailed = new Array<LogEvent>();
 
+    inline
     public function new() {
     }
 
@@ -188,10 +217,12 @@ class DefaultDocTestResults implements DocTestResults {
         }
     }
 
+    inline
     public function getSuccessCount():Int {
         return _testsOK;
     }
 
+    inline
     public function getFailureCount():Int {
         return _testsFailed.length;
     }
