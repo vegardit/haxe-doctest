@@ -19,27 +19,26 @@
 
 ## <a name="what-is-it"></a>What is it?
 
-A [haxelib](http://lib.haxe.org/documentation/using-haxelib/) inspired by
-Python's [doctest](https://docs.python.org/2/library/doctest.html) command that generates
-unit tests based on assertions declared within the Haxedoc comments of source code.
+A [haxelib](http://lib.haxe.org/documentation/using-haxelib/) inspired by Python's [doctest](https://docs.python.org/2/library/doctest.html) command that
+generates unit tests based on assertions declared within the Haxedoc comments of source code.
 
 `haxe-doctest` supports the generation of test cases for [Haxe Unit](http://haxe.org/manual/std-unit-testing.html),
-[MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own
-[test runner](#doctest-testrunner) which is recommended for efficient testing from within FlashDevelop.
+[MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from
+within FlashDevelop.
 
 Requires Haxe 3.4.x or higher.
 
 
 ## <a name="declaring-test-assertions"></a>Declaring test assertions
 
-Doc-test assertions are written as part of the source code documentation and are
-identified by three leading right angle brackets `>>>` before the assertion.
+Doc-test assertions are written as part of the source code documentation and are identified by three leading right angle brackets `>>>` before the assertion.
 
-The left and the right side of the assertion must be separated by one of the comparison
-operators `<`, `>`, `!=`, `<=`, `>=` or the `throws` keyword.
+The left and the right side of the assertion must be separated by one of the comparison operators `<`, `>`, `!=`, `<=`, `>=` or the `throws` keyword.
 
-If the right side expression is a regeex, e.g. `~/my string/` then it will be matched
-against the string representation of the left side expression.
+If the right side expression is a regeex, e.g. `~/my string/` then it will be matched against the string representation of the left side expression.
+
+If a value to be checked needs to be calculated via multiple statements, they can be wrapped inside `({  })` where the last statement is the value to be
+checked. As an example, see the doctest for function `MyObject.setData()` below.
 
 ```haxe
 class MyTools {
@@ -55,6 +54,7 @@ class MyTools {
         return str != null && str.length > 0;
     }
 }
+
 
 class MyObject {
 
@@ -82,29 +82,37 @@ class MyObject {
     public function length():Int {
         return data == null ? 0 : data.length;
     }
+
+    /**
+     * <pre><code>
+     * >>> ({ var o=new MyObject("cat"); o.setData("dog"); o.data; }) == "dog"
+     * </code></pre>
+     */
+    public function setData(data:String):Void {
+        this.data = data;
+    }
 }
 ```
 
 
 ## <a name="why-doc-testing"></a>Why doc-testing?
 
-1. Doc-testing supports super fast test-driven development: First you write your method header,
-   then the in-place documentation including your test assertions defining the expected behavior
-   and then implement until all your declared tests pass.
+1. Doc-testing supports super fast test-driven development: First you write your method header, then the in-place documentation including your test assertions
+   defining the expected behavior and then implement until all your declared tests pass.
 
    No need to create separate test classes with individual test methods.
    Implementing and testing happens at the same code location.
 
 2. For users of your code, the doc-test assertions act as method documentation and code examples.
 
-3. Since doc-testing actually means testing the documentation against the documented code,
-   a method's documentation always represents the actual behavior of it's implementation and
-   can't get accidently outdated.
+3. Since doc-testing actually means testing the documentation against the documented code, a method's documentation always represents the actual behavior of
+   it's implementation and can't get accidently outdated.
 
 
 ## <a name="doctest-with-haxeunit"></a>Doc-testing with [Haxe Unit](https://haxe.org/manual/std-unit-testing.html)
 
-Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code will then be added as test methods to this class.
+Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code
+will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -125,7 +133,8 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 
 ## <a name="doctest-with-tink"></a>Doc-testing with [Tink Testrunner](https://github.com/haxetink/tink_testrunner)
 
-Annotate a class extending `tink.testrunner.BasicSuite` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code will then be added as test methods to this class.
+Annotate a class extending `tink.testrunner.BasicSuite` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your
+source code will then be added as test methods to this class.
 
 ```haxe
 @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -174,7 +183,9 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
 
 ## <a name="doctest-testrunner"></a>Doc-testing with hx.doctest.DocTestRunner
 
-haxe-doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as clickable errors that directly navigate your to the location in your source code.
+haxe-doctest also comes with it's own Testrunner which is recommended for local testing as it generates console output that is parseable by
+[FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as
+clickable errors that directly navigate your to the location in your source code.
 
 To use it, annotate a class extending `hx.doctest.DocTestRunner`  with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
 The doc-test assertions from your source code will then be added as test methods to this class.
@@ -204,8 +215,7 @@ echo Testing...
 neko target/neko/TestRunner.n
 ```
 
-In FlashDevelop create a new macro in the macro editor (which is reachable via the menu **Macros -> Edit Macros...**) containing
-the following statements.
+In FlashDevelop create a new macro in the macro editor (which is reachable via the menu **Macros -> Edit Macros...**) containing the following statements.
 ```bat
 InvokeMenuItem|FileMenu.Save
 RunProcessCaptured|$(SystemDir)\cmd.exe;/c cd $(ProjectDir) & $(ProjectDir)\test-docs.cmd
@@ -213,7 +223,8 @@ RunProcessCaptured|$(SystemDir)\cmd.exe;/c cd $(ProjectDir) & $(ProjectDir)\test
 
 Then assign the macro a short cut, e.g. [F4].
 
-Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doc-test assertions will be tested. Errors will showup as navigable events in the FlashDevelop's result panel.
+Now you can write your methods, document their behavior in the doc and by pressing [F4] your changes are saved and the doc-test assertions will be tested.
+Errors will showup as navigable events in the FlashDevelop's result panel.
 
 ![](doc/flashdevelop_integration.png "haxe-doctest Error Highlighting in FlashDevelop")
 
@@ -227,8 +238,10 @@ Now you can write your methods, document their behavior in the doc and by pressi
 
 2. use in your Haxe project
 
-   * for [OpenFL](http://www.openfl.org/)/[Lime](https://github.com/openfl/lime) projects add `<haxelib name="haxe-doctest" />` to your [project.xml](http://www.openfl.org/documentation/projects/project-files/xml-format/)
-   * for free-style projects add `-lib haxe-doctest`  to `your *.hxml` file or as command line option when running the [Haxe compiler](http://haxe.org/manual/compiler-usage.html)
+   * for [OpenFL](http://www.openfl.org/)/[Lime](https://github.com/openfl/lime) projects add `<haxelib name="haxe-doctest" />` to your
+     [project.xml](http://www.openfl.org/documentation/projects/project-files/xml-format/)
+   * for free-style projects add `-lib haxe-doctest`  to `your *.hxml` file or as command line option when running the
+     [Haxe compiler](http://haxe.org/manual/compiler-usage.html)
 
 
 ## <a name="latest"></a>Using the latest code
@@ -243,7 +256,7 @@ haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest master D:\haxe
 
 1. check-out the master branch
     ```
-    git clone https://github.com/vegardit/haxe-doctest --branch master --single-branch D:\haxe-projects\haxe-doctest
+    git clone https://github.com/vegardit/haxe-doctest --branch master --single-branch D:\haxe-projects\haxe-doctest --depth=1
     ```
 
 2. register the development release with haxe
