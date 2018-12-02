@@ -6,8 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+
+## [1.2.0] - 2018-12-02
+
 ### Added
-- respect [compiler conditionals](https://haxe.org/manual/lf-condition-compilation.html) when testing assertions
+- respect [compiler conditionals](https://haxe.org/manual/lf-condition-compilation.html) when generating/testing doctest assertions
 - DocTestRunner#assertInRange()
 - DocTestRunner#assertMax()
 - DocTestRunner#assertMin()
