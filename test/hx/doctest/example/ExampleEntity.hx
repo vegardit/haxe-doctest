@@ -6,7 +6,8 @@ package hx.doctest.example;
 
 /**
  * <pre><code>
- * >>> (switch(1){default:var e:ExampleEntity = new ExampleEntity("foo"); e.name="bar"; e;}).name == "bar"
+ * >>> (switch(1){default:var e = new ExampleEntity("foo"); e.name="bar"; e; }).name   == "bar"
+ * >>> (function(){var e = new ExampleEntity("dog"); e.name="cat"; return e; })().name == "cat"
  * </code></pre>
  *
  * @author Sebastian Thomschke, Vegard IT GmbH

@@ -16,7 +16,7 @@ class DocTestTest extends DocTestRunner {
 
     public static function main() {
         var runner = new DocTestTest();
-        runner.runAndExit(23 /* number of expected test cases */);
+        runner.runAndExit(24 /* number of expected test cases */);
     }
 
     function new() {
