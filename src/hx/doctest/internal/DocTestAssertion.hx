@@ -12,26 +12,24 @@ import hx.doctest.internal.Logger.SourceLocation;
 @:noDoc @:dox(hide)
 class DocTestAssertion {
 
-    public var filePath(default, null):String;
-    public var fileName(default, null):String;
+    public var file(default, null):SourceFile;
     public var lineNumber(default,null):Int;
-    public var assertion(default,null):String;
+    public var expression(default,null):String;
     public var charStart(default,null):Int;
     public var charEnd(default, null):Int;
 
     inline
-    public function new(filePath:String, fileName:String, lineNumber:Int, assertion:String, charStart:Int, charEnd:Int) {
+    public function new(file:SourceFile, lineNumber:Int, expression:String, charStart:Int, charEnd:Int) {
+        this.file = file;
         this.lineNumber = lineNumber;
-        this.assertion = assertion;
+        this.expression = expression;
         this.charStart = charStart;
         this.charEnd = charEnd;
-        this.filePath = filePath;
-        this.fileName = fileName;
     }
 
     public function getSourceLocation(fullPath:Bool = true):SourceLocation {
         return {
-            filePath: fullPath ? filePath : fileName,
+            filePath: fullPath ? file.filePath : file.fileName,
             lineNumber: lineNumber,
             charStart: charStart,
             charEnd: charEnd
@@ -40,7 +38,7 @@ class DocTestAssertion {
 
     public function getPosInfos(fullPath:Bool = true):haxe.PosInfos {
         return {
-            fileName: fullPath ? filePath : fileName,
+            fileName: fullPath ? file.filePath : file.fileName,
             lineNumber: lineNumber,
             className: "",
             methodName: ""

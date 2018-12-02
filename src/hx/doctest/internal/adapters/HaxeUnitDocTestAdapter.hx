@@ -5,6 +5,7 @@
 package hx.doctest.internal.adapters;
 
 import haxe.macro.Expr;
+import hx.doctest.internal.DocTestAssertion;
 
 
 /**
@@ -23,21 +24,21 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
     }
 
     override
-    public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
+    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
         return macro {
             currentTest.done = true;
             currentTest.success = false;
-            currentTest.error = '${src.currentDocTestAssertion.assertion} --> $errorMsg';
-            currentTest.posInfos = $v{src.currentDocTestAssertion.getPosInfos()};
+            currentTest.error = '${assertion.expression} --> $errorMsg';
+            currentTest.posInfos = $v{assertion.getPosInfos()};
             throw currentTest;
         };
     }
 
     override
-    public function generateTestSuccess(src:SourceFile):Expr {
+    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
         return macro {
             currentTest.done = true;
-            print('\n${src.fileName}:${src.currentLineNumber} [OK] ' + $v{src.currentDocTestAssertion.assertion});
+            print('\n${assertion.file.fileName}:${assertion.lineNumber} [OK] ' + $v{assertion.expression});
         };
     }
 }

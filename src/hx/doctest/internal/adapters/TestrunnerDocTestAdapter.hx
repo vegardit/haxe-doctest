@@ -6,6 +6,7 @@ package hx.doctest.internal.adapters;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import hx.doctest.internal.DocTestAssertion;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -23,16 +24,16 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
     }
 
     override
-    public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
+    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
         return macro {
-            results.add(false, '${src.currentDocTestAssertion.assertion} --> $errorMsg', $v{src.currentDocTestAssertion.getSourceLocation()}, null);
+            results.add(false, '${assertion.expression} --> $errorMsg', $v{assertion.getSourceLocation()}, null);
         };
     }
 
     override
-    public function generateTestSuccess(src:SourceFile):Expr {
+    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
         return macro {
-            results.add(true, '${src.currentDocTestAssertion.assertion}', null, $v{src.currentDocTestAssertion.getPosInfos(false)});
+            results.add(true, '${assertion.expression}', null, $v{assertion.getPosInfos(false)});
         };
     }
 

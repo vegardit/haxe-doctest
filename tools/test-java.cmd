@@ -6,16 +6,7 @@ REM Author: Sebastian Thomschke, Vegard IT GmbH
 call %~dp0_test-prepare.cmd java hxjava
 
 echo Compiling...
-haxe -main hx.doctest.TestRunner ^
-  -lib hx3compat ^
-  -lib munit ^
-  -lib tink_testrunner ^
-  -cp src ^
-  -cp test ^
-  -dce full ^
-  -debug ^
-  -D dump=pretty ^
-  -java target\java
+haxe %~dp0..\tests.hxml -java target\java
 set rc=%errorlevel%
 popd
 if not %rc% == 0 exit /b %rc%

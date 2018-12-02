@@ -42,4 +42,28 @@ class ExampleTools {
             y: y
         }
     }
+
+
+    #if (sys && (foo || bar))
+    /**
+     * >>> ExampleTools.neverTestMe1() == true
+     */
+    public static function neverTestMe1():Bool {
+        return false;
+    }
+    #elseif (sys && flash)
+    /**
+     * >>> ExampleTools.neverTestMe1() == true
+     */
+    public static function neverTestMe2():Bool {
+        return false;
+    }
+    #else
+    /**
+     * >>> ExampleTools.alwaysTestMe() == true
+     */
+    public static function alwaysTestMe():Bool {
+        return true;
+    }
+    #end
 }

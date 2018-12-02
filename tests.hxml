@@ -1,8 +1,10 @@
 -cp src
 -cp test
 -main hx.doctest.TestRunner
+-lib hscript
 -lib hx3compat
 -lib munit
 -lib tink_testrunner
 -dce full
 -debug
+-D dump=pretty

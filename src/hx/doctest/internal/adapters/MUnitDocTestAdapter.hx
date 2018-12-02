@@ -6,6 +6,7 @@ package hx.doctest.internal.adapters;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import hx.doctest.internal.DocTestAssertion;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -23,16 +24,16 @@ class MUnitDocTestAdapter extends DocTestAdapter {
     }
 
     override
-    public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
+    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
         return macro {
-            massive.munit.Assert.fail('${src.currentDocTestAssertion.assertion} --> $errorMsg', $v{src.currentDocTestAssertion.getPosInfos()});
+            massive.munit.Assert.fail('${assertion.expression} --> $errorMsg', $v{assertion.getPosInfos()});
         };
     }
 
     override
-    public function generateTestSuccess(src:SourceFile):Expr {
+    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
         return macro {
-            mconsole.Console.info('\n${src.fileName}:${src.currentLineNumber} [OK] ' + $v{src.currentDocTestAssertion.assertion});
+            mconsole.Console.info('\n${assertion.file.fileName}:${assertion.lineNumber} [OK] ' + $v{assertion.expression});
         };
     }
 

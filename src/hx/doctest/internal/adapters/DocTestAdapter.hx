@@ -6,6 +6,7 @@ package hx.doctest.internal.adapters;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import hx.doctest.internal.DocTestAssertion;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -18,11 +19,11 @@ class DocTestAdapter {
         throw "Not implemented";
     }
 
-    public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
+    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
         throw "Not implemented";
     }
 
-    public function generateTestSuccess(src:SourceFile):Expr {
+    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
         throw "Not implemented";
     }
 

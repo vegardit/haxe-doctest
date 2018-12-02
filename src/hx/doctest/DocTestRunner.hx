@@ -217,12 +217,10 @@ class DefaultDocTestResults implements DocTestResults {
         }
     }
 
-    inline
     public function getSuccessCount():Int {
         return _testsOK;
     }
 
-    inline
     public function getFailureCount():Int {
         return _testsFailed.length;
     }

@@ -19,11 +19,9 @@ if exist target\%1 (
 )
 shift
 
-goto :eof
-
 REM install common libs
 echo Checking required haxelibs...
-for %%i in (hx3compat munit tink_testrunner) do (
+for %%i in (hscript hx3compat munit tink_testrunner) do (
     haxelib list | findstr %%i >NUL
     if errorlevel 1 (
         echo Installing [%%i]...
@@ -31,6 +29,7 @@ for %%i in (hx3compat munit tink_testrunner) do (
     )
 )
 
+goto :eof
 
 REM install additional libs
 :iterate

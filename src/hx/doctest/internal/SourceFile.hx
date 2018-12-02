@@ -21,7 +21,7 @@ class SourceFile {
     public var haxePackage:String;
     public var haxeModuleName:String;
     public var haxeModuleFQName:String;
-    public var currentDocTestAssertion(default, null):DocTestAssertion = null;
+    public var currentLine(default, null):LineType = null;
     public var currentLineNumber(default, null) = 0;
 
     var lines:Array<String>;
@@ -52,14 +52,37 @@ class SourceFile {
         haxeModuleFQName = haxePackage.length > 0 ? haxePackage + "." + haxeModuleName : haxeModuleName;
     }
 
-    public function gotoNextDocTestAssertion():Bool {
+    public function nextLine():Bool {
         try {
             while (!isLastLine()) {
                 currentLineNumber++;
-                var line = fileInput.readLine();
+                var line = fileInput.readLine().trim();
+
+                if (line == "#else") {
+                    currentLine = CompilerConditionElse;
+                    return true;
+                }
+
+                if (line == "#end") {
+                    currentLine = CompilerConditionEnd;
+                    return true;
+                }
+
+                if (line.startsWith("#if ")) {
+                    currentLine = CompilerConditionStart(line.substringAfter("#if "));
+                    return true;
+                }
+
+                if (line.startsWith("#elseif ")) {
+                    currentLine = CompilerConditionElseIf(line.substringAfter("#elseif "));
+                    return true;
+                }
+
                 var line = line.substringAfter(docTestIdentifier).trim();
-                if (line == "") continue;
-                currentDocTestAssertion = new DocTestAssertion(filePath, fileName, currentLineNumber, line, line.indexOf(docTestIdentifier) + docTestIdentifier.length, line.length);
+                if (line == "")
+                    continue;
+
+                currentLine = DocTestAssertion(new DocTestAssertion(this, currentLineNumber, line, line.indexOf(docTestIdentifier) + docTestIdentifier.length, line.length));
                 return true;
             }
         } catch(e:haxe.io.Eof) {
@@ -74,4 +97,12 @@ class SourceFile {
     public function isLastLine():Bool {
         return fileInput == null || fileInput.eof();
     }
+}
+
+enum LineType {
+    DocTestAssertion(assertion:DocTestAssertion);
+    CompilerConditionStart(condition:String);
+    CompilerConditionElseIf(condition:String);
+    CompilerConditionElse;
+    CompilerConditionEnd;
 }

@@ -57,6 +57,9 @@ class DocTestGenerator {
 
         var totalAssertionsCount = 0;
 
+        var parser = new hscript.Parser();
+        var compilerConditions = new Array<Bool>();
+
         /*
          * iterate over all matched files
          */
@@ -71,130 +74,197 @@ class DocTestGenerator {
             /*
              * iterate over all code lines of the Haxe file
              */
-            while (src.gotoNextDocTestAssertion()) {
+            while (src.nextLine()) {
+                switch(src.currentLine) {
+                    case DocTestAssertion(assertion):
 
-                // process "throws" assertion
-                if (src.currentDocTestAssertion.assertion.indexOf(" throws ") > -1) {
-                    // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
-                    totalAssertionsCount++;
+                        if (compilerConditions.indexOf(false) > -1)
+                            continue;
 
-                    var left = doctestLineFQ.substringBeforeLast(" throws ").trim();
-                    var right = doctestLineFQ.substringAfterLast(" throws ").trim();
+                        // process "throws" assertion
+                        if (assertion.expression.indexOf(" throws ") > -1) {
+                            // poor man's solution until I figure out how to add import statements
+                            var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
+                            totalAssertionsCount++;
 
-                    var leftExpr:Expr = try {
-                        Context.parse(left, Context.currentPos());
-                    } catch (e:Dynamic) {
-                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse left side: $e'));
-                        continue;
-                    }
+                            var left = doctestLineFQ.substringBeforeLast(" throws ").trim();
+                            var right = doctestLineFQ.substringAfterLast(" throws ").trim();
 
-                    var rightExpr:Expr = right == "nothing" ? macro "nothing": try {
-                        Context.parse(right, Context.currentPos());
-                    } catch (e:Dynamic) {
-                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse right side: $e'));
-                        continue;
-                    }
+                            var leftExpr:Expr = try {
+                                Context.parse(left, Context.currentPos());
+                            } catch (e:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $e'));
+                                continue;
+                            }
 
-                    var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
-                    var testFailedExpr = doctestAdapter.generateTestFail(src, "Expected `$right` but was `$left`.");
+                            var rightExpr:Expr = right == "nothing" ? macro "nothing": try {
+                                Context.parse(right, Context.currentPos());
+                            } catch (e:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $e'));
+                                continue;
+                            }
 
-                    testMethodAssertions.push(macro {
-                        var left:Dynamic = "nothing";
-                        try { $leftExpr; } catch (ex:Dynamic) left = ex;
-                        var right:Dynamic;
-                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
+                            var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                            var testFailedExpr = doctestAdapter.generateTestFail(assertion, "Expected `$right` but was `$left`.");
 
-                        if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
-                            $testSuccessExpr;
+                            testMethodAssertions.push(macro {
+                                var left:Dynamic = "nothing";
+                                try { $leftExpr; } catch (ex:Dynamic) left = ex;
+                                var right:Dynamic;
+                                try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
+
+                                if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
+                                    $testSuccessExpr;
+                                } else {
+                                    $testFailedExpr;
+                                }
+                            });
+
+                        // process comparison assertion
                         } else {
-                            $testFailedExpr;
-                        }
-                    });
+                            // poor man's solution until I figure out how to add import statements
+                            var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
+                            totalAssertionsCount++;
 
-                // process comparison assertion
-                } else {
-                    // poor man's solution until I figure out how to add import statements
-                    var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(src.currentDocTestAssertion.assertion, "$1" + src.haxeModuleFQName + "$2");
-                    totalAssertionsCount++;
+                            var doctestExpr = try {
+                                Context.parse(doctestLineFQ, Context.currentPos());
+                            } catch (e:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse assertion: $e'));
+                                continue;
+                            }
 
-                    var doctestExpr = try {
-                        Context.parse(doctestLineFQ, Context.currentPos());
-                    } catch (e:Dynamic) {
-                        testMethodAssertions.push(doctestAdapter.generateTestFail(src, 'Failed to parse assertion: $e'));
-                        continue;
-                    }
-
-                    var leftExpr:Expr = null;
-                    var rightExpr:Expr = null;
-                    var comparator:Binop = null;
-                    switch(doctestExpr.expr) {
-                        case EBinop(op, l, r):
-                            switch (op) {
-                                case OpEq, OpNotEq, OpLte, OpLt, OpGt, OpGte:
-                                    comparator = op;
+                            var leftExpr:Expr = null;
+                            var rightExpr:Expr = null;
+                            var comparator:Binop = null;
+                            switch(doctestExpr.expr) {
+                                case EBinop(op, l, r):
+                                    switch (op) {
+                                        case OpEq, OpNotEq, OpLte, OpLt, OpGt, OpGte:
+                                            comparator = op;
+                                        default:
+                                            testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
+                                            continue;
+                                    }
+                                    leftExpr = l;
+                                    rightExpr = r;
                                 default:
-                                    testMethodAssertions.push(doctestAdapter.generateTestFail(src, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
+                                    testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
                                     continue;
                             }
-                            leftExpr = l;
-                            rightExpr = r;
-                        default:
-                            testMethodAssertions.push(doctestAdapter.generateTestFail(src, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
-                            continue;
-                    }
 
-                    var comparisonExpr:Expr = null;
-                    var testSuccessExpr = doctestAdapter.generateTestSuccess(src);
-                    var testFailedExpr = null;
-                    switch(comparator) {
-                        case OpEq:
-                            comparisonExpr = macro hx.doctest.internal.DocTestUtils.equals(left, right);
-                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' does not equal '$right'.");
-                        case OpNotEq:
-                            comparisonExpr = macro !hx.doctest.internal.DocTestUtils.equals(left, right);
-                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' equals '$right'.");
-                        case OpLte:
-                            comparisonExpr = macro left <= right;
-                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not lower than or equal '$right'.");
-                        case OpLt:
-                            comparisonExpr = macro left < right;
-                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not lower than '$right'.");
-                        case OpGt:
-                            comparisonExpr = macro left > right;
-                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than '$right'.");
-                        case OpGte:
-                            comparisonExpr = macro left >= right;
-                            testFailedExpr = doctestAdapter.generateTestFail(src, "Left side '$left' is not greater than or equal '$right'.");
-                        default: throw "Should never be reached";
-                    }
+                            var comparisonExpr:Expr = null;
+                            var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                            var testFailedExpr = null;
+                            switch(comparator) {
+                                case OpEq:
+                                    comparisonExpr = macro hx.doctest.internal.DocTestUtils.equals(left, right);
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' does not equal '$right'.");
+                                case OpNotEq:
+                                    comparisonExpr = macro !hx.doctest.internal.DocTestUtils.equals(left, right);
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' equals '$right'.");
+                                case OpLte:
+                                    comparisonExpr = macro left <= right;
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not lower than or equal '$right'.");
+                                case OpLt:
+                                    comparisonExpr = macro left < right;
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not lower than '$right'.");
+                                case OpGt:
+                                    comparisonExpr = macro left > right;
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not greater than '$right'.");
+                                case OpGte:
+                                    comparisonExpr = macro left >= right;
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not greater than or equal '$right'.");
+                                default: throw "Should never be reached";
+                            }
 
-                    testMethodAssertions.push(macro {
-                        var left:Dynamic;
-                        try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
-                        var right:Dynamic;
-                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
+                            testMethodAssertions.push(macro {
+                                var left:Dynamic;
+                                try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
+                                var right:Dynamic;
+                                try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
 
-                        if ($comparisonExpr) {
-                            $testSuccessExpr;
-                        } else {
-                            $testFailedExpr;
+                                if ($comparisonExpr) {
+                                    $testSuccessExpr;
+                                } else {
+                                    $testFailedExpr;
+                                }
+                            });
                         }
-                    });
-                }
 
-                // generate a new testMethod if required
-                if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
-                    (!Std.is(doctestAdapter, TestrunnerDocTestAdapter) && testMethodAssertions.length > 0) ||  // for haxe-unit and munit we create a new test-method per assertion
-                    (Std.is(doctestAdapter, TestrunnerDocTestAdapter) && testMethodAssertions.length > 0 && src.isLastLine())
-                ) {
-                    testMethodsCount++;
-                    var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
-                    Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
-                    contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
-                    testMethodAssertions = new Array<Expr>();
+                        if (testMethodAssertions.length == 0)
+                            continue;
+
+                        // generate a new testMethod if required
+                        if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
+                            Std.is(doctestAdapter, HaxeUnitDocTestAdapter) || Std.is(doctestAdapter, MUnitDocTestAdapter) // for haxe-unit and munit we create a new test-method per assertion
+                        ) {
+                            testMethodsCount++;
+                            var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
+                            Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
+                            contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
+                            testMethodAssertions = new Array<Expr>();
+                        }
+
+                    case CompilerConditionStart(condition):
+                        if (condition.indexOf("#end") > -1)
+                            continue;
+
+                        var interp = new hscript.Interp();
+                        var reg = new EReg("[a-zA-Z]\\w*", "gi");
+                        var defines = haxe.macro.Context.getDefines();
+                        var pos = 0;
+                        while (reg.matchSub(condition, pos)) {
+                            var pos2 = reg.matchedPos();
+                            var define = reg.matched(0);
+                            var defineValue = defines.get(define);
+                            interp.variables.set(define, defineValue == null ? false : defineValue);
+                            pos = reg.matchedPos().pos + reg.matchedPos().len;
+                        }
+
+                        try {
+                            var result:Bool = interp.execute(parser.parseString(condition));
+                            compilerConditions.push(result);
+                        } catch (ex:Dynamic) {
+                            Logger.log(ERROR, 'Failed to parse compiler condition "#if $condition" -> ' + ex);
+                        }
+                        continue;
+
+                    case CompilerConditionElseIf(condition):
+                        var interp = new hscript.Interp();
+                        var reg = new EReg("[a-zA-Z]\\w*", "gi");
+                        var defines = haxe.macro.Context.getDefines();
+                        var pos = 0;
+                        while (reg.matchSub(condition, pos)) {
+                            var pos2 = reg.matchedPos();
+                            var define = reg.matched(0);
+                            var defineValue = defines.get(define);
+                            interp.variables.set(define, defineValue == null ? false : defineValue);
+                            pos = reg.matchedPos().pos + reg.matchedPos().len;
+                        }
+
+                        try {
+                            var result:Bool = interp.execute(parser.parseString(condition));
+                            if (compilerConditions.length > 0)
+                                compilerConditions.pop();
+                            compilerConditions.push(result);
+                        } catch (ex:Dynamic) {
+                            Logger.log(ERROR, 'Failed to parse compiler condition "#elseif $condition" -> ' + ex);
+                        }
+                        continue;
+
+                    case CompilerConditionElse:
+                        if (compilerConditions.length > 0) {
+                            // flip the condition state
+                            compilerConditions.push(!compilerConditions.pop());
+                        }
+                        continue;
+
+                    case CompilerConditionEnd:
+                        if (compilerConditions.length > 0)
+                            compilerConditions.pop();
+                        continue;
                 }
-            }
+            } // while (src.nextLine())
 
             // generate a new testMethod if required
             if (testMethodAssertions.length > 0) {
@@ -202,6 +272,7 @@ class DocTestGenerator {
                 var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
                 Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
                 contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
+                testMethodAssertions = new Array<Expr>();
             }
         });
 

@@ -35,28 +35,28 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
     }
 
     override
-    public function generateTestFail(src:SourceFile, errorMsg:String):Expr {
+    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
         return macro {
             cases.push(new hx.doctest.internal.adapters.TinkTestrunnerDocTestAdapter.SingeAssertionCase(
                 null,
                 new tink.testrunner.Assertion(
                     false,
-                    '${src.currentDocTestAssertion.assertion} --> $errorMsg',
-                    $v{src.currentDocTestAssertion.getPosInfos()}
+                    '${assertion.expression} --> $errorMsg',
+                    $v{assertion.getPosInfos()}
                 ))
             );
         };
     }
 
     override
-    public function generateTestSuccess(src:SourceFile):Expr {
+    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
         return macro {
             cases.push(new hx.doctest.internal.adapters.TinkTestrunnerDocTestAdapter.SingeAssertionCase(
                 null,
                 new tink.testrunner.Assertion(
                     true,
-                    $v{src.currentDocTestAssertion.assertion},
-                    $v{src.currentDocTestAssertion.getPosInfos()}
+                    $v{assertion.expression},
+                    $v{assertion.getPosInfos()}
                 ))
             );
         };

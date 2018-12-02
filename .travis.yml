@@ -41,6 +41,7 @@ install:
   #- haxelib run travix install
   - haxelib dev haxe-doctest .
   - haxelib install travix
+  - haxelib install hscript
   - haxelib install hx3compat
   - haxelib install munit
   - haxelib install tink_testrunner
