@@ -111,6 +111,8 @@ class MyObject {
 
 ## <a name="doctest-with-haxeunit"></a>Doc-testing with [Haxe Unit](https://haxe.org/manual/std-unit-testing.html)
 
+**IMPORTANT:** As of Haxe 4, Haxe Unit has been moved to a separate library called [hx3compat](https://lib.haxe.org/p/hx3compat/). So you need to run haxe with `-lib hx3compat`
+
 Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code
 will then be added as test methods to this class.
 
