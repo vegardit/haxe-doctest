@@ -4,6 +4,7 @@
 -lib hscript
 -lib hx3compat
 -lib munit
+-lib utest
 -lib tink_testrunner
 -dce full
 -debug

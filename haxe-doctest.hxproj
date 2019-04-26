@@ -32,6 +32,7 @@
     <library name="munit" />
     <library name="tink_testrunner" />
     <library name="hscript" />
+    <library name="utest" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

@@ -56,6 +56,9 @@ class TestRunner {
         #end
 
         DocTestTest.main();
+
+        UTestTest.main();
+
     }
 
 }

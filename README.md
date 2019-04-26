@@ -10,6 +10,7 @@
 1. [Doc-testing with Tink Testrunner](#doctest-with-tink)
 1. [Doc-testing with Haxe Unit](#doctest-with-haxeunit)
 1. [Doc-testing with MUnit](#doctest-with-munit)
+1. [Doc-testing with UTest](#doctest-with-utest)
 1. [Doc-testing with hx.doctest.DocTestRunner](#doctest-testrunner)
 1. [Doc-testing with FlashDevelop](#doctest-testrunner)
 1. [Installation](#installation)
@@ -178,6 +179,28 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
     public function new() {
         super();
         add(MyMUnitDocTests);
+    }
+}
+```
+
+
+## <a name="doctest-with-utest"></a>Doc-testing with [UTest](https://github.com/fponticelli/utest)
+
+Annotate a class extending `utest.Test` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())` **AND**
+`@:build(utest.utils.TestBuilder.build())` - the order is important. The doc-test assertions from your source code
+will then be added as test methods to this class.
+
+```haxe
+@:build(hx.doctest.DocTestGenerator.generateDocTests())
+@:build(utest.utils.TestBuilder.build())
+class MyUTestDocTests extends utest.Test {
+
+    public static function main() {
+        utest.UTest.run([new MyUTestDocTests()]);
+    }
+
+    function new() {
+        super();
     }
 }
 ```

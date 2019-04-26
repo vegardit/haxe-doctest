@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+### Added
+- support for executing doctests with [utest](https://github.com/fponticelli/utest)
+
 
 ## [1.2.0] - 2018-12-02
 
