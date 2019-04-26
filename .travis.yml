@@ -1,5 +1,6 @@
 sudo: required
-dist: xenial
+dist: trusty # not working for haxe4+lua
+# dist: xenial # not working for haxe3+lua
 
 language: haxe
 
