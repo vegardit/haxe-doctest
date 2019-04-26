@@ -20,6 +20,9 @@ class TestRunner {
         haxe.unit.TestRunner.print = function(v) old(v);
         #end
 
+        trace("###################");
+        trace("HaxeUnitTest");
+        trace("###################");
         HaxeUnitTest.main();
 
         #if !(flash || js)
@@ -41,6 +44,9 @@ class TestRunner {
          *     phantomjs://code/TestRunner.js:2320 in run
          *     phantomjs://code/TestRunner.js:1194 in main
          */
+        trace("###################");
+        trace("MUnitTest");
+        trace("###################");
         MUnitTest.main();
         #end
 
@@ -52,13 +58,20 @@ class TestRunner {
          * 2) fails on Flash with:
          *    Not supported yet.
          */
+        trace("###################");
+        trace("TinkTestrunnerUnitTest");
+        trace("###################");
         TinkTestrunnerUnitTest.main();
         #end
 
-        DocTestTest.main();
-
+        trace("###################");
+        trace("UTestTest");
+        trace("###################");
         UTestTest.main();
 
+        trace("###################");
+        trace("DocTestTest");
+        trace("###################");
+        DocTestTest.main();
     }
-
 }
