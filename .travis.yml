@@ -44,6 +44,7 @@ install:
   - haxelib install hscript
   - haxelib install hx3compat
   - haxelib install munit
+  - haxelib install utest
   - haxelib install tink_testrunner
 
 script:
