@@ -19,10 +19,10 @@ class DocTestAssertion {
     public var charEnd(default, null):Int;
 
     inline
-    public function new(file:SourceFile, lineNumber:Int, expression:String, charStart:Int, charEnd:Int) {
+    public function new(file:SourceFile, expression:String, lineNumber:Int, charStart:Int, charEnd:Int) {
         this.file = file;
-        this.lineNumber = lineNumber;
         this.expression = expression;
+        this.lineNumber = lineNumber;
         this.charStart = charStart;
         this.charEnd = charEnd;
     }

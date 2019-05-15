@@ -86,7 +86,11 @@ class MyObject {
 
     /**
      * <pre><code>
-     * >>> ({ var o=new MyObject("cat"); o.setData("dog"); o.data; }) == "dog"
+     * >>> ({
+     * ...    var o=new MyObject("cat");
+     * ...    o.setData("dog");
+     * ...    o.data;  // return data property outside expression block for comparison
+     * ... }) == "dog"
      * </code></pre>
      */
     public function setData(data:String):Void {

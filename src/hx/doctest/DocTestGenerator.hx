@@ -44,7 +44,7 @@ class DocTestGenerator {
      * @param srcFilePathPattern only files matching the given pattern are scanned for doctest assertions.
      *                           By default all files with the extension <code>.hx</code> are scanned.
      */
-    public static function generateDocTests(srcFolder:String = "src", srcFilePathPattern:String = ".+\\.hx$", docTestIdentifier:String = "* >>>"):Array<Field> {
+    public static function generateDocTests(srcFolder:String = "src", srcFilePathPattern:String = ".+\\.hx$", docTestIdentifier:String = "* >>>", docTestNextLineIdentifier:String = "* ..."):Array<Field> {
 
         var doctestAdapter = getDocTestAdapter();
 
@@ -66,7 +66,7 @@ class DocTestGenerator {
         Logger.log(INFO, 'Activated via @:build on [${Context.getLocalClass().get().module}]');
         Logger.log(INFO, 'Generating test cases for test framework [${doctestAdapter.getFrameworkName()}]...');
         DocTestUtils.walkDirectory(srcFolder, new EReg(srcFilePathPattern, ""), function(srcFilePath) {
-            var src = new SourceFile(srcFilePath, docTestIdentifier);
+            var src = new SourceFile(srcFilePath, docTestIdentifier, docTestNextLineIdentifier);
 
             var testMethodsCount = 0;
             var testMethodAssertions = new Array<Expr>();

@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ### Added
 - new comparions operators === and !== to specify reference check assertions
+- multiline support for assertions
 
 ### Changed
 - comparison operators != and == now also perform deepEquals check for objects

@@ -16,6 +16,7 @@ class SourceFile {
 
     var fileInput:sys.io.FileInput;
     public var docTestIdentifier:String;
+    public var docTestNextLineIdentifier:String;
     public var filePath:String;
     public var fileName:String;
     public var haxePackage:String;
@@ -26,10 +27,11 @@ class SourceFile {
 
     var lines:Array<String>;
 
-    public function new(filePath:String, docTestIdentifier:String) {
+    public function new(filePath:String, docTestIdentifier:String, docTestNextLineIdentifier:String) {
         Logger.log(INFO, 'Scanning [$filePath]...');
         this.filePath = filePath;
         this.docTestIdentifier = docTestIdentifier;
+        this.docTestNextLineIdentifier = docTestNextLineIdentifier;
         fileName = filePath.substringAfterLast("/");
 
         fileInput = sys.io.File.read(filePath, false);
@@ -52,50 +54,77 @@ class SourceFile {
         haxeModuleFQName = haxePackage.length > 0 ? haxePackage + "." + haxeModuleName : haxeModuleName;
     }
 
-    public function nextLine():Bool {
-        try {
-            while (!isLastLine()) {
-                currentLineNumber++;
-                var line = fileInput.readLine().trim();
-
-                if (line == "#else") {
-                    currentLine = CompilerConditionElse;
-                    return true;
-                }
-
-                if (line == "#end") {
-                    currentLine = CompilerConditionEnd;
-                    return true;
-                }
-
-                if (line.startsWith("#if ")) {
-                    currentLine = CompilerConditionStart(line.substringAfter("#if "));
-                    return true;
-                }
-
-                if (line.startsWith("#elseif ")) {
-                    currentLine = CompilerConditionElseIf(line.substringAfter("#elseif "));
-                    return true;
-                }
-
-                var line = line.substringAfter(docTestIdentifier).trim();
-                if (line == "")
-                    continue;
-
-                currentLine = DocTestAssertion(new DocTestAssertion(this, currentLineNumber, line, line.indexOf(docTestIdentifier) + docTestIdentifier.length, line.length));
-                return true;
-            }
-        } catch(e:haxe.io.Eof) {
-            // ignore --> bug in Haxe http://old.haxe.org/forum/thread/4494
-        }
-        fileInput.close();
-        fileInput = null;
-        return false;
-    }
-
     inline
     public function isLastLine():Bool {
         return fileInput == null || fileInput.eof();
+    }
+
+    var lineAhead:String = null;
+
+    public function nextLine():Bool {
+        while (!isLastLine()) {
+            var line:String;
+            try {
+                line = lineAhead == null ? fileInput.readLine().trim() : lineAhead;
+                lineAhead = null;
+            } catch(e:haxe.io.Eof) {
+                // bug in Haxe http://old.haxe.org/forum/thread/4494 / https://github.com/HaxeFoundation/haxe/issues/5418
+                break;
+            }
+            currentLineNumber++;
+
+            if (line == "#else") {
+                currentLine = CompilerConditionElse;
+                return true;
+            }
+
+            if (line == "#end") {
+                currentLine = CompilerConditionEnd;
+                return true;
+            }
+
+            if (line.startsWith("#if ")) {
+                currentLine = CompilerConditionStart(line.substringAfter("#if "));
+                return true;
+            }
+
+            if (line.startsWith("#elseif ")) {
+                currentLine = CompilerConditionElseIf(line.substringAfter("#elseif "));
+                return true;
+            }
+
+            var docTestExpression = line.substringAfter(docTestIdentifier).trim();
+            if (docTestExpression == "")
+                continue;
+            var docTestExpressionLineNumber = currentLineNumber;
+
+            while (!isLastLine()) {
+                try {
+                    lineAhead = fileInput.readLine().trim();
+                } catch(e:haxe.io.Eof) {
+                    // bug in Haxe http://old.haxe.org/forum/thread/4494 / https://github.com/HaxeFoundation/haxe/issues/5418
+                    lineAhead = null;
+                    break;
+                }
+                var docTestExpressionNextLine = lineAhead.substringAfter(docTestNextLineIdentifier).trim();
+                if (docTestExpressionNextLine == "") {
+                    break;
+                } else {
+                    lineAhead = null;
+                    currentLineNumber++;
+                    docTestExpression = docTestExpression + "\n" + docTestExpressionNextLine;
+                }
+            }
+            currentLine = DocTestAssertion(new DocTestAssertion(this, docTestExpression, docTestExpressionLineNumber, line.indexOf(docTestIdentifier) + docTestIdentifier.length, line.length));
+            return true;
+        }
+
+        if (fileInput != null) {
+            fileInput.close();
+            fileInput = null;
+        }
+
+        return false;
     }
 }
 
