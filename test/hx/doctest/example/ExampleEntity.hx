@@ -24,6 +24,7 @@ class ExampleEntity {
      * >>> ExampleEntity.getSingleton() === ExampleEntity.getSingleton()
      * >>> ExampleEntity.getSingleton() !== new ExampleEntity("singleton")
      * >>> ExampleEntity.getSingleton() ==  new ExampleEntity("singleton")
+     * >>> ExampleEntity.getSingleton() !=  new ExampleEntity("foobar")
      * </code></pre>
      */
     public static function getSingleton()

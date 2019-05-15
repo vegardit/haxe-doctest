@@ -50,6 +50,14 @@ class DocTestUtils {
         if (left == right)
             return true;
 
+        // match regular pattern
+        if (Std.is(right, EReg)) {
+            return cast(right, EReg).match(Std.string(left));
+        }
+
+        if (Std.is(left, String))
+            return false;
+
         // compare arrays
         if (Std.is(left, Array) && Std.is(right, Array)) {
             if (left.length == right.length) {
@@ -62,11 +70,6 @@ class DocTestUtils {
             return false;
         }
 
-        // match regular pattern
-        if (Std.is(right, EReg)) {
-            return cast(right, EReg).match(Std.string(left));
-        }
-
         // compare enums
         if (Reflect.isEnumValue(left) && Reflect.isEnumValue(right)) {
             var leftEnum:EnumValue = left;
@@ -74,7 +77,7 @@ class DocTestUtils {
             return leftEnum.equals(rightEnum);
         }
 
-        // compare anonymous structures
+        // compare objects and anonymous structures
         if (Reflect.isObject(left) && Reflect.isObject(right)) {
             var clsLeft = Type.getClass(left);
             var clsLeftName = clsLeft == null ? null : Type.getClassName(clsLeft);
@@ -86,11 +89,11 @@ class DocTestUtils {
 
             var clsLeftFields = Reflect.fields(left);
             clsLeftFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
-            var clsRightFields = Reflect.fields(left);
+            var clsRightFields = Reflect.fields(right);
             clsRightFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
             if (deepEquals(clsLeftFields, clsRightFields)) {
-                for (f in clsLeftFields) {
-                    if (!deepEquals(Reflect.field(clsLeft, f), Reflect.field(clsRight, f)))
+                for (fieldName in clsLeftFields) {
+                    if (!deepEquals(Reflect.field(left, fieldName), Reflect.field(right, fieldName)))
                         return false;
                 }
                 return true;
