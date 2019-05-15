@@ -15,6 +15,20 @@ package hx.doctest.example;
  */
 class ExampleEntity {
 
+
+    private static var SINGLETON:ExampleEntity = new ExampleEntity("singleton");
+
+    /**
+     * <pre><code>
+     * >>> ExampleEntity.getSingleton() ==  ExampleEntity.getSingleton()
+     * >>> ExampleEntity.getSingleton() === ExampleEntity.getSingleton()
+     * >>> ExampleEntity.getSingleton() !== new ExampleEntity("singleton")
+     * >>> ExampleEntity.getSingleton() ==  new ExampleEntity("singleton")
+     * </code></pre>
+     */
+    public static function getSingleton()
+        return SINGLETON;
+
     /**
      * <pre><code>
      * >>> new ExampleEntity("").name      == ""

@@ -81,26 +81,92 @@ class DocTestGenerator {
                         if (compilerConditions.indexOf(false) > -1)
                             continue;
 
-                        // process "throws" assertion
-                        if (assertion.expression.indexOf(" throws ") > -1) {
-                            // poor man's solution until I figure out how to add import statements
-                            var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
-                            totalAssertionsCount++;
+                        // poor man's solution until I figure out how to add import statements
+                        var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
+                        totalAssertionsCount++;
 
+                        // process "===" assertion
+                        if (assertion.expression.indexOf(" === ") > -1) {
+
+                            var left = doctestLineFQ.substringBeforeLast(" === ").trim();
+                            var right = doctestLineFQ.substringAfterLast(" === ").trim();
+
+                            var leftExpr:Expr = try {
+                                Context.parse(left, Context.currentPos());
+                            } catch (ex:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $ex'));
+                                continue;
+                            }
+
+                            var rightExpr:Expr = try {
+                                Context.parse(right, Context.currentPos());
+                            } catch (ex:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $ex'));
+                                continue;
+                            }
+
+                            var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                            var testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` not same instance as `$right`.");
+
+                            testMethodAssertions.push(macro {
+                                var left = $leftExpr;
+                                var right = $rightExpr;
+                                if (left == right)
+                                    $testSuccessExpr;
+                                else
+                                    $testFailedExpr;
+                            });
+                        }
+
+                        // process "!==" assertion
+                        else if (assertion.expression.indexOf(" !== ") > -1) {
+
+                            var left = doctestLineFQ.substringBeforeLast(" !== ").trim();
+                            var right = doctestLineFQ.substringAfterLast(" !== ").trim();
+
+                            var leftExpr:Expr = try {
+                                Context.parse(left, Context.currentPos());
+                            } catch (ex:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $ex'));
+                                continue;
+                            }
+
+                            var rightExpr:Expr = try {
+                                Context.parse(right, Context.currentPos());
+                            } catch (ex:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $ex'));
+                                continue;
+                            }
+
+                            var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                            var testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is same instance right side.");
+
+                            testMethodAssertions.push(macro {
+                                var left = $leftExpr;
+                                var right = $rightExpr;
+                                if (left != right)
+                                    $testSuccessExpr;
+                                else
+                                    $testFailedExpr;
+                            });
+                        }
+
+                        // process "throws" assertion
+                        else if (assertion.expression.indexOf(" throws ") > -1) {
                             var left = doctestLineFQ.substringBeforeLast(" throws ").trim();
                             var right = doctestLineFQ.substringAfterLast(" throws ").trim();
 
                             var leftExpr:Expr = try {
                                 Context.parse(left, Context.currentPos());
-                            } catch (e:Dynamic) {
-                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $e'));
+                            } catch (ex:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $ex'));
                                 continue;
                             }
 
                             var rightExpr:Expr = right == "nothing" ? macro "nothing": try {
                                 Context.parse(right, Context.currentPos());
-                            } catch (e:Dynamic) {
-                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $e'));
+                            } catch (ex:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $ex'));
                                 continue;
                             }
 
@@ -113,23 +179,18 @@ class DocTestGenerator {
                                 var right:Dynamic;
                                 try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
 
-                                if (hx.doctest.internal.DocTestUtils.equals(left, right)) {
+                                if (hx.doctest.internal.DocTestUtils.deepEquals(left, right))
                                     $testSuccessExpr;
-                                } else {
+                                else
                                     $testFailedExpr;
-                                }
                             });
 
                         // process comparison assertion
                         } else {
-                            // poor man's solution until I figure out how to add import statements
-                            var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
-                            totalAssertionsCount++;
-
                             var doctestExpr = try {
                                 Context.parse(doctestLineFQ, Context.currentPos());
-                            } catch (e:Dynamic) {
-                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse assertion: $e'));
+                            } catch (ex:Dynamic) {
+                                testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse assertion: $ex'));
                                 continue;
                             }
 
@@ -157,23 +218,23 @@ class DocTestGenerator {
                             var testFailedExpr = null;
                             switch(comparator) {
                                 case OpEq:
-                                    comparisonExpr = macro hx.doctest.internal.DocTestUtils.equals(left, right);
-                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' does not equal '$right'.");
+                                    comparisonExpr = macro hx.doctest.internal.DocTestUtils.deepEquals(left, right);
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` does not equal `$right`.");
                                 case OpNotEq:
-                                    comparisonExpr = macro !hx.doctest.internal.DocTestUtils.equals(left, right);
-                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' equals '$right'.");
+                                    comparisonExpr = macro !hx.doctest.internal.DocTestUtils.deepEquals(left, right);
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` equals `$right`.");
                                 case OpLte:
                                     comparisonExpr = macro left <= right;
-                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not lower than or equal '$right'.");
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not lower than or equal `$right`.");
                                 case OpLt:
                                     comparisonExpr = macro left < right;
-                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not lower than '$right'.");
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not lower than `$right`.");
                                 case OpGt:
                                     comparisonExpr = macro left > right;
-                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not greater than '$right'.");
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not greater than `$right`.");
                                 case OpGte:
                                     comparisonExpr = macro left >= right;
-                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side '$left' is not greater than or equal '$right'.");
+                                    testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not greater than or equal `$right`.");
                                 default: throw "Should never be reached";
                             }
 
@@ -225,7 +286,7 @@ class DocTestGenerator {
                             var result:Bool = interp.execute(parser.parseString(condition));
                             compilerConditions.push(result);
                         } catch (ex:Dynamic) {
-                            Logger.log(ERROR, 'Failed to parse compiler condition "#if $condition" -> ' + ex);
+                            Logger.log(ERROR, 'Failed to parse compiler condition "#if $condition" -> $ex');
                         }
                         continue;
 
@@ -248,7 +309,7 @@ class DocTestGenerator {
                                 compilerConditions.pop();
                             compilerConditions.push(result);
                         } catch (ex:Dynamic) {
-                            Logger.log(ERROR, 'Failed to parse compiler condition "#elseif $condition" -> ' + ex);
+                            Logger.log(ERROR, 'Failed to parse compiler condition "#elseif $condition" -> $ex');
                         }
                         continue;
 

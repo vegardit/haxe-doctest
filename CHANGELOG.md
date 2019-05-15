@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+### Added
+- new comparions operators === and !== to specify reference check assertions
+
+### Changed
+- comparison operators != and == now also perform deepEquals check for objects
+
 
 ## [1.3.0] - 2019-04-26
 

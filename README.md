@@ -34,7 +34,7 @@ Requires Haxe 3.4.x or higher.
 
 Doc-test assertions are written as part of the source code documentation and are identified by three leading right angle brackets `>>>` before the assertion.
 
-The left and the right side of the assertion must be separated by one of the comparison operators `<`, `>`, `!=`, `<=`, `>=` or the `throws` keyword.
+The left and the right side of the assertion must be separated by one of the comparison operators `<`, `>`, `==`, `!=`, `===`, `!==`, `<=`, `>=` or the `throws` keyword.
 
 If the right side expression is a regeex, e.g. `~/my string/` then it will be matched against the string representation of the left side expression.
 

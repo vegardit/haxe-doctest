@@ -14,11 +14,14 @@ class ExampleTools {
      * <br/>
      * <b>Examples:</b>
      * <pre><code>
-     * >>> ExampleTools.toArray("foo", 2)   == [ "foo", "foo" ]
-     * >>> ExampleTools.toArray("foo", 1)   == [ "foo" ]
-     * >>> ExampleTools.toArray("foo", 0)   == []
-     * >>> ExampleTools.toArray(null, 0)    == []
-     * >>> ExampleTools.toArray("", 0)      == []
+     * >>> ExampleTools.toArray("foo", 2) == [ "foo", "foo" ]
+     * >>> ExampleTools.toArray("foo", 1) == [ "foo" ]
+     * >>> ExampleTools.toArray("foo", 0) == []
+     * >>> ExampleTools.toArray(null, 0)  == []
+     * >>> ExampleTools.toArray("", 0)    == []
+     * >>> ExampleTools.toArray("foo", 0) !== []
+     * >>> ExampleTools.toArray(null, 0)  !== []
+     * >>> ExampleTools.toArray("", 0)    !== []
      * </code></pre>
      */
     public static function toArray<T>(item:T, times:Int):Array<T> {
@@ -34,6 +37,9 @@ class ExampleTools {
      * >>> ExampleTools.toPos(null, null) == { x:null, y:null }
      * >>> ExampleTools.toPos(1, 2)       == { x:1, y:2 }
      * >>> ExampleTools.toPos(1, 2)       == { y:2, x:1 }
+     * >>> ExampleTools.toPos(null, null) !== { x:null, y:null }
+     * >>> ExampleTools.toPos(1, 2)       !== { x:1, y:2 }
+     * >>> ExampleTools.toPos(1, 2)       !== { y:2, x:1 }
      * </code></pre>
      */
     public static function toPos(x: Null<Int>, y: Null<Int>): { x:Null<Int>, y:Null<Int> } {
@@ -42,7 +48,6 @@ class ExampleTools {
             y: y
         }
     }
-
 
     #if (sys && (foo || bar))
     /**

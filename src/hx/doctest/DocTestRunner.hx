@@ -122,12 +122,18 @@ class DocTestRunner {
         exit(exitCode);
     }
 
+    /**
+     * for use within manually created test method
+     */
+    function assertSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+        results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', null, pos);
+    }
 
     /**
      * for use within manually created test method
      */
     function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-        results.add(DocTestUtils.equals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', null, pos);
+        results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', null, pos);
     }
 
 
@@ -166,8 +172,16 @@ class DocTestRunner {
     /**
      * for use within manually created test method
      */
+    function assertNotSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+        results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', null, pos);
+    }
+
+
+    /**
+     * for use within manually created test method
+     */
     function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-        results.add(!DocTestUtils.equals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', null, pos);
+        results.add(!DocTestUtils.deepEquals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', null, pos);
     }
 
 

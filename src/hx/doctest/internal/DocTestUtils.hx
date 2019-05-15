@@ -45,13 +45,16 @@ class DocTestUtils {
         return "  " + CallStack.toString(stack).split("\n").join("\n  ") + "\n";
     }
 
-    public static function equals(left:Dynamic, right:Dynamic):Bool {
+    public static function deepEquals(left:Dynamic, right:Dynamic):Bool {
+
+        if (left == right)
+            return true;
 
         // compare arrays
         if (Std.is(left, Array) && Std.is(right, Array)) {
             if (left.length == right.length) {
                 for (i in 0...left.length) {
-                    if (!equals(left[i], right[i]))
+                    if (!deepEquals(left[i], right[i]))
                         return false;
                 }
                 return true;
@@ -74,26 +77,27 @@ class DocTestUtils {
         // compare anonymous structures
         if (Reflect.isObject(left) && Reflect.isObject(right)) {
             var clsLeft = Type.getClass(left);
-            var clsNameLeft = clsLeft == null ? null : Type.getClassName(clsLeft);
+            var clsLeftName = clsLeft == null ? null : Type.getClassName(clsLeft);
             var clsRight = Type.getClass(right);
             var clsRightName = clsRight == null ? null : Type.getClassName(clsRight);
 
-            if (clsNameLeft == null && clsRightName == null) {
-                var clsLeftFields = Reflect.fields(left);
-                clsLeftFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
-                var clsRightFields = Reflect.fields(left);
-                clsRightFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
-                if (equals(clsLeftFields, clsRightFields)) {
-                    for (f in clsLeftFields) {
-                        if (!equals(Reflect.field(clsLeft, f), Reflect.field(clsRight, f)))
-                            return false;
-                    }
-                    return true;
+            if (clsLeftName != clsRightName)
+                return false;
+
+            var clsLeftFields = Reflect.fields(left);
+            clsLeftFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
+            var clsRightFields = Reflect.fields(left);
+            clsRightFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
+            if (deepEquals(clsLeftFields, clsRightFields)) {
+                for (f in clsLeftFields) {
+                    if (!deepEquals(Reflect.field(clsLeft, f), Reflect.field(clsRight, f)))
+                        return false;
                 }
+                return true;
             }
         }
 
-        return left == right;
+        return false;
     }
 
     public static function substringAfter(str:String, sep:String):String {
