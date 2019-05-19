@@ -29,7 +29,7 @@ class MUnitTest extends TestSuite {
     }
 }
 
-@:build(hx.doctest.DocTestGenerator.generateDocTests("test"))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class MUnitDocTests {
 
     public function new() {

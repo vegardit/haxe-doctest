@@ -15,6 +15,36 @@ import hx.doctest.internal.adapters.*;
 using StringTools;
 using hx.doctest.internal.DocTestUtils;
 
+
+typedef DocTestGeneratorConfig = {
+
+    /**
+     * Location of the source folder to scan for doctests.
+     * <br>
+     * Default: "src"
+     */
+    ?srcFolder:String,
+
+    /**
+     * only files matching the given pattern are scanned for doctest assertions.
+     * By default all files with the extension <code>.hx</code> are scanned.
+     * <br>
+     * Default: ".+\\.hx$"
+     */
+    ?srcFilePathPattern:String,
+
+    /**
+     * Default: "* >>>"
+     */
+    ?docTestLineIdentifier:String,
+
+    /**
+     * Default: "* ..."
+     */
+    ?docTestNextLineIdentifier:String
+}
+
+
 /**
  * The class contains the <code>generateDocTests</code> macro that inserts  unit test
  * methods in the annotated class based on assertions found in the Haxedoc of module files.
@@ -36,15 +66,21 @@ class DocTestGenerator {
 
     /**
      * <pre><code>
-     * @:build(hx.doctest.DocTestGenerator.generateDocTests("src", ".*\\.hx"))
-     *
+     * @:build(hx.doctest.DocTestGenerator.generateDocTests())
+     * @:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"src", srcFilePathPattern:".+\\.hx$"}))
      * </code></pre>
      *
      * @param srcFolder location of the source folder to scan for doctests
      * @param srcFilePathPattern only files matching the given pattern are scanned for doctest assertions.
      *                           By default all files with the extension <code>.hx</code> are scanned.
      */
-    public static function generateDocTests(srcFolder:String = "src", srcFilePathPattern:String = ".+\\.hx$", docTestIdentifier:String = "* >>>", docTestNextLineIdentifier:String = "* ..."):Array<Field> {
+    public static function generateDocTests(?config:DocTestGeneratorConfig):Array<Field> {
+
+        if (config == null) config = {};
+        if (config.srcFolder == null) config.srcFolder = "src";
+        if (config.srcFilePathPattern == null) config.srcFilePathPattern = ".+\\.hx$";
+        if (config.docTestLineIdentifier == null) config.docTestLineIdentifier = "* >>>";
+        if (config.docTestNextLineIdentifier == null) config.docTestNextLineIdentifier = "* ...";
 
         var doctestAdapter = getDocTestAdapter();
 
@@ -65,8 +101,8 @@ class DocTestGenerator {
          */
         Logger.log(INFO, 'Activated via @:build on [${Context.getLocalClass().get().module}]');
         Logger.log(INFO, 'Generating test cases for test framework [${doctestAdapter.getFrameworkName()}]...');
-        DocTestUtils.walkDirectory(srcFolder, new EReg(srcFilePathPattern, ""), function(srcFilePath) {
-            var src = new SourceFile(srcFilePath, docTestIdentifier, docTestNextLineIdentifier);
+        DocTestUtils.walkDirectory(config.srcFolder, new EReg(config.srcFilePathPattern, ""), function(srcFilePath) {
+            var src = new SourceFile(srcFilePath, config.docTestLineIdentifier, config.docTestNextLineIdentifier);
 
             var testMethodsCount = 0;
             var testMethodAssertions = new Array<Expr>();

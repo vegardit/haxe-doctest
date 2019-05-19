@@ -11,7 +11,7 @@ import hx.doctest.DocTestRunner;
  *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests("test"))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class DocTestTest extends DocTestRunner {
 
     public static function main() {

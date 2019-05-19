@@ -118,7 +118,7 @@ class MyObject {
 
 **IMPORTANT:** As of Haxe 4, Haxe Unit has been moved to a separate library called [hx3compat](https://lib.haxe.org/p/hx3compat/). So you need to run haxe with `-lib hx3compat`
 
-Annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code
+In the `<project_root>/test` folder, annotate a class extending `haxe.unit.TestCase` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your source code
 will then be added as test methods to this class.
 
 ```haxe
@@ -140,7 +140,7 @@ class MyHaxeUnitTest extends haxe.unit.TestCase {
 
 ## <a name="doctest-with-tink"></a>Doc-testing with [Tink Testrunner](https://github.com/haxetink/tink_testrunner)
 
-Annotate a class extending `tink.testrunner.BasicSuite` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your
+In the `<project_root>/test` folder, annotate a class extending `tink.testrunner.BasicSuite` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`. The doc-test assertions from your
 source code will then be added as test methods to this class.
 
 ```haxe
@@ -161,7 +161,7 @@ class MyTinkTestrunnerTest extends tink.testrunner.Suite.BasicSuite {
 
 ## <a name="doctest-with-munit"></a>Doc-testing with [MUnit](https://github.com/massiveinteractive/MassiveUnit)
 
-Annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
+In the `<project_root>/test` folder, annotate a test class with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
 The doc-test assertions from your source code will then be added as test methods to this class.
 
 ```haxe
@@ -190,7 +190,7 @@ class MyMUnitDocTestSuite extends massive.munit.TestSuite {
 
 ## <a name="doctest-with-utest"></a>Doc-testing with [UTest](https://github.com/fponticelli/utest)
 
-Annotate a class extending `utest.Test` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())` **AND**
+In the `<project_root>/test` folder, annotate a class extending `utest.Test` with `@:build(hx.doctest.DocTestGenerator.generateDocTests())` **AND**
 `@:build(utest.utils.TestBuilder.build())` - the order is important. The doc-test assertions from your source code
 will then be added as test methods to this class.
 
@@ -216,7 +216,7 @@ haxe-doctest also comes with it's own Testrunner which is recommended for local 
 [FlashDevelop](http://www.flashdevelop.org/). When executed from within FlashDevelop, test failures will be displayed in the result panel as
 clickable errors that directly navigate your to the location in your source code.
 
-To use it, annotate a class extending `hx.doctest.DocTestRunner`  with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
+In the `<project_root>/test` folder, annotate a class extending `hx.doctest.DocTestRunner`  with `@:build(hx.doctest.DocTestGenerator.generateDocTests())`.
 The doc-test assertions from your source code will then be added as test methods to this class.
 
 ```haxe

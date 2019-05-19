@@ -13,7 +13,7 @@ import hx.doctest.DocTestGenerator;
  *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests("test"))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class HaxeUnitTest extends TestCase {
 
     public static function main() {

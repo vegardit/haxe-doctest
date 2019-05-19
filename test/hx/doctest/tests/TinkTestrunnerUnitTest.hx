@@ -14,7 +14,7 @@ import tink.testrunner.Runner;
  *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests("test"))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class TinkTestrunnerUnitTest extends Suite.BasicSuite {
 
     public static function main() {

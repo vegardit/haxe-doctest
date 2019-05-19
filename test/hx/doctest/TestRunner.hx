@@ -23,7 +23,7 @@ class TestRunner {
         trace("###################");
         trace("HaxeUnitTest");
         trace("###################");
-      //  HaxeUnitTest.main();
+        HaxeUnitTest.main();
 
         #if !(flash || js)
         /*
@@ -47,7 +47,7 @@ class TestRunner {
         trace("###################");
         trace("MUnitTest");
         trace("###################");
-      //  MUnitTest.main();
+        MUnitTest.main();
         #end
 
         #if !(flash || js)
@@ -61,13 +61,13 @@ class TestRunner {
         trace("###################");
         trace("TinkTestrunnerUnitTest");
         trace("###################");
-  //      TinkTestrunnerUnitTest.main();
+        TinkTestrunnerUnitTest.main();
         #end
 
         trace("###################");
         trace("UTestTest");
         trace("###################");
-  //      UTestTest.main();
+        UTestTest.main();
 
         trace("###################");
         trace("DocTestTest");

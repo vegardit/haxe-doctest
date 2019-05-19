@@ -6,12 +6,16 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+
+## [2.0.0] - 2019-05-19
+
 ### Added
-- new comparions operators === and !== to specify reference check assertions
+- new comparions operators === and !== to assert reference equality/inequality
 - multiline support for assertions
 
 ### Changed
-- comparison operators != and == now also perform deepEquals check for objects
+- comparison operators != and == now perform deep comparison of objects instead of reference equality/inequality checks
+- the signature of the DocTestGenerator#generateDocTests() has been changed to use the DocTestGeneratorConfig typedef for it's arguments
 
 
 ## [1.3.0] - 2019-04-26

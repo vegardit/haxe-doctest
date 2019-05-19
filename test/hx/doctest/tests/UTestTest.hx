@@ -9,7 +9,7 @@ package hx.doctest.tests;
  *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests("test"))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 @:build(utest.utils.TestBuilder.build())
 class UTestTest extends utest.Test {
 
