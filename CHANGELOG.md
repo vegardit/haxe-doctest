@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 ## [Unreleased]
 
 
+## [2.0.1] - 2019-09-20
+
+### Fixed
+- fixed method signature of DocTestRunner#assertMax()
+
+
 ## [2.0.0] - 2019-05-19
 
 ### Added

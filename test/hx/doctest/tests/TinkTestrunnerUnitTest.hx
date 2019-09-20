@@ -5,9 +5,9 @@
 package hx.doctest.tests;
 
 import hx.doctest.DocTestGenerator;
-import tink.core.Promise;
-import tink.testrunner.Suite;
+import tink.testrunner.Batch;
 import tink.testrunner.Runner;
+import tink.testrunner.Suite;
 
 /**
  * Performs doc-testing with Tink Testrunner.
@@ -18,7 +18,7 @@ import tink.testrunner.Runner;
 class TinkTestrunnerUnitTest extends Suite.BasicSuite {
 
     public static function main() {
-        Runner.run(new TinkTestrunnerUnitTest());
+        Runner.run(Batch.ofSuite(new TinkTestrunnerUnitTest()));
     }
 
     function new() {

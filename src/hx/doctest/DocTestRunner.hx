@@ -148,7 +148,7 @@ class DocTestRunner {
     /**
      * for use within manually created test method
      */
-    function assertMax(result:Int, min:Int, max:Int, ?pos:PosInfos):Void {
+    function assertMax(result:Int, max:Int, ?pos:PosInfos):Void {
         results.add(result <= max, 'assertMax($result, $max)', null, pos);
     }
 
