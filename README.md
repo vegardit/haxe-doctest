@@ -1,8 +1,9 @@
 # haxe-doctest - Haxedoc based unit testing.
 
-[![Build Status](https://travis-ci.org/vegardit/haxe-doctest.svg?branch=master)](https://travis-ci.org/vegardit/haxe-doctest)
+[![Build Status](https://travis-ci.com/vegardit/haxe-doctest.svg?branch=master)](https://travis-ci.com/vegardit/haxe-doctest)
 [![Release](https://img.shields.io/github/release/vegardit/haxe-doctest.svg)](http://lib.haxe.org/p/haxe-doctest)
 [![License](https://img.shields.io/github/license/vegardit/haxe-doctest.svg?label=license)](#license)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 1. [What is it?](#what-is-it)
 1. [Declaring test assertions](#declaring-test-assertions)
@@ -308,4 +309,4 @@ haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest master D:\haxe
 
 ## <a name="license"></a>License
 
-All files are released under the [Apache License 2.0](https://github.com/vegardit/haxe-doctest/blob/master/LICENSE.txt).
+All files are released under the [Apache License 2.0](LICENSE.txt).

@@ -1,5 +1,4 @@
-sudo: required
-dist: xenial
+dist: bionic
 
 language: haxe
 
@@ -9,6 +8,7 @@ os:
 
 haxe:
   - "3.4.7"
+  - "4.0.5"
   - development
 
 env:
