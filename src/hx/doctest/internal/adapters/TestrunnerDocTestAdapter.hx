@@ -23,18 +23,25 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
         return "hx.doctest";
     }
 
-    override
-    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
+    public function generateTestLog(assertion:DocTestAssertion, ?errorMsg:String):Expr {
         return macro {
-            results.add(false, '${assertion.expression} --> $errorMsg', $v{assertion.getSourceLocation()}, null);
+            var success = $v{errorMsg} == null;
+            results.add(
+                success,
+                '${assertion.expression}' + (success ? '' : ' --> $errorMsg'), 
+                $v{assertion.getSourceLocation()}, 
+                $v{assertion.getPosInfos(false)});
         };
     }
 
     override
+    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
+        return generateTestLog(assertion, errorMsg);
+    }
+
+    override
     public function generateTestSuccess(assertion:DocTestAssertion):Expr {
-        return macro {
-            results.add(true, '${assertion.expression}', null, $v{assertion.getPosInfos(false)});
-        };
+        return generateTestLog(assertion);
     }
 
     override

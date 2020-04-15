@@ -207,6 +207,9 @@ interface DocTestResults {
 
     public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos):Void;
 
+    public function toString():String;
+
+    public function getTotalCount():Int;
     public function getSuccessCount():Int;
     public function getFailureCount():Int;
     public function logFailures():Void;
@@ -214,34 +217,68 @@ interface DocTestResults {
 
 
 class DefaultDocTestResults implements DocTestResults {
-
-    var _testsOK = 0;
-    var _testsFailed = new Array<LogEvent>();
+    /**
+     * List of all tests sorted by succes
+     */
+    var _testsRunned = [
+        "total" => new Array<LogEvent>(),
+        "passed" => new Array<LogEvent>(),
+        "failed" => new Array<LogEvent>(),
+    ];
 
     inline
     public function new() {
     }
 
+    /**
+     * Logs and stores test results
+     * 
+     * @param success .
+     * @param msg message to print
+     * @param loc 
+     * @param pos 
+     */
     public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos) {
-        if(success) {
-            Logger.log(OK, msg, null, pos);
-            _testsOK++;
-        } else {
-            _testsFailed.push(Logger.log(ERROR, msg, loc, pos));
-        }
+        var event = new LogEvent(success ? OK : ERROR, msg, loc, pos);
+        event.log();
+
+        _testsRunned.get("total").push(event);
+        _testsRunned.get(success ? "passed" : "failed").push(event);
     }
 
     public function getSuccessCount():Int {
-        return _testsOK;
+        return _testsRunned.get("passed").length;
+    }
+
+    public function getTotalCount():Int {
+        return _testsRunned.get("total").length;
     }
 
     public function getFailureCount():Int {
-        return _testsFailed.length;
+        return _testsRunned.get("failed").length;
     }
 
+    /**
+     * Prints all errors in output
+     */
     public function logFailures():Void {
-        for (event in _testsFailed) {
+        var tests = _testsRunned.get("failed");
+        for (event in tests) {
             event.log(true);
         }
+    }
+
+    /**
+     * Returns all results log as plain string
+     * @return String all runned tests log
+     */
+    public function toString():String {
+        var log = "";
+        var tests = _testsRunned.get("total");
+        for(event in tests) {
+            log += '\n' + event.toString(true);
+        }
+
+        return log;
     }
 }

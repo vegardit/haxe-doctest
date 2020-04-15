@@ -93,10 +93,15 @@ class LogEvent {
         }
     }
 
-    public function toString() {
-        if (loc == null) {
-            return '${pos.fileName}:${pos.lineNumber}: [${level}] ${msg}';
-        }
-        return '${loc.filePath}:${loc.lineNumber}: characters ${loc.charStart}-${loc.charEnd}: [${level}] ${msg}';
+    /**
+     * Generates test log string
+     * 
+     * @param [detailed=false] generate log string with file names and lines info. ERROR logs detailed even when false set
+     * @return String test log info
+     */
+    public function toString(detailed:Bool = false):String {
+        return detailed || level == ERROR ?
+            '${loc.filePath}:${loc.lineNumber}: characters ${loc.charStart}-${loc.charEnd}: [${level}] ${msg}' :
+            '${pos.fileName}:${pos.lineNumber}: [${level}] ${msg}'; 
     }
 }
