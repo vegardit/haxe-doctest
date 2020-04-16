@@ -12,36 +12,36 @@ import hx.doctest.internal.Logger.SourceLocation;
 @:noDoc @:dox(hide)
 class DocTestAssertion {
 
-    public var file(default, null):SourceFile;
-    public var lineNumber(default,null):Int;
-    public var expression(default,null):String;
-    public var charStart(default,null):Int;
-    public var charEnd(default, null):Int;
+   public var file(default, null):SourceFile;
+   public var lineNumber(default,null):Int;
+   public var expression(default,null):String;
+   public var charStart(default,null):Int;
+   public var charEnd(default, null):Int;
 
-    inline
-    public function new(file:SourceFile, expression:String, lineNumber:Int, charStart:Int, charEnd:Int) {
-        this.file = file;
-        this.expression = expression;
-        this.lineNumber = lineNumber;
-        this.charStart = charStart;
-        this.charEnd = charEnd;
-    }
+   inline
+   public function new(file:SourceFile, expression:String, lineNumber:Int, charStart:Int, charEnd:Int) {
+      this.file = file;
+      this.expression = expression;
+      this.lineNumber = lineNumber;
+      this.charStart = charStart;
+      this.charEnd = charEnd;
+   }
 
-    public function getSourceLocation(fullPath:Bool = true):SourceLocation {
-        return {
-            filePath: fullPath ? file.filePath : file.fileName,
-            lineNumber: lineNumber,
-            charStart: charStart,
-            charEnd: charEnd
-        };
-    }
+   public function getSourceLocation(fullPath:Bool = true):SourceLocation {
+      return {
+         filePath: fullPath ? file.filePath : file.fileName,
+         lineNumber: lineNumber,
+         charStart: charStart,
+         charEnd: charEnd
+       };
+   }
 
-    public function getPosInfos(fullPath:Bool = true):haxe.PosInfos {
-        return {
-            fileName: fullPath ? file.filePath : file.fileName,
-            lineNumber: lineNumber,
-            className: "",
-            methodName: ""
-        }
-    }
+   public function getPosInfos(fullPath:Bool = true):haxe.PosInfos {
+      return {
+         fileName: fullPath ? file.filePath : file.fileName,
+         lineNumber: lineNumber,
+         className: "",
+         methodName: ""
+      }
+   }
 }

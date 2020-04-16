@@ -12,91 +12,96 @@ using hx.doctest.internal.DocTestUtils;
 @:noDoc @:dox(hide)
 class Logger {
 
-    #if flash
-    @:keep
-    static var __static_init = {
-        haxe.Log.trace = function(v:Dynamic, ?pos: haxe.PosInfos ):Void {
-            flash.Lib.trace((pos==null ? "" : pos.fileName + ":" + pos.lineNumber + ": ") + v);
-        }
-    }
-    #end
+   #if flash
+   @:keep
+   static var __static_init = {
+      haxe.Log.trace = function(v:Dynamic, ?pos: haxe.PosInfos ):Void {
+         flash.Lib.trace(pos==null ? '$v' : '${pos.fileName}:${pos.lineNumber}: $v');
+      }
+   }
+   #end
 
-    inline
-    public static function log(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos):LogEvent {
-        var event = new LogEvent(level, msg, loc, pos);
-        event.log();
-        return event;
-    }
+   inline
+   public static function log(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos):LogEvent {
+      var event = new LogEvent(level, msg, loc, pos);
+      event.log();
+      return event;
+   }
 }
+
 
 @:noDoc @:dox(hide)
 enum Level {
-    DEBUG;
-    INFO;
-    OK;
-    WARN;
-    ERROR;
+   DEBUG;
+   INFO;
+   OK;
+   WARN;
+   ERROR;
 }
+
 
 @:noDoc @:dox(hide)
 typedef SourceLocation = {
-    var filePath : String;
-    var lineNumber : Int;
-    var charStart: Int;
-    var charEnd: Int;
+   var filePath: String;
+   var lineNumber: Int;
+   var charStart: Int;
+   var charEnd: Int;
 }
+
 
 @:noDoc @:dox(hide)
 class LogEvent {
-    public var level(default, null):Level;
-    public var msg(default, null):String;
-    public var loc(default, null):SourceLocation;
-    public var pos(default, null):haxe.PosInfos;
+   public var level(default, null):Level;
+   public var msg(default, null):String;
+   public var loc(default, null):SourceLocation;
+   public var pos(default, null):haxe.PosInfos;
 
-    inline
-    public function new(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos) {
-        this.level = level;
-        this.msg = msg;
-        this.loc = loc;
-        this.pos = pos;
-    }
+   inline
+   public function new(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos) {
+      this.level = level;
+      this.msg = msg;
+      this.loc = loc;
+      this.pos = pos;
+   }
 
-    public function log(detailedErrorLocation = false) {
-        if (level == DEBUG) {
+   public function log(detailedErrorLocation = false) {
+      switch(level) {
+         case DEBUG:
             #if debug
             if (loc == null) {
-                haxe.Log.trace('[DEBUG] ${msg}', pos);
+               haxe.Log.trace('[DEBUG] ${msg}', pos);
             } else {
-                haxe.Log.trace('[DEBUG] ${msg}', { fileName: loc.filePath, lineNumber: loc.lineNumber, className: "", methodName: "" });
+               haxe.Log.trace('[DEBUG] ${msg}', {fileName: loc.filePath, lineNumber: loc.lineNumber, className: "", methodName: ""});
             }
             #end
-        } else if (level == ERROR) {
-            #if sys
-                if(detailedErrorLocation || loc == null)
-                    Sys.stderr().writeString(toString() + '\n');
-                else
-                    Sys.stderr().writeString(("/" + loc.filePath).substringAfterLast("/") + ':${loc.lineNumber}: [${level}] ${msg}\n');
-                Sys.stderr().flush();
-            #else
-                if (loc == null) {
-                    haxe.Log.trace('[ERROR] ${msg}', pos);
-                } else {
-                    haxe.Log.trace('[ERROR] ${msg}', { fileName: loc.filePath, lineNumber: loc.lineNumber, className: "", methodName: "" });
-                }
-            #end
-        } else {
-            if (loc == null) {
-                haxe.Log.trace('[${level}] ${msg}', pos);
-            } else {
-                haxe.Log.trace('[${level}] ${msg}', { fileName: loc.filePath, lineNumber: loc.lineNumber, className: "", methodName: "" });
-            }
-        }
-    }
 
-    public function toString() {
-        if (loc == null) {
-            return '${pos.fileName}:${pos.lineNumber}: [${level}] ${msg}';
-        }
-        return '${loc.filePath}:${loc.lineNumber}: characters ${loc.charStart}-${loc.charEnd}: [${level}] ${msg}';
-    }
+         case ERROR:
+            #if sys
+            if(detailedErrorLocation || loc == null)
+               Sys.stderr().writeString(toString() + '\n');
+            else
+               Sys.stderr().writeString(("/" + loc.filePath).substringAfterLast("/") + ':${loc.lineNumber}: [${level}] ${msg}\n');
+            Sys.stderr().flush();
+            #else
+            if (loc == null) {
+               haxe.Log.trace('[ERROR] ${msg}', pos);
+            } else {
+               haxe.Log.trace('[ERROR] ${msg}', {fileName: loc.filePath, lineNumber: loc.lineNumber, className: "", methodName: ""});
+            }
+            #end
+
+         default:
+            if (loc == null) {
+               haxe.Log.trace('[${level}] ${msg}', pos);
+            } else {
+               haxe.Log.trace('[${level}] ${msg}', {fileName: loc.filePath, lineNumber: loc.lineNumber, className: "", methodName: ""});
+            }
+      }
+   }
+
+   public function toString() {
+      if (loc == null)
+         return '${pos.fileName}:${pos.lineNumber}: [${level}] ${msg}';
+      return '${loc.filePath}:${loc.lineNumber}: characters ${loc.charStart}-${loc.charEnd}: [${level}] ${msg}';
+   }
 }

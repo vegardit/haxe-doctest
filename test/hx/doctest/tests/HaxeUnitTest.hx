@@ -16,14 +16,13 @@ import hx.doctest.DocTestGenerator;
 @:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class HaxeUnitTest extends TestCase {
 
-    public static function main() {
-        var runner = new TestRunner();
-        runner.add(new HaxeUnitTest());
-        runner.run();
-    }
+   public static function main() {
+      var runner = new TestRunner();
+      runner.add(new HaxeUnitTest());
+      runner.run();
+   }
 
-    function new() {
-        super();
-    }
-
+   function new() {
+      super();
+   }
 }

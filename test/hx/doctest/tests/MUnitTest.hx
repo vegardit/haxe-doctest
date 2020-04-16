@@ -16,23 +16,22 @@ import massive.munit.client.RichPrintClient;
 @:keep
 class MUnitTest extends TestSuite {
 
-    public static function main() {
-        var client = new RichPrintClient();
-        var runner = new TestRunner(client);
-        runner.run([MUnitTest]);
-    }
+   public static function main() {
+      var client = new RichPrintClient();
+      var runner = new TestRunner(client);
+      runner.run([MUnitTest]);
+   }
 
-    public function new() {
-        super();
+   public function new() {
+      super();
 
-        add(MUnitDocTests);
-    }
+      add(MUnitDocTests);
+   }
 }
 
 @:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class MUnitDocTests {
 
-    public function new() {
-    }
-
+   public function new() {
+   }
 }

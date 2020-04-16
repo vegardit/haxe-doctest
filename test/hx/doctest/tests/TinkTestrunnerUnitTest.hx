@@ -17,12 +17,11 @@ import tink.testrunner.Suite;
 @:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class TinkTestrunnerUnitTest extends Suite.BasicSuite {
 
-    public static function main() {
-        Runner.run(Batch.ofSuite(new TinkTestrunnerUnitTest()));
-    }
+   public static function main() {
+      Runner.run(Batch.ofSuite(new TinkTestrunnerUnitTest()));
+   }
 
-    function new() {
-        super({name: Type.getClassName(Type.getClass(this))}, []);
-    }
-
+   function new() {
+      super({name: Type.getClassName(Type.getClass(this))}, []);
+   }
 }

@@ -14,38 +14,38 @@ import hx.doctest.internal.DocTestAssertion;
 @:noDoc @:dox(hide)
 class TestrunnerDocTestAdapter extends DocTestAdapter {
 
-    inline
-    public function new() {
-    }
+   inline
+   public function new() {
+   }
 
-    override
-    public function getFrameworkName():String {
-        return "hx.doctest";
-    }
+   override
+   public function getFrameworkName():String {
+      return "hx.doctest";
+   }
 
-    override
-    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
-        return macro {
-            results.add(false, '${assertion.expression} --> $errorMsg', $v{assertion.getSourceLocation()}, null);
-        };
-    }
+   override
+   public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
+      return macro {
+         results.add(false, '${assertion.expression} --> $errorMsg', $v{assertion.getSourceLocation()}, null);
+      };
+   }
 
-    override
-    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
-        return macro {
-            results.add(true, '${assertion.expression}', null, $v{assertion.getPosInfos(false)});
-        };
-    }
+   override
+   public function generateTestSuccess(assertion:DocTestAssertion):Expr {
+      return macro {
+         results.add(true, '${assertion.expression}', null, $v{assertion.getPosInfos(false)});
+      };
+   }
 
-    override
-    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
-        assertions.unshift(macro {
-            var pos = { fileName: $v{Context.getLocalModule()}, lineNumber:1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
-            hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
-            hx.doctest.internal.Logger.log(INFO, '${descr}...', pos);
-            hx.doctest.internal.Logger.log(INFO, '**********************************************************', pos);
-        });
+   override
+   public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
+      assertions.unshift(macro {
+         var pos = { fileName: $v{Context.getLocalModule()}, lineNumber:1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
+         hx.doctest.internal.Logger.log(INFO, "**********************************************************", pos);
+         hx.doctest.internal.Logger.log(INFO, '${descr}...', pos);
+         hx.doctest.internal.Logger.log(INFO, "**********************************************************", pos);
+      });
 
-        return super.generateTestMethod(methodName, descr, assertions);
-    }
+      return super.generateTestMethod(methodName, descr, assertions);
+   }
 }

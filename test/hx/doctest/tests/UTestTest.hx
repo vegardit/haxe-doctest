@@ -13,28 +13,28 @@ package hx.doctest.tests;
 @:build(utest.utils.TestBuilder.build())
 class UTestTest extends utest.Test {
 
-    public static function main() {
-        var runner = new utest.Runner();
-        runner.addCase(new UTestTest());
-        new PrintReportNoExit(runner);
-        runner.run();
-    }
+   public static function main() {
+      var runner = new utest.Runner();
+      runner.addCase(new UTestTest());
+      new PrintReportNoExit(runner);
+      runner.run();
+   }
 
-    @:keep
-    public function new() {
-       super();
-    }
+   @:keep
+   public function new() {
+      super();
+   }
 }
 
 class PrintReportNoExit extends utest.ui.text.PrintReport {
 
-    public function new(runner:utest.Runner) {
-        super(runner);
-    }
+   public function new(runner:utest.Runner) {
+      super(runner);
+   }
 
-    override
-    function complete(result:utest.ui.common.PackageResult) {
-        this.result = result;
-        if (handler != null) handler(this);
-    }
+   override
+   function complete(result:utest.ui.common.PackageResult) {
+      this.result = result;
+      if (handler != null) handler(this);
+   }
 }
