@@ -14,14 +14,17 @@ import hx.doctest.internal.DocTestAssertion;
 @:noDoc @:dox(hide)
 class HaxeUnitDocTestAdapter extends DocTestAdapter {
 
+
    inline
    public function new() {
    }
+
 
    override
    public function getFrameworkName():String {
       return "haxe.unit";
    }
+
 
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
@@ -33,6 +36,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
          throw currentTest;
       };
    }
+
 
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {

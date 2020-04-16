@@ -73,6 +73,7 @@ class DocTestUtils {
       return false;
    }
 
+
    public static function exceptionStackAsString():String {
       var stack = CallStack.exceptionStack();
       var i = -1;
@@ -103,6 +104,7 @@ class DocTestUtils {
       return "  " + CallStack.toString(stack).split("\n").join("\n  ") + "\n";
    }
 
+
    #if macro
    public static function implementsInterface(clazz:haxe.macro.Type.ClassType, interfaceName:String):Bool {
       for(iface in clazz.interfaces)
@@ -112,11 +114,13 @@ class DocTestUtils {
    }
    #end
 
+
    public static function substringAfter(str:String, sep:String):String {
       var foundAt = str.indexOf(sep);
       if (foundAt == -1) return "";
       return str.substring(foundAt + sep.length);
    }
+
 
    public static function substringAfterLast(str:String, sep:String):String {
       var foundAt = str.lastIndexOf(sep);
@@ -124,17 +128,20 @@ class DocTestUtils {
       return str.substring(foundAt + sep.length);
    }
 
+
    public static function substringBefore(str:String, sep:String):String {
       var foundAt = str.indexOf(sep);
       if (foundAt == -1) return "";
       return str.substring(0, foundAt);
    }
 
+
    public static function substringBeforeLast(str:String, sep:String):String {
       var foundAt = str.lastIndexOf(sep);
       if (foundAt == -1) return "";
       return str.substring(0, foundAt);
    }
+
 
    #if (sys || macro)
    public static function walkDirectory(directory:String, filePattern:EReg, onFile:String -> Void):Void {

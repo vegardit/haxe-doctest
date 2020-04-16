@@ -15,17 +15,17 @@ import hx.doctest.internal.DocTestAssertion;
 @:abstract
 class DocTestAdapter {
 
-   public function getFrameworkName():String {
+   public function getFrameworkName():String
       throw "Not implemented";
-   }
 
-   public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
-      throw "Not implemented";
-   }
 
-   public function generateTestSuccess(assertion:DocTestAssertion):Expr {
+   public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr
       throw "Not implemented";
-   }
+
+
+   public function generateTestSuccess(assertion:DocTestAssertion):Expr
+      throw "Not implemented";
+
 
    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
       var contextPos = Context.currentPos();
@@ -43,6 +43,7 @@ class DocTestAdapter {
          pos: contextPos
       };
    }
+
 
    public function onFinish(contextFields:Array<Field>) {
    }

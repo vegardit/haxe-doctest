@@ -34,6 +34,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
       return super.generateTestMethod(methodName, descr, assertions);
    }
 
+
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
       return macro {
@@ -48,6 +49,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
       };
    }
 
+
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
@@ -61,6 +63,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
          );
       };
    }
+
 
    override
    public function onFinish(contextFields:Array<Field>) {
@@ -91,10 +94,12 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 class SingeAssertionCase extends tink.testrunner.Case.BasicCase {
    private var assertion:tink.testrunner.Assertion;
 
+
    public function new(pos:haxe.PosInfos, assertion:tink.testrunner.Assertion) {
       super(pos);
       this.assertion = assertion;
    }
+
 
    override
    function execute():tink.testrunner.Assertions

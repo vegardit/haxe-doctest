@@ -13,14 +13,17 @@ import haxe.macro.Expr;
 @:noDoc @:dox(hide)
 class UTestDocTestAdapter extends DocTestAdapter {
 
+
    inline
    public function new() {
    }
+
 
    override
    public function getFrameworkName():String {
       return "utest";
    }
+
 
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
@@ -29,12 +32,14 @@ class UTestDocTestAdapter extends DocTestAdapter {
       };
    }
 
+
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
          utest.Assert.pass('${assertion.file.fileName}:${assertion.lineNumber} [OK] ${assertion.expression}', $v{assertion.getPosInfos()});
       };
    }
+
 
    override
    public function onFinish(contextFields:Array<Field>) {

@@ -16,7 +16,7 @@ class Logger {
    @:keep
    static var __static_init = {
       haxe.Log.trace = function(v:Dynamic, ?pos: haxe.PosInfos ):Void {
-         flash.Lib.trace(pos==null ? '$v' : '${pos.fileName}:${pos.lineNumber}: $v');
+         flash.Lib.trace(pos == null ? '$v' : '${pos.fileName}:${pos.lineNumber}: $v');
       }
    }
    #end
@@ -56,6 +56,7 @@ class LogEvent {
    public var loc(default, null):SourceLocation;
    public var pos(default, null):haxe.PosInfos;
 
+
    inline
    public function new(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos) {
       this.level = level;
@@ -63,6 +64,7 @@ class LogEvent {
       this.loc = loc;
       this.pos = pos;
    }
+
 
    public function log(detailedErrorLocation = false) {
       switch(level) {
@@ -78,7 +80,7 @@ class LogEvent {
          case ERROR:
             #if sys
             if(detailedErrorLocation || loc == null)
-               Sys.stderr().writeString(toString() + '\n');
+               Sys.stderr().writeString('$this\n');
             else
                Sys.stderr().writeString(("/" + loc.filePath).substringAfterLast("/") + ':${loc.lineNumber}: [${level}] ${msg}\n');
             Sys.stderr().flush();
@@ -98,6 +100,7 @@ class LogEvent {
             }
       }
    }
+
 
    public function toString() {
       if (loc == null)

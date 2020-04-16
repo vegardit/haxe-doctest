@@ -14,30 +14,33 @@ using hx.doctest.internal.DocTestUtils;
 class SourceFile {
    static var REGEX_PACKAGE_NAME = ~/package\s+(([a-zA-Z_]{1}[a-zA-Z]*){2,10}\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,30}((\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,61})*)?)\s?;/g;
 
-   public var docTestIdentifier:String;
-   public var docTestNextLineIdentifier:String;
-   public var filePath:String;
-   public var fileName:String;
-   public var haxePackage:String;
-   public var haxeModuleName:String;
-   public var haxeModuleFQName:String;
    public var currentLine(default, null):LineType;
    public var currentLineNumber(default, null) = 0;
+
+   public var docTestIdentifier(default, null):String;
+   public var docTestNextLineIdentifier(default, null):String;
+
+   public var filePath(default, null):String;
+   public var fileName(default, null):String;
+
+   public var haxePackage:String;
+   public var haxeModuleName(default, null):String;
+   public var haxeModuleFQName(default, null):String;
 
    var fileInput:sys.io.FileInput;
    var lines:Array<String>;
    var lineAhead:String;
 
+
    public function new(filePath:String, docTestIdentifier:String, docTestNextLineIdentifier:String) {
-      Logger.log(INFO, 'Scanning [$filePath]...');
       this.filePath = filePath;
+      this.fileName = filePath.substringAfterLast("/");
       this.docTestIdentifier = docTestIdentifier;
       this.docTestNextLineIdentifier = docTestNextLineIdentifier;
-      fileName = filePath.substringAfterLast("/");
 
+      Logger.log(INFO, 'Scanning [$filePath]...');
       fileInput = sys.io.File.read(filePath, false);
       haxePackage = "";
-
       try {
          while (!isLastLine()) {
             var line = fileInput.readLine();
@@ -55,10 +58,11 @@ class SourceFile {
       haxeModuleFQName = haxePackage.length > 0 ? '$haxePackage.$haxeModuleName' : haxeModuleName;
    }
 
+
    inline
-   public function isLastLine():Bool {
+   public function isLastLine():Bool
       return fileInput == null || fileInput.eof();
-   }
+
 
    public function nextLine():Bool {
       while (!isLastLine()) {
@@ -83,18 +87,19 @@ class SourceFile {
          }
 
          if (line.startsWith("#if ")) {
-            currentLine = CompilerConditionStart(line.substringAfter("#if "));
+            currentLine = CompilerConditionStart(line.substringAfter("#if ").trim());
             return true;
          }
 
          if (line.startsWith("#elseif ")) {
-            currentLine = CompilerConditionElseIf(line.substringAfter("#elseif "));
+            currentLine = CompilerConditionElseIf(line.substringAfter("#elseif ").trim());
             return true;
          }
 
          var docTestExpression = line.substringAfter(docTestIdentifier).trim();
          if (docTestExpression == "")
             continue;
+
          var docTestExpressionLineNumber = currentLineNumber;
 
          while (!isLastLine()) {
@@ -114,7 +119,13 @@ class SourceFile {
                docTestExpression = docTestExpression + "\n" + docTestExpressionNextLine;
             }
          }
-         currentLine = DocTestAssertion(new DocTestAssertion(this, docTestExpression, docTestExpressionLineNumber, line.indexOf(docTestIdentifier) + docTestIdentifier.length, line.length));
+         currentLine = DocTestAssertion(new DocTestAssertion(
+            this,
+            docTestExpression,
+            docTestExpressionLineNumber,
+            line.indexOf(docTestIdentifier) + docTestIdentifier.length,
+            line.length
+         ));
          return true;
       }
 

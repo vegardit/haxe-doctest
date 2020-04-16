@@ -20,6 +20,7 @@ class DocTestRunner {
 
    var results:DocTestResults;
 
+
    static function exit(exitCode:Int):Void {
       #if travix
          travix.Logger.exit(exitCode);
@@ -45,8 +46,10 @@ class DocTestRunner {
       #end
    }
 
+
    public function new() {
    }
+
 
    /**
     * Runs the accumulated doc tests.
@@ -68,7 +71,7 @@ class DocTestRunner {
       var funcNames = new Array<String>();
       for (funcName in Type.getInstanceFields(thisClass)) {
          if (funcName.startsWith("test"))
-             funcNames.push(funcName);
+            funcNames.push(funcName);
       }
       funcNames.sort(function(a, b) return a < b ? -1 : a > b ? 1 : 0);
       for (funcName in funcNames) {
@@ -206,9 +209,7 @@ class DocTestRunner {
 
 
 interface DocTestResults {
-
    public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos):Void;
-
    public function getSuccessCount():Int;
    public function getFailureCount():Int;
    public function logFailures():Void;
@@ -220,9 +221,11 @@ class DefaultDocTestResults implements DocTestResults {
    var _testsPassed = 0;
    var _testsFailed = new Array<LogEvent>();
 
+
    inline
    public function new() {
    }
+
 
    public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos) {
       if(success) {
@@ -233,16 +236,20 @@ class DefaultDocTestResults implements DocTestResults {
       }
    }
 
+
    public function getSuccessCount():Int
       return _testsPassed;
 
+
    public function getFailureCount():Int
       return _testsFailed.length;
+
 
    public function logFailures():Void {
       for (event in _testsFailed)
          event.log(true);
    }
+
 
    public function toString():String
       return 'DocTestResults[successCount=${getSuccessCount()}, failureCount=${getFailureCount()}]';

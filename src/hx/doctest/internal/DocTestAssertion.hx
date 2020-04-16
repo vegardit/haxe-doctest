@@ -18,6 +18,7 @@ class DocTestAssertion {
    public var charStart(default,null):Int;
    public var charEnd(default, null):Int;
 
+
    inline
    public function new(file:SourceFile, expression:String, lineNumber:Int, charStart:Int, charEnd:Int) {
       this.file = file;
@@ -27,14 +28,16 @@ class DocTestAssertion {
       this.charEnd = charEnd;
    }
 
+
    public function getSourceLocation(fullPath:Bool = true):SourceLocation {
       return {
          filePath: fullPath ? file.filePath : file.fileName,
          lineNumber: lineNumber,
          charStart: charStart,
          charEnd: charEnd
-       };
+      };
    }
+
 
    public function getPosInfos(fullPath:Bool = true):haxe.PosInfos {
       return {

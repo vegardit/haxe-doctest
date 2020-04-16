@@ -64,6 +64,7 @@ class DocTestGenerator {
       Context.defined("lua") ?  #if (haxe_ver < 4) 20 #else 30 #end : // to avoid "too many local variables" with Lua target
       100; // to avoid "error: code too large" with Java target
 
+
    /**
     * <pre><code>
     * @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -119,7 +120,8 @@ class DocTestGenerator {
                       continue;
 
                   // poor man's solution until I figure out how to add import statements
-                  var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g").replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
+                  var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g")
+                     .replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
                   totalAssertionsCount++;
 
                   // process "===" assertion
@@ -240,13 +242,17 @@ class DocTestGenerator {
                               case OpEq, OpNotEq, OpLte, OpLt, OpGt, OpGte:
                                  comparator = op;
                               default:
-                                 testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
+                                 testMethodAssertions.push(
+                                    doctestAdapter.generateTestFail(assertion, "Assertion is missing one of the valid comparison operators: == != <= < > =>")
+                                 );
                                  continue;
                            }
                            leftExpr = l;
                            rightExpr = r;
                         default:
-                           testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, "Assertion is missing one of the valid comparison operators: == != <= < > =>"));
+                           testMethodAssertions.push(
+                              doctestAdapter.generateTestFail(assertion, "Assertion is missing one of the valid comparison operators: == != <= < > =>")
+                           );
                            continue;
                      }
 
@@ -294,7 +300,8 @@ class DocTestGenerator {
 
                   // generate a new testMethod if required
                   if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
-                     Std.is(doctestAdapter, HaxeUnitDocTestAdapter) || Std.is(doctestAdapter, MUnitDocTestAdapter) // for haxe-unit and munit we create a new test-method per assertion
+                     // for haxe-unit and munit we create a new test-method per assertion:
+                     Std.is(doctestAdapter, HaxeUnitDocTestAdapter) || Std.is(doctestAdapter, MUnitDocTestAdapter)
                   ) {
                      testMethodsCount++;
                      var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
@@ -378,6 +385,7 @@ class DocTestGenerator {
       Logger.log(INFO, 'Generated $totalAssertionsCount test assertions.');
       return contextFields;
    }
+
 
    static function getDocTestAdapter():DocTestAdapter {
       var clazz:ClassType = Context.getLocalClass().get();
