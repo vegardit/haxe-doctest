@@ -38,10 +38,18 @@ class ExampleEntity {
     * >>> ExampleEntity.getSingleton() ==  ExampleEntity.getSingleton()
     * >>> ExampleEntity.getSingleton() === ExampleEntity.getSingleton()
     * >>> ExampleEntity.getSingleton() !== new ExampleEntity("singleton")
+    * </pre></code>
+    */
+   #if !flash
+   // The == and != assertions use DocTestUtils.deepEquals for comparing two objects, which utilizes Reflect.fields().
+   // However, Reflect.fields() is apparently broken for the Flash target as it always returns an empty list.
+   /**
+    * <pre><code>
     * >>> ExampleEntity.getSingleton() ==  new ExampleEntity("singleton")
     * >>> ExampleEntity.getSingleton() !=  new ExampleEntity("foobar")
     * </code></pre>
     */
+   #end
    public static function getSingleton()
       return SINGLETON;
 

@@ -315,10 +315,9 @@ class DocTestGenerator {
                      var pos2 = reg.matchedPos();
                      var define = reg.matched(0);
                      var defineValue = defines.get(define);
-                     interp.variables.set(define, defineValue == null ? false : defineValue);
+                     interp.variables.set(define, defineValue == null ? false : defineValue == "1" ? true : defineValue);
                      pos = reg.matchedPos().pos + reg.matchedPos().len;
                   }
-
                   try {
                      var result:Bool = interp.execute(parser.parseString(condition));
                      compilerConditions.push(result);
