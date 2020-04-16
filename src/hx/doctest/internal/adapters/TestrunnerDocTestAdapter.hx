@@ -19,7 +19,6 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
    public function new() {
    }
 
-
    override
    public function getFrameworkName():String {
       return "hx.doctest";
@@ -40,7 +39,6 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
          results.add(true, '${assertion.expression}', $v{assertion.getSourceLocation()});
       };
    }
-
 
    override
    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {

@@ -46,10 +46,10 @@ enum Level {
 
 @:noDoc @:dox(hide)
 typedef SourceLocation = {
-   var filePath: String;
-   var lineNumber: Int;
-   var charStart: Int;
-   var charEnd: Int;
+    var filePath : String;
+    var lineNumber : Int;
+    var charStart: Int;
+    var charEnd: Int;
 }
 
 
@@ -111,7 +111,6 @@ class LogEvent {
       }
    }
 
-
    function toStringInternal(withDetailedLocation = true):String {
       switch (pos.value){
          //SourceLocation:
@@ -126,7 +125,6 @@ class LogEvent {
             return '${filePath}:${loc.lineNumber}: [${level}] ${msg}';
       }
    }
-
 
    public function toString():String
       return toStringInternal(true);
