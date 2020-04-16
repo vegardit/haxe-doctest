@@ -25,13 +25,15 @@ class TestRunner {
       trace("###################");
       HaxeUnitTest.main();
 
-      #if !(flash || js)
+      #if !(eval || flash || js)
       /*
        * MUnit seems broken on some platforms:
        *
-       * 1) fails on Flash with: lib\mconsole/1,6,0/mconsole/Console.hx:469: characters 3-94 : flash.utils.Object cannot be called
+       * 1) fails on Eval with: Field index for print not found on prototype mconsole.FilePrinter
        *
-       * 2) fails on JS with:
+       * 2) fails on Flash with: lib\mconsole/1,6,0/mconsole/Console.hx:469: characters 3-94 : flash.utils.Object cannot be called
+       *
+       * 3) fails on JS with:
        *   ReferenceError: Can't find variable: addToQueue
        *     undefined:1 in eval code
        *     :0 in eval

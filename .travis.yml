@@ -17,6 +17,7 @@ haxe:
 env:
   - HAXE_TARGET=cpp
   - HAXE_TARGET=cs
+  - HAXE_TARGET=eval
   - HAXE_TARGET=flash
   - HAXE_TARGET=lua
   - HAXE_TARGET=neko
@@ -26,6 +27,7 @@ env:
   - HAXE_TARGET=python
   - HAXE_TARGET=js
   - HAXE_TARGET=java
+  - HAXE_TARGET=jvm
 
 matrix:
   fast_finish: true
@@ -34,6 +36,10 @@ matrix:
     - env: HAXE_TARGET=flash  # see https://github.com/travis-ci/travis-ci/issues/8481
     - os: osx
   exclude:
+    - haxe: 3.4.7
+      env: HAXE_TARGET=eval
+    - haxe: 3.4.7
+      env: HAXE_TARGET=jvm
     - haxe: development
       os: osx
 
