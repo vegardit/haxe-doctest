@@ -387,7 +387,7 @@ class DocTestGenerator {
          #if tink_testrunner // to prevent "Type not found : tink.testrunner.Case" in TinkTestrunnerDocTestAdapter when tink_testrunner is not present
          if (clazz.module == "tink.testrunner.Suite") return new TinkTestrunnerDocTestAdapter();
          #end
-         if (implementsInterface(clazz, "utest.ITest")) return new UTestDocTestAdapter();
+         if (clazz.implementsInterface("utest.ITest")) return new UTestDocTestAdapter();
 
          if (clazz.superClass == null) break;
          clazz = clazz.superClass.t.get();
@@ -395,13 +395,6 @@ class DocTestGenerator {
 
       // if no known super class was found, we expect it to be a MUnit test case
       return new MUnitDocTestAdapter();
-   }
-
-   static function implementsInterface(clazz:ClassType, interfaceName:String):Bool {
-      for(iface in clazz.interfaces)
-         if(iface.t.toString() == interfaceName)
-            return true;
-      return false;
    }
 }
 #end

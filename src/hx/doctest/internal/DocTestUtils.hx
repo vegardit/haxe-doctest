@@ -7,6 +7,7 @@ package hx.doctest.internal;
 import haxe.CallStack;
 import haxe.macro.MacroStringTools;
 
+
 using StringTools;
 
 /**
@@ -14,36 +15,6 @@ using StringTools;
  */
 @:noDoc @:dox(hide)
 class DocTestUtils {
-
-   public static function exceptionStackAsString():String {
-      var stack = CallStack.exceptionStack();
-      var i = -1;
-      for (elem in stack) {
-         i++;
-         switch(elem) {
-            case FilePos(elem2, file, line):
-               if (file.startsWith("hx/doctest")) {
-                  stack = stack.slice(0, i);
-                  break;
-               }
-               if (elem2 != null) switch(elem2) {
-                  case Method(classname, method):
-                     if (classname.startsWith("hx.doctest.")) {
-                        stack = stack.slice(0, i);
-                        break;
-                     }
-                  default:
-               }
-            case Method(classname, method):
-               if (classname.startsWith("hx.doctest.")) {
-                  stack = stack.slice(0, i);
-                  break;
-               }
-            default:
-         }
-      }
-      return "  " + CallStack.toString(stack).split("\n").join("\n  ") + "\n";
-   }
 
    public static function deepEquals(left:Dynamic, right:Dynamic):Bool {
 
@@ -101,6 +72,45 @@ class DocTestUtils {
 
       return false;
    }
+
+   public static function exceptionStackAsString():String {
+      var stack = CallStack.exceptionStack();
+      var i = -1;
+      for (elem in stack) {
+         i++;
+         switch(elem) {
+            case FilePos(elem2, file, line):
+               if (file.startsWith("hx/doctest")) {
+                  stack = stack.slice(0, i);
+                  break;
+               }
+               if (elem2 != null) switch(elem2) {
+                  case Method(classname, method):
+                     if (classname.startsWith("hx.doctest.")) {
+                        stack = stack.slice(0, i);
+                        break;
+                     }
+                  default:
+               }
+            case Method(classname, method):
+               if (classname.startsWith("hx.doctest.")) {
+                  stack = stack.slice(0, i);
+                  break;
+               }
+            default:
+         }
+      }
+      return "  " + CallStack.toString(stack).split("\n").join("\n  ") + "\n";
+   }
+
+   #if macro
+   public static function implementsInterface(clazz:haxe.macro.Type.ClassType, interfaceName:String):Bool {
+      for(iface in clazz.interfaces)
+         if(iface.t.toString() == interfaceName)
+            return true;
+      return false;
+   }
+   #end
 
    public static function substringAfter(str:String, sep:String):String {
       var foundAt = str.indexOf(sep);

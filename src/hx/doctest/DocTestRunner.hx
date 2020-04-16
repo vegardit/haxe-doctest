@@ -217,7 +217,7 @@ interface DocTestResults {
 
 class DefaultDocTestResults implements DocTestResults {
 
-   var _testsOK = 0;
+   var _testsPassed = 0;
    var _testsFailed = new Array<LogEvent>();
 
    inline
@@ -227,14 +227,14 @@ class DefaultDocTestResults implements DocTestResults {
    public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos) {
       if(success) {
          Logger.log(OK, msg, null, pos);
-         _testsOK++;
+         _testsPassed++;
       } else {
          _testsFailed.push(Logger.log(ERROR, msg, loc, pos));
       }
    }
 
    public function getSuccessCount():Int
-      return _testsOK;
+      return _testsPassed;
 
    public function getFailureCount():Int
       return _testsFailed.length;
@@ -243,4 +243,7 @@ class DefaultDocTestResults implements DocTestResults {
       for (event in _testsFailed)
          event.log(true);
    }
+
+   public function toString():String
+      return 'DocTestResults[successCount=${getSuccessCount()}, failureCount=${getFailureCount()}]';
 }
