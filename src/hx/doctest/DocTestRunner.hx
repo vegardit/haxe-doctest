@@ -207,7 +207,7 @@ interface DocTestResults {
 
     public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos):Void;
 
-    public function toString():String;
+    public function genStringLog():String;
 
     public function getTotalCount():Int;
     public function getSuccessCount():Int;
@@ -269,10 +269,10 @@ class DefaultDocTestResults implements DocTestResults {
     }
 
     /**
-     * Returns all results log as plain string
+     * Returns all results log as plain string. Can be slow for big outputs
      * @return String all runned tests log
      */
-    public function toString():String {
+    public function genStringLog():String {
         var log = "";
         var tests = _testsRunned.get("total");
         for(event in tests) {

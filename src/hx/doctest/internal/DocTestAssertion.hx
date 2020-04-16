@@ -27,18 +27,19 @@ class DocTestAssertion {
         this.charEnd = charEnd;
     }
 
-    public function getSourceLocation(fullPath:Bool = true):SourceLocation {
+    public function getSourceLocation():SourceLocation {
         return {
-            filePath: fullPath ? file.filePath : file.fileName,
+            filePath: file.filePath,
+            fileName: file.fileName,
             lineNumber: lineNumber,
             charStart: charStart,
             charEnd: charEnd
         };
     }
 
-    public function getPosInfos(fullPath:Bool = true):haxe.PosInfos {
+    public function getPosInfos():haxe.PosInfos {
         return {
-            fileName: fullPath ? file.filePath : file.fileName,
+            fileName: file.fileName,
             lineNumber: lineNumber,
             className: "",
             methodName: ""

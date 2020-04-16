@@ -30,7 +30,7 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
                 success,
                 '${assertion.expression}' + (success ? '' : ' --> $errorMsg'), 
                 $v{assertion.getSourceLocation()}, 
-                $v{assertion.getPosInfos(false)});
+                $v{assertion.getPosInfos()});
         };
     }
 

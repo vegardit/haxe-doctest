@@ -41,6 +41,7 @@ enum Level {
 @:noDoc @:dox(hide)
 typedef SourceLocation = {
     var filePath : String;
+    var fileName : String;
     var lineNumber : Int;
     var charStart: Int;
     var charEnd: Int;
@@ -95,12 +96,17 @@ class LogEvent {
 
     /**
      * Generates test log string
+     * ISSUE: IF LogEvent was contructed without loc argument (it's optional) 'detailed' has no affect
      * 
      * @param [detailed=false] generate log string with file names and lines info. ERROR logs detailed even when false set
      * @return String test log info
      */
     public function toString(detailed:Bool = false):String {
-        return detailed || level == ERROR ?
+        // @tynrare at 16.04.20: 
+        // About 'loc != null' line
+        // In my opinion we just do not need loc and pos separated, they carry almost same data
+        // So in this code LogEvent constructor called so much times that i can't trace all places SourceLocation was passed as null
+        return loc != null && (detailed || level == ERROR) ?
             '${loc.filePath}:${loc.lineNumber}: characters ${loc.charStart}-${loc.charEnd}: [${level}] ${msg}' :
             '${pos.fileName}:${pos.lineNumber}: [${level}] ${msg}'; 
     }
