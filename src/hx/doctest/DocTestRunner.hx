@@ -21,7 +21,6 @@ class DocTestRunner {
 
    var results:DocTestResults;
 
-
    static function exit(exitCode:Int):Void {
       #if travix
          travix.Logger.exit(exitCode);
