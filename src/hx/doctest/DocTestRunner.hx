@@ -53,6 +53,8 @@ class DocTestRunner {
      * @return number of failing tests
      */
     function run(expectedMinNumberOfTests = 0, logResult:Bool = true):Int {
+        Logger.enabled = logResult;
+        
         if (results == null)
             results = new DefaultDocTestResults();
 
@@ -95,20 +97,19 @@ class DocTestRunner {
                 Logger.log(WARN, 'No test assertions were found!');
                 Logger.log(WARN, '**********************************************************');
             } else {
-                if (logResult) {
-                    Logger.log(INFO, '**********************************************************');
-                    Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds.');
-                    Logger.log(INFO, '**********************************************************');
-                }
+                Logger.log(INFO, '**********************************************************');
+                Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds.');
+                Logger.log(INFO, '**********************************************************');
             }
             return 0;
         }
 
-        if (logResult) {
-            Logger.log(ERROR, '**********************************************************');
-            Logger.log(ERROR, '$testsFailed of ${testsOK + testsFailed} test(s) FAILED:');
-            results.logFailures();
-        }
+        Logger.log(ERROR, '**********************************************************');
+        Logger.log(ERROR, '$testsFailed of ${testsOK + testsFailed} test(s) FAILED:');
+        results.logFailures();
+
+        Logger.enabled = !Logger.enabled;
+
         return testsFailed;
     }
 
@@ -209,8 +210,12 @@ interface DocTestResults {
 
     public function genStringLog():String;
 
+
+    public function getTotalList():Array<LogEvent>;
     public function getTotalCount():Int;
+    public function getSuccessList():Array<LogEvent>;
     public function getSuccessCount():Int;
+    public function getFailureList():Array<LogEvent>;
     public function getFailureCount():Int;
     public function logFailures():Void;
 }
@@ -246,23 +251,35 @@ class DefaultDocTestResults implements DocTestResults {
         _testsRunned.get(success ? "passed" : "failed").push(event);
     }
 
+    public function getSuccessList():Array<LogEvent> {
+        return _testsRunned.get("passed");
+    }
+
     public function getSuccessCount():Int {
-        return _testsRunned.get("passed").length;
+        return getSuccessList().length;
+    }
+
+    public function getTotalList():Array<LogEvent> {
+        return _testsRunned.get("total");
     }
 
     public function getTotalCount():Int {
-        return _testsRunned.get("total").length;
+        return getTotalList().length;
+    }
+
+    public function getFailureList():Array<LogEvent> {
+        return _testsRunned.get("failed");
     }
 
     public function getFailureCount():Int {
-        return _testsRunned.get("failed").length;
+        return getFailureList().length;
     }
 
     /**
      * Prints all errors in output
      */
     public function logFailures():Void {
-        var tests = _testsRunned.get("failed");
+        var tests = getFailureList();
         for (event in tests) {
             event.log(true);
         }

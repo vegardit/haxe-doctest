@@ -12,6 +12,8 @@ using hx.doctest.internal.DocTestUtils;
 @:noDoc @:dox(hide)
 class Logger {
 
+    public static var enabled = true;
+
     #if flash
     @:keep
     static var __static_init = {
@@ -27,6 +29,7 @@ class Logger {
         event.log();
         return event;
     }
+    
 }
 
 @:noDoc @:dox(hide)
@@ -63,6 +66,10 @@ class LogEvent {
     }
 
     public function log(detailedErrorLocation = false) {
+        if(!Logger.enabled) {
+            return;
+        }
+
         if (level == DEBUG) {
             #if debug
             if (loc == null) {
