@@ -14,7 +14,7 @@ class Logger {
 
    #if flash
    @:keep
-   static var __static_init = {
+   static final __static_init = {
       haxe.Log.trace = function(v:Dynamic, ?pos: haxe.PosInfos ):Void {
          flash.Lib.trace(pos == null ? '$v' : '${pos.fileName}:${pos.lineNumber}: $v');
       }
@@ -23,7 +23,7 @@ class Logger {
 
    inline
    public static function log(level:Level, msg:String, ?loc:SourceLocation, ?pos:haxe.PosInfos):LogEvent {
-      var event = new LogEvent(level, msg, loc, pos);
+      final event = new LogEvent(level, msg, loc, pos);
       event.log();
       return event;
    }
@@ -51,10 +51,10 @@ typedef SourceLocation = {
 
 @:noDoc @:dox(hide)
 class LogEvent {
-   public var level(default, null):Level;
-   public var msg(default, null):String;
-   public var loc(default, null):SourceLocation;
-   public var pos(default, null):haxe.PosInfos;
+   public final level:Level;
+   public final msg:String;
+   public final loc:SourceLocation;
+   public final pos:haxe.PosInfos;
 
 
    inline

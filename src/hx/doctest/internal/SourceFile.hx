@@ -23,7 +23,7 @@ class SourceFile {
    public var filePath(default, null):String;
    public var fileName(default, null):String;
 
-   public var haxePackage:String;
+   public var haxePackage(default, null):String;
    public var haxeModuleName(default, null):String;
    public var haxeModuleFQName(default, null):String;
 
@@ -43,7 +43,7 @@ class SourceFile {
       haxePackage = "";
       try {
          while (!isLastLine()) {
-            var line = fileInput.readLine();
+            final line = fileInput.readLine();
             if (REGEX_PACKAGE_NAME.match(line)) {
                haxePackage = REGEX_PACKAGE_NAME.matched(1);
                break;
@@ -100,7 +100,7 @@ class SourceFile {
          if (docTestExpression == "")
             continue;
 
-         var docTestExpressionLineNumber = currentLineNumber;
+         final docTestExpressionLineNumber = currentLineNumber;
 
          while (!isLastLine()) {
             try {
@@ -110,7 +110,7 @@ class SourceFile {
                lineAhead = null;
                break;
             }
-            var docTestExpressionNextLine = lineAhead.substringAfter(docTestNextLineIdentifier).trim();
+            final docTestExpressionNextLine = lineAhead.substringAfter(docTestNextLineIdentifier).trim();
             if (docTestExpressionNextLine == "") {
                break;
             } else {

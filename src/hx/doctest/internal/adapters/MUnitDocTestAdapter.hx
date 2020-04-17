@@ -44,7 +44,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
 
    override
    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
-      var field = super.generateTestMethod(methodName, descr, assertions);
+      final field = super.generateTestMethod(methodName, descr, assertions);
       field.meta.push({name: "Test", pos: Context.currentPos()});
       return field;
    }

@@ -45,7 +45,7 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
       assertions.unshift(macro {
-         var pos = { fileName: $v{Context.getLocalModule()}, lineNumber:1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
+         final pos = { fileName: $v{Context.getLocalModule()}, lineNumber:1, className: $v{Context.getLocalClass().get().name}, methodName:"" };
          hx.doctest.internal.Logger.log(INFO, "**********************************************************", pos);
          hx.doctest.internal.Logger.log(INFO, '${descr}...', pos);
          hx.doctest.internal.Logger.log(INFO, "**********************************************************", pos);

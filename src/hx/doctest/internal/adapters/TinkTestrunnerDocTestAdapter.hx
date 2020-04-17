@@ -67,7 +67,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
    override
    public function onFinish(contextFields:Array<Field>) {
-      var exprs:Array<Expr> = [];
+      final exprs:Array<Expr> = [];
       for (testMethod in testMethods) {
          exprs.push(@:mergeBlock macro {
             $i{testMethod}();
@@ -92,7 +92,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
 @:noDoc @:dox(hide)
 class SingeAssertionCase extends tink.testrunner.Case.BasicCase {
-   private var assertion:tink.testrunner.Assertion;
+   final assertion:tink.testrunner.Assertion;
 
 
    public function new(pos:haxe.PosInfos, assertion:tink.testrunner.Assertion) {

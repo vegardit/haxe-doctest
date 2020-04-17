@@ -25,7 +25,7 @@ class ExampleTools {
     * </code></pre>
     */
    public static function toArray<T>(item:T, times:Int):Array<T> {
-      var arr = [];
+      final arr = [];
       for (i in 0...times) arr.push(item);
       return arr;
    }

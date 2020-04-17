@@ -42,25 +42,25 @@ class DocTestUtils {
 
       // compare enums
       if (Reflect.isEnumValue(left) && Reflect.isEnumValue(right)) {
-         var leftEnum:EnumValue = left;
-         var rightEnum:EnumValue = right;
+         final leftEnum:EnumValue = left;
+         final rightEnum:EnumValue = right;
          return leftEnum.equals(rightEnum);
       }
 
       // compare objects and anonymous structures
       if (Reflect.isObject(left) && Reflect.isObject(right)) {
-         var clsLeft = Type.getClass(left);
-         var clsLeftName = clsLeft == null ? null : Type.getClassName(clsLeft);
-         var clsRight = Type.getClass(right);
-         var clsRightName = clsRight == null ? null : Type.getClassName(clsRight);
+         final clsLeft = Type.getClass(left);
+         final clsLeftName = clsLeft == null ? null : Type.getClassName(clsLeft);
+         final clsRight = Type.getClass(right);
+         final clsRightName = clsRight == null ? null : Type.getClassName(clsRight);
 
          if (clsLeftName != clsRightName)
             return false;
 
-         var clsLeftFields = Reflect.fields(left);
-         clsLeftFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
-         var clsRightFields = Reflect.fields(right);
-         clsRightFields.sort(function (x, y) return x > y ? 1 : x == y ? 0 : -1);
+         final clsLeftFields = Reflect.fields(left);
+         clsLeftFields.sort((x, y) ->  x > y ? 1 : x == y ? 0 : -1);
+         final clsRightFields = Reflect.fields(right);
+         clsRightFields.sort((x, y) -> x > y ? 1 : x == y ? 0 : -1);
          if (deepEquals(clsLeftFields, clsRightFields)) {
             for (fieldName in clsLeftFields) {
                if (!deepEquals(Reflect.field(left, fieldName), Reflect.field(right, fieldName)))
@@ -116,28 +116,28 @@ class DocTestUtils {
 
 
    public static function substringAfter(str:String, sep:String):String {
-      var foundAt = str.indexOf(sep);
+      final foundAt = str.indexOf(sep);
       if (foundAt == -1) return "";
       return str.substring(foundAt + sep.length);
    }
 
 
    public static function substringAfterLast(str:String, sep:String):String {
-      var foundAt = str.lastIndexOf(sep);
+      final foundAt = str.lastIndexOf(sep);
       if (foundAt == -1) return "";
       return str.substring(foundAt + sep.length);
    }
 
 
    public static function substringBefore(str:String, sep:String):String {
-      var foundAt = str.indexOf(sep);
+      final foundAt = str.indexOf(sep);
       if (foundAt == -1) return "";
       return str.substring(0, foundAt);
    }
 
 
    public static function substringBeforeLast(str:String, sep:String):String {
-      var foundAt = str.lastIndexOf(sep);
+      final foundAt = str.lastIndexOf(sep);
       if (foundAt == -1) return "";
       return str.substring(0, foundAt);
    }
@@ -147,12 +147,12 @@ class DocTestUtils {
    public static function walkDirectory(directory:String, filePattern:EReg, onFile:String -> Void):Void {
       var files:Array<String> = sys.FileSystem
          .readDirectory(directory)
-         .map(function(s) return '$directory/$s');
+         .map((s) -> '$directory/$s');
 
       while (files.length > 0) {
          var file = files.shift();
          if (sys.FileSystem.isDirectory(file)) {
-            files = files.concat(sys.FileSystem.readDirectory(file).map(function(s) return '$file/$s'));
+            files = files.concat(sys.FileSystem.readDirectory(file).map((s) -> '$file/$s'));
          } else {
             file = file.replace("\\", "/");
             if(filePattern.match(file))

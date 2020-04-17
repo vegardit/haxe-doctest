@@ -43,7 +43,7 @@ class UTestDocTestAdapter extends DocTestAdapter {
 
    override
    public function onFinish(contextFields:Array<Field>) {
-      var cls = Context.getLocalClass().get();
+      final cls = Context.getLocalClass().get();
       cls.meta.remove(":utestProcessed");
       for (f in contextFields) {
          if (f.name == "__initializeUtest__") {

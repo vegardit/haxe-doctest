@@ -28,7 +28,13 @@ generates unit tests based on assertions declared within the Haxedoc comments of
 [MUnit](https://github.com/massiveinteractive/MassiveUnit), and it's own [test runner](#doctest-testrunner) which is recommended for efficient testing from
 within FlashDevelop.
 
-Requires Haxe 3.4.x or higher.
+### Haxe compatiblity
+
+|haxe-doctest    |Haxe           |
+|----------------|---------------|
+|0.1.0 to 1.1.4  |3.2.1 or higher|
+|1.2.0 to 2.0.1  |3.4.2 or higher|
+|3.0.0 or higher |4.0.5 or higher|
 
 
 ## <a name="declaring-test-assertions"></a>Declaring test assertions

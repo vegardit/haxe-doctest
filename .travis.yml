@@ -9,15 +9,19 @@ os:
 git:
   depth: 2
 
+cache:
+  directories:
+    - $HOME/haxe
+    - $HOME/.cache/luarocks
+
 haxe:
-  - "3.4.7"
   - "4.0.5"
   - development
 
 env:
   - HAXE_TARGET=cpp
   - HAXE_TARGET=cs
-  - HAXE_TARGET=eval
+  - HAXE_TARGET="interp -D eval-stack"
   - HAXE_TARGET=flash
   - HAXE_TARGET=java
   - HAXE_TARGET=js
@@ -33,13 +37,10 @@ matrix:
   fast_finish: true
   allow_failures:
     - haxe: development
+    - env: HAXE_TARGET="java -D jvm" # no idea why it fails on travis. works locally
     - env: HAXE_TARGET=flash  # see https://github.com/travis-ci/travis-ci/issues/8481
     - os: osx
   exclude:
-    - haxe: 3.4.7
-      env: HAXE_TARGET=eval
-    - haxe: 3.4.7
-      env: HAXE_TARGET=jvm
     - haxe: development
       os: osx
 

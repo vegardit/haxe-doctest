@@ -12,11 +12,11 @@ import hx.doctest.internal.Logger.SourceLocation;
 @:noDoc @:dox(hide)
 class DocTestAssertion {
 
-   public var file(default, null):SourceFile;
-   public var lineNumber(default,null):Int;
-   public var expression(default,null):String;
-   public var charStart(default,null):Int;
-   public var charEnd(default, null):Int;
+   public final file:SourceFile;
+   public final lineNumber:Int;
+   public final expression:String;
+   public final charStart:Int;
+   public final charEnd:Int;
 
 
    inline

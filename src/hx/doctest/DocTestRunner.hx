@@ -60,22 +60,22 @@ class DocTestRunner {
       if (results == null)
          results = new DefaultDocTestResults();
 
-      var startTime = Timer.stamp();
-      var thisClass = Type.getClass(this);
-      var thisClassName = Type.getClassName(thisClass);
+      final startTime = Timer.stamp();
+      final thisClass = Type.getClass(this);
+      final thisClassName = Type.getClassName(thisClass);
 
       /*
        * look for functions starting with "test" and invoke them
        */
       Logger.log(INFO, 'Looking for test cases in [${thisClassName}]...');
-      var funcNames = new Array<String>();
+      final funcNames = new Array<String>();
       for (funcName in Type.getInstanceFields(thisClass)) {
          if (funcName.startsWith("test"))
             funcNames.push(funcName);
       }
-      funcNames.sort(function(a, b) return a < b ? -1 : a > b ? 1 : 0);
+      funcNames.sort((a, b) -> a < b ? -1 : a > b ? 1 : 0);
       for (funcName in funcNames) {
-         var func:Dynamic = Reflect.field(this, funcName);
+         final func:Dynamic = Reflect.field(this, funcName);
          if (Reflect.isFunction(func)) {
             Logger.log(INFO, "**********************************************************");
             Logger.log(INFO, 'Invoking [${thisClassName}#$funcName()]...');
@@ -84,9 +84,9 @@ class DocTestRunner {
          }
       }
 
-      var timeSpent:Float = Math.round(1000 * (Timer.stamp() - startTime)) / 1000;
-      var testsOK = results.getSuccessCount();
-      var testsFailed = results.getFailureCount();
+      final timeSpent:Float = Math.round(1000 * (Timer.stamp() - startTime)) / 1000;
+      final testsOK = results.getSuccessCount();
+      final testsFailed = results.getFailureCount();
       if (testsFailed == 0) {
          if (expectedMinNumberOfTests > 0 && testsOK < expectedMinNumberOfTests) {
             Logger.log(ERROR, "**********************************************************");
@@ -121,7 +121,7 @@ class DocTestRunner {
     * tests were passed or 1 in case test failures occured.
     */
    function runAndExit(expectedMinNumberOfTests = 0):Void {
-      var exitCode = run(expectedMinNumberOfTests) == 0 ? 0 : 1;
+      final exitCode = run(expectedMinNumberOfTests) == 0 ? 0 : 1;
       exit(exitCode);
    }
 
@@ -209,17 +209,17 @@ class DocTestRunner {
 
 
 interface DocTestResults {
-   public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos):Void;
-   public function getSuccessCount():Int;
-   public function getFailureCount():Int;
-   public function logFailures():Void;
+   function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos):Void;
+   function getSuccessCount():Int;
+   function getFailureCount():Int;
+   function logFailures():Void;
 }
 
 
 class DefaultDocTestResults implements DocTestResults {
 
    var _testsPassed = 0;
-   var _testsFailed = new Array<LogEvent>();
+   final _testsFailed = new Array<LogEvent>();
 
 
    inline

@@ -54,14 +54,14 @@ typedef DocTestGeneratorConfig = {
 class DocTestGenerator {
 
    @:keep
-   static var __static_init = {
-      #if (haxe_ver < 3.4)
-         throw 'ERROR: haxe-doctests requires Haxe 3.4 or higher!';
+   static final __static_init = {
+      #if (haxe_ver < 4)
+         throw 'ERROR: As of haxe-doctests 3.0.0, Haxe 4.x or higher is required!';
       #end
    };
 
-   static var MAX_ASSERTIONS_PER_TEST_METHOD(default, never) =
-      Context.defined("lua") ?  #if (haxe_ver < 4) 20 #else 30 #end : // to avoid "too many local variables" with Lua target
+   static final MAX_ASSERTIONS_PER_TEST_METHOD =
+      Context.defined("lua") ? 30 : // to avoid "too many local variables" with Lua target
       100; // to avoid "error: code too large" with Java target
 
 
@@ -83,9 +83,9 @@ class DocTestGenerator {
       if (config.docTestLineIdentifier == null) config.docTestLineIdentifier = "* >>>";
       if (config.docTestNextLineIdentifier == null) config.docTestNextLineIdentifier = "* ...";
 
-      var doctestAdapter = getDocTestAdapter();
+      final doctestAdapter = getDocTestAdapter();
 
-      var contextFields = Context.getBuildFields();
+      final contextFields = Context.getBuildFields();
 
       /*
        * ensure no test method gets DCE-ed by automatically adding @:keep to the class
@@ -94,8 +94,8 @@ class DocTestGenerator {
 
       var totalAssertionsCount = 0;
 
-      var parser = new hscript.Parser();
-      var compilerConditions = new Array<Bool>();
+      final parser = new hscript.Parser();
+      final compilerConditions = new Array<Bool>();
 
       /*
        * iterate over all matched files
@@ -103,10 +103,10 @@ class DocTestGenerator {
       Logger.log(INFO, 'Activated via @:build on [${Context.getLocalClass().get().module}]');
       Logger.log(INFO, 'Generating test cases for test framework [${doctestAdapter.getFrameworkName()}]...');
       DocTestUtils.walkDirectory(config.srcFolder, new EReg(config.srcFilePathPattern, ""), function(srcFilePath) {
-         var src = new SourceFile(srcFilePath, config.docTestLineIdentifier, config.docTestNextLineIdentifier);
+         final src = new SourceFile(srcFilePath, config.docTestLineIdentifier, config.docTestNextLineIdentifier);
 
-         var testMethodsCount = 0;
          var testMethodAssertions = new Array<Expr>();
+         var testMethodsCount = 0;
 
          /*
           * iterate over all code lines of the Haxe file
@@ -120,36 +120,36 @@ class DocTestGenerator {
                       continue;
 
                   // poor man's solution until I figure out how to add import statements
-                  var doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g")
+                  final doctestLineFQ = new EReg("(^|[\\s(=<>!:])" + src.haxeModuleName + "(\\s?[(.<=])", "g")
                      .replace(assertion.expression, "$1" + src.haxeModuleFQName + "$2");
                   totalAssertionsCount++;
 
                   // process "===" assertion
                   if (assertion.expression.indexOf(" === ") > -1) {
 
-                     var left = doctestLineFQ.substringBeforeLast(" === ").trim();
-                     var right = doctestLineFQ.substringAfterLast(" === ").trim();
+                     final left = doctestLineFQ.substringBeforeLast(" === ").trim();
+                     final right = doctestLineFQ.substringAfterLast(" === ").trim();
 
-                     var leftExpr:Expr = try {
+                     final leftExpr:Expr = try {
                         Context.parse(left, Context.currentPos());
                      } catch (ex:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $ex'));
                         continue;
                      }
 
-                     var rightExpr:Expr = try {
+                     final rightExpr:Expr = try {
                         Context.parse(right, Context.currentPos());
                      } catch (ex:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $ex'));
                         continue;
                      }
 
-                     var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
-                     var testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` not same instance as `$right`.");
+                     final testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` not same instance as `$right`.");
 
                      testMethodAssertions.push(macro {
-                        var left = $leftExpr;
-                        var right = $rightExpr;
+                        final left = $leftExpr;
+                        final right = $rightExpr;
                         if (left == right)
                            $testSuccessExpr;
                         else
@@ -160,29 +160,29 @@ class DocTestGenerator {
                   // process "!==" assertion
                   else if (assertion.expression.indexOf(" !== ") > -1) {
 
-                     var left = doctestLineFQ.substringBeforeLast(" !== ").trim();
-                     var right = doctestLineFQ.substringAfterLast(" !== ").trim();
+                     final left = doctestLineFQ.substringBeforeLast(" !== ").trim();
+                     final right = doctestLineFQ.substringAfterLast(" !== ").trim();
 
-                     var leftExpr:Expr = try {
+                     final leftExpr:Expr = try {
                         Context.parse(left, Context.currentPos());
                      } catch (ex:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $ex'));
                         continue;
                      }
 
-                     var rightExpr:Expr = try {
+                     final rightExpr:Expr = try {
                         Context.parse(right, Context.currentPos());
                      } catch (ex:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $ex'));
                         continue;
                      }
 
-                     var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
-                     var testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is same instance right side.");
+                     final testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is same instance right side.");
 
                      testMethodAssertions.push(macro {
-                        var left = $leftExpr;
-                        var right = $rightExpr;
+                        final left = $leftExpr;
+                        final right = $rightExpr;
                         if (left != right)
                            $testSuccessExpr;
                         else
@@ -192,25 +192,25 @@ class DocTestGenerator {
 
                   // process "throws" assertion
                   else if (assertion.expression.indexOf(" throws ") > -1) {
-                     var left = doctestLineFQ.substringBeforeLast(" throws ").trim();
-                     var right = doctestLineFQ.substringAfterLast(" throws ").trim();
+                     final left = doctestLineFQ.substringBeforeLast(" throws ").trim();
+                     final right = doctestLineFQ.substringAfterLast(" throws ").trim();
 
-                     var leftExpr:Expr = try {
+                     final leftExpr:Expr = try {
                         Context.parse(left, Context.currentPos());
                      } catch (ex:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse left side: $ex'));
                         continue;
                      }
 
-                     var rightExpr:Expr = right == "nothing" ? macro "nothing": try {
+                     final rightExpr:Expr = right == "nothing" ? macro "nothing": try {
                         Context.parse(right, Context.currentPos());
                      } catch (ex:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse right side: $ex'));
                         continue;
                      }
 
-                     var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
-                     var testFailedExpr = doctestAdapter.generateTestFail(assertion, "Expected `$right` but was `$left`.");
+                     final testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, "Expected `$right` but was `$left`.");
 
                      testMethodAssertions.push(macro {
                         var left:Dynamic = "nothing";
@@ -226,16 +226,16 @@ class DocTestGenerator {
 
                   // process comparison assertion
                   } else {
-                     var doctestExpr = try {
+                     final doctestExpr = try {
                         Context.parse(doctestLineFQ, Context.currentPos());
                      } catch (ex:Dynamic) {
                         testMethodAssertions.push(doctestAdapter.generateTestFail(assertion, 'Failed to parse assertion: $ex'));
                         continue;
                      }
 
-                     var leftExpr:Expr = null;
-                     var rightExpr:Expr = null;
-                     var comparator:Binop = null;
+                     var leftExpr:Expr;
+                     var rightExpr:Expr;
+                     var comparator:Binop;
                      switch(doctestExpr.expr) {
                         case EBinop(op, l, r):
                            switch (op) {
@@ -256,9 +256,9 @@ class DocTestGenerator {
                            continue;
                      }
 
-                     var comparisonExpr:Expr = null;
-                     var testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
-                     var testFailedExpr = null;
+                     var comparisonExpr:Expr;
+                     final testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
+                     var testFailedExpr:Expr;
                      switch(comparator) {
                         case OpEq:
                            comparisonExpr = macro hx.doctest.internal.DocTestUtils.deepEquals(left, right);
@@ -304,7 +304,7 @@ class DocTestGenerator {
                      Std.is(doctestAdapter, HaxeUnitDocTestAdapter) || Std.is(doctestAdapter, MUnitDocTestAdapter)
                   ) {
                      testMethodsCount++;
-                     var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
+                     final testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
                      Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
                      contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
                      testMethodAssertions = new Array<Expr>();
@@ -314,19 +314,19 @@ class DocTestGenerator {
                   if (condition.indexOf("#end") > -1)
                      continue;
 
-                  var interp = new hscript.Interp();
-                  var reg = new EReg("[a-zA-Z]\\w*", "gi");
-                  var defines = haxe.macro.Context.getDefines();
+                  final interp = new hscript.Interp();
+                  final reg = new EReg("[a-zA-Z]\\w*", "gi");
+                  final defines = haxe.macro.Context.getDefines();
                   var pos = 0;
                   while (reg.matchSub(condition, pos)) {
-                     var pos2 = reg.matchedPos();
-                     var define = reg.matched(0);
-                     var defineValue = defines.get(define);
+                     final pos2 = reg.matchedPos();
+                     final define = reg.matched(0);
+                     final defineValue = defines.get(define);
                      interp.variables.set(define, defineValue == null ? false : defineValue == "1" ? true : defineValue);
                      pos = reg.matchedPos().pos + reg.matchedPos().len;
                   }
                   try {
-                     var result:Bool = interp.execute(parser.parseString(condition));
+                     final result:Bool = interp.execute(parser.parseString(condition));
                      compilerConditions.push(result);
                   } catch (ex:Dynamic) {
                      Logger.log(ERROR, 'Failed to parse compiler condition "#if $condition" -> $ex');
@@ -334,20 +334,20 @@ class DocTestGenerator {
                   continue;
 
                case CompilerConditionElseIf(condition):
-                  var interp = new hscript.Interp();
-                  var reg = new EReg("[a-zA-Z]\\w*", "gi");
-                  var defines = haxe.macro.Context.getDefines();
+                  final interp = new hscript.Interp();
+                  final reg = new EReg("[a-zA-Z]\\w*", "gi");
+                  final defines = haxe.macro.Context.getDefines();
                   var pos = 0;
                   while (reg.matchSub(condition, pos)) {
-                     var pos2 = reg.matchedPos();
-                     var define = reg.matched(0);
-                     var defineValue = defines.get(define);
+                     final pos2 = reg.matchedPos();
+                     final define = reg.matched(0);
+                     final defineValue = defines.get(define);
                      interp.variables.set(define, defineValue == null ? false : defineValue);
                      pos = reg.matchedPos().pos + reg.matchedPos().len;
                   }
 
                   try {
-                     var result:Bool = interp.execute(parser.parseString(condition));
+                     final result:Bool = interp.execute(parser.parseString(condition));
                      if (compilerConditions.length > 0)
                         compilerConditions.pop();
                      compilerConditions.push(result);
@@ -373,7 +373,7 @@ class DocTestGenerator {
          // generate a new testMethod if required
          if (testMethodAssertions.length > 0) {
             testMethodsCount++;
-            var testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
+            final testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
             Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
             contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
             testMethodAssertions = new Array<Expr>();
