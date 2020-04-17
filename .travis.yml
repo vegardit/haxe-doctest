@@ -7,7 +7,7 @@ os:
   - osx
 
 git:
-  depth: 10
+  depth: 2
 
 haxe:
   - "3.4.7"
@@ -19,15 +19,15 @@ env:
   - HAXE_TARGET=cs
   - HAXE_TARGET=eval
   - HAXE_TARGET=flash
+  - HAXE_TARGET=java
+  - HAXE_TARGET=js
+  - HAXE_TARGET=jvm
   - HAXE_TARGET=lua
   - HAXE_TARGET=neko
   - HAXE_TARGET=node
   - HAXE_TARGET=php
   - HAXE_TARGET=php7
   - HAXE_TARGET=python
-  - HAXE_TARGET=js
-  - HAXE_TARGET=java
-  - HAXE_TARGET=jvm
 
 matrix:
   fast_finish: true
