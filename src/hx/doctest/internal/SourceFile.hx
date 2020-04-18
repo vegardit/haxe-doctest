@@ -59,7 +59,6 @@ class SourceFile {
    }
 
 
-   inline
    public function isLastLine():Bool
       return fileInput == null || fileInput.eof();
 

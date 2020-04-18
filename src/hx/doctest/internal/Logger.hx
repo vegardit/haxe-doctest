@@ -75,7 +75,7 @@ class LogEvent {
    }
 
 
-   public function log(withDetailedLocation = true) {
+   public function log(withDetailedLocation = true):Void {
       switch(level) {
          case DEBUG:
             #if debug
@@ -106,7 +106,7 @@ class LogEvent {
    }
 
 
-   function toStringInternal(withDetailedLocation = true) {
+   function toStringInternal(withDetailedLocation = true):String {
       switch (pos.value){
          //SourceLocation:
          case a(loc):
@@ -122,7 +122,6 @@ class LogEvent {
    }
 
 
-   public function toString() {
+   public function toString():String
       return toStringInternal(true);
-   }
 }

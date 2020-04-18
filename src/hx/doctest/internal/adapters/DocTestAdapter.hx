@@ -45,6 +45,6 @@ class DocTestAdapter {
    }
 
 
-   public function onFinish(contextFields:Array<Field>) {
+   public function onFinish(contextFields:Array<Field>):Void {
    }
 }

@@ -19,7 +19,6 @@ class DocTestAssertion {
    public final charEnd:Int;
 
 
-   inline
    public function new(file:SourceFile, expression:String, lineNumber:Int, charStart:Int, charEnd:Int) {
       this.file = file;
       this.expression = expression;

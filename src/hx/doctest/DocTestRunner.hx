@@ -130,82 +130,71 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-   function assertSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+   function assertSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
       results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+   function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
       results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-    function assertFalse(result:Bool, ?pos:PosInfos):Void {
+    function assertFalse(result:Bool, ?pos:PosInfos):Void
       results.add(!result, 'assertFalse($result)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertMax(result:Int, max:Int, ?pos:PosInfos):Void {
+   function assertMax(result:Int, max:Int, ?pos:PosInfos):Void
       results.add(result <= max, 'assertMax($result, $max)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertMin(result:Int, min:Int, ?pos:PosInfos):Void {
+   function assertMin(result:Int, min:Int, ?pos:PosInfos):Void
       results.add(result >= min, 'assertMin($result, $min)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void {
+   function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void
       results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertNotSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+   function assertNotSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
       results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
+   function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
       results.add(!DocTestUtils.deepEquals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertTrue(result:Bool, ?pos:PosInfos):Void {
+   function assertTrue(result:Bool, ?pos:PosInfos):Void
       results.add(result, 'assertTrue($result)', pos);
-   }
 
 
    /**
     * for use within manually created test method
     */
-   function fail(?msg:String, ?pos:PosInfos):Void {
-      if (msg == null) msg = "This code location should not never be reached.";
+   function fail(msg:String = "This code location should not never be reached.", ?pos:PosInfos):Void
       results.add(false, msg, pos);
-   }
 }
 
 
@@ -228,7 +217,7 @@ class DefaultDocTestResults implements DocTestResults {
    }
 
 
-   public function add(success:Bool, msg:String, pos:Either2<SourceLocation,haxe.PosInfos>) {
+   public function add(success:Bool, msg:String, pos:Either2<SourceLocation,haxe.PosInfos>):Void {
       if (success) {
          var event = new LogEvent(OK, msg, pos);
          event.log(false);
