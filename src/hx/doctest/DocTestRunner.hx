@@ -6,6 +6,7 @@ package hx.doctest;
 
 import haxe.PosInfos;
 import haxe.Timer;
+import hx.doctest.internal.Either2;
 import hx.doctest.internal.Logger;
 import hx.doctest.internal.DocTestUtils;
 
@@ -56,7 +57,7 @@ class DocTestRunner {
     *
     * @return number of failing tests
     */
-   function run(expectedMinNumberOfTests = 0, logResult:Bool = true):Int {
+   function run(expectedMinNumberOfTests = 0, logSummary:Bool = true):Int {
       if (results == null)
          results = new DefaultDocTestResults();
 
@@ -98,7 +99,7 @@ class DocTestRunner {
             Logger.log(WARN, 'No test assertions were found!');
             Logger.log(WARN, "**********************************************************");
          } else {
-            if (logResult) {
+            if (logSummary) {
                Logger.log(INFO, "**********************************************************");
                Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds.');
                Logger.log(INFO, "**********************************************************");
@@ -107,7 +108,7 @@ class DocTestRunner {
          return 0;
       }
 
-      if (logResult) {
+      if (logSummary) {
          Logger.log(ERROR, "**********************************************************");
          Logger.log(ERROR, '$testsFailed of ${testsOK + testsFailed} test(s) FAILED:');
          results.logFailures();
@@ -130,7 +131,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-      results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', null, pos);
+      results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
    }
 
 
@@ -138,7 +139,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-      results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', null, pos);
+      results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', pos);
    }
 
 
@@ -146,7 +147,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
     function assertFalse(result:Bool, ?pos:PosInfos):Void {
-      results.add(!result, 'assertFalse($result)', null, pos);
+      results.add(!result, 'assertFalse($result)', pos);
    }
 
 
@@ -154,7 +155,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertMax(result:Int, max:Int, ?pos:PosInfos):Void {
-      results.add(result <= max, 'assertMax($result, $max)', null, pos);
+      results.add(result <= max, 'assertMax($result, $max)', pos);
    }
 
 
@@ -162,7 +163,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertMin(result:Int, min:Int, ?pos:PosInfos):Void {
-      results.add(result >= min, 'assertMin($result, $min)', null, pos);
+      results.add(result >= min, 'assertMin($result, $min)', pos);
    }
 
 
@@ -170,7 +171,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void {
-      results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', null, pos);
+      results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', pos);
    }
 
 
@@ -178,7 +179,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertNotSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-      results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', null, pos);
+      results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', pos);
    }
 
 
@@ -186,7 +187,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void {
-      results.add(!DocTestUtils.deepEquals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', null, pos);
+      results.add(!DocTestUtils.deepEquals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', pos);
    }
 
 
@@ -194,7 +195,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertTrue(result:Bool, ?pos:PosInfos):Void {
-      results.add(result, 'assertTrue($result)', null, pos);
+      results.add(result, 'assertTrue($result)', pos);
    }
 
 
@@ -203,13 +204,13 @@ class DocTestRunner {
     */
    function fail(?msg:String, ?pos:PosInfos):Void {
       if (msg == null) msg = "This code location should not never be reached.";
-      results.add(false, msg, null, pos);
+      results.add(false, msg, pos);
    }
 }
 
 
 interface DocTestResults {
-   function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos):Void;
+   function add(success:Bool, msg:String, pos:Either2<SourceLocation,haxe.PosInfos>):Void;
    function getSuccessCount():Int;
    function getFailureCount():Int;
    function logFailures():Void;
@@ -227,12 +228,15 @@ class DefaultDocTestResults implements DocTestResults {
    }
 
 
-   public function add(success:Bool, msg:String, loc:SourceLocation, pos:haxe.PosInfos) {
-      if(success) {
-         Logger.log(OK, msg, null, pos);
+   public function add(success:Bool, msg:String, pos:Either2<SourceLocation,haxe.PosInfos>) {
+      if (success) {
+         var event = new LogEvent(OK, msg, pos);
+         event.log(false);
          _testsPassed++;
       } else {
-         _testsFailed.push(Logger.log(ERROR, msg, loc, pos));
+         var event = new LogEvent(ERROR, msg, pos);
+         event.log(false);
+         _testsFailed.push(event);
       }
    }
 

@@ -29,9 +29,9 @@ class DocTestAssertion {
    }
 
 
-   public function getSourceLocation(fullPath:Bool = true):SourceLocation {
+   public function getSourceLocation():SourceLocation {
       return {
-         filePath: fullPath ? file.filePath : file.fileName,
+         filePath: file.filePath,
          lineNumber: lineNumber,
          charStart: charStart,
          charEnd: charEnd
@@ -39,9 +39,9 @@ class DocTestAssertion {
    }
 
 
-   public function getPosInfos(fullPath:Bool = true):haxe.PosInfos {
+   public function getPosInfos():haxe.PosInfos {
       return {
-         fileName: fullPath ? file.filePath : file.fileName,
+         fileName: file.filePath,
          lineNumber: lineNumber,
          className: "",
          methodName: ""
