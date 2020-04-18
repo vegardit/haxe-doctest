@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+
+## [3.0.0] - 2020-04-18
+
 ### Changed
 - minimum required Haxe version is now 4.x
 
