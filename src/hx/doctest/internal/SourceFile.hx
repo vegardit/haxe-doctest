@@ -66,8 +66,10 @@ class SourceFile {
    public function nextLine():Bool {
       while (!isLastLine()) {
          var line:String;
+         var lineTrimmed:String;
          try {
-            line = lineAhead == null ? fileInput.readLine().trim() : lineAhead;
+            line = lineAhead == null ? fileInput.readLine() : lineAhead;
+            lineTrimmed = line.trim();
             lineAhead = null;
          } catch(e:haxe.io.Eof) {
             // bug in Haxe http://old.haxe.org/forum/thread/4494 / https://github.com/HaxeFoundation/haxe/issues/5418
@@ -75,23 +77,23 @@ class SourceFile {
          }
          currentLineNumber++;
 
-         if (line == "#else") {
+         if (lineTrimmed == "#else") {
             currentLine = CompilerConditionElse;
             return true;
          }
 
-         if (line == "#end") {
+         if (lineTrimmed == "#end") {
             currentLine = CompilerConditionEnd;
             return true;
          }
 
-         if (line.startsWith("#if ")) {
-            currentLine = CompilerConditionStart(line.substringAfter("#if ").trim());
+         if (lineTrimmed.startsWith("#if ")) {
+            currentLine = CompilerConditionStart(lineTrimmed.substringAfter("#if ").trim());
             return true;
          }
 
-         if (line.startsWith("#elseif ")) {
-            currentLine = CompilerConditionElseIf(line.substringAfter("#elseif ").trim());
+         if (lineTrimmed.startsWith("#elseif ")) {
+            currentLine = CompilerConditionElseIf(lineTrimmed.substringAfter("#elseif ").trim());
             return true;
          }
 

@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 ## [Unreleased]
 
 
+### Fixed
+- wrong character position is reported on test failure
+
+
 ## [3.0.0] - 2020-04-18
 
 ### Changed
