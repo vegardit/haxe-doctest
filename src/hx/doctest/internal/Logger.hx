@@ -47,6 +47,7 @@ enum Level {
 @:noDoc @:dox(hide)
 typedef SourceLocation = {
     var filePath : String;
+    var fileName : String;
     var lineNumber : Int;
     var charStart: Int;
     var charEnd: Int;
