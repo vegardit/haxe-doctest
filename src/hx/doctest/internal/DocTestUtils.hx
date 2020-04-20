@@ -5,6 +5,7 @@
 package hx.doctest.internal;
 
 import haxe.CallStack;
+import haxe.Constraints.IMap;
 import haxe.macro.MacroStringTools;
 
 using StringTools;
@@ -12,9 +13,6 @@ using StringTools;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-#if !(js||lua||python)
-@:nullSafety
-#end
 @:noDoc @:dox(hide)
 class DocTestUtils {
 
@@ -23,13 +21,25 @@ class DocTestUtils {
       return pos;
 
 
+   /**
+    * >>> DocTestUtils.deepEquals(null, null) == true
+    * >>> DocTestUtils.deepEquals(null, "") == false
+    * >>> DocTestUtils.deepEquals(1, 1) == true
+    * >>> DocTestUtils.deepEquals(1, 2) == false
+    * >>> DocTestUtils.deepEquals("a", "a") == true
+    * >>> DocTestUtils.deepEquals("a", "b") == false
+    * >>> DocTestUtils.deepEquals("HelloWorld", ~/.*world/i) == true
+    * >>> DocTestUtils.deepEquals([1,1], [1,1]) == true
+    * >>> DocTestUtils.deepEquals([1,1], [1,2]) == false
+    * >>> DocTestUtils.deepEquals([1 => 1], [1 => 1]) == true
+    * >>> DocTestUtils.deepEquals([1 => 1], [1 => 2]) == false
+    */
    public static function deepEquals(left:Null<Dynamic>, right:Null<Dynamic>):Bool {
-
       if (left == right)
          return true;
 
       if (left == null || right == null)
-         return true;
+         return false;
 
       // match regular pattern
       if (Std.is(right, EReg))
@@ -40,13 +50,29 @@ class DocTestUtils {
 
       // compare arrays
       if (Std.is(left, Array) && Std.is(right, Array)) {
-         var leftArr:Array<Any> = left;
-         var rightArr:Array<Any> = right;
+         var leftArr:Array<Dynamic> = left;
+         var rightArr:Array<Dynamic> = right;
          if (leftArr.length == rightArr.length) {
-            for (i in 0...leftArr.length) {
+            for (i in 0...leftArr.length)
                if (!deepEquals(leftArr[i], rightArr[i]))
                   return false;
-            }
+            return true;
+         }
+         return false;
+      }
+
+      // compare maps
+      if (Std.is(left, IMap) && Std.is(right, IMap)) {
+         var leftMap:IMap<Dynamic,Dynamic> = cast left;
+         var rightMap:IMap<Dynamic,Dynamic> = cast right;
+
+         var leftKeys:Array<Dynamic> = [for (k in leftMap.keys()) k];
+         var rightKeys:Array<Dynamic> = [for (k in rightMap.keys()) k];
+
+         if (deepEquals(leftKeys, rightKeys)) {
+            for (key in leftKeys)
+               if (!deepEquals(leftMap.get(key), rightMap.get(key)))
+                  return false;
             return true;
          }
          return false;
@@ -169,9 +195,9 @@ class DocTestUtils {
       while (files.length > 0) {
          var file = files.shift();
          if (file == null) continue;
-         if (sys.FileSystem.isDirectory(file)) {
+         if (sys.FileSystem.isDirectory(file))
             files = files.concat(sys.FileSystem.readDirectory(file).map((s) -> '$file/$s'));
-         } else {
+         else {
             file = file.replace("\\", "/");
             if (filePattern.match(file))
                onFile(file);

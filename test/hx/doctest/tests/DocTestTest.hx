@@ -11,12 +11,13 @@ import hx.doctest.DocTestRunner;
  *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"src"}))
 @:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class DocTestTest extends DocTestRunner {
 
    public static function main() {
       var runner = new DocTestTest();
-      runner.runAndExit(42 /* number of expected test cases */);
+      runner.runAndExit(53 /* number of expected test cases */);
    }
 
    function new() {
