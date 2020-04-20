@@ -7,10 +7,10 @@ package hx.doctest.internal.adapters;
 import haxe.macro.Expr;
 import hx.doctest.internal.DocTestAssertion;
 
-
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:nullSafety
 @:noDoc @:dox(hide)
 class HaxeUnitDocTestAdapter extends DocTestAdapter {
 
@@ -32,7 +32,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
          currentTest.done = true;
          currentTest.success = false;
          currentTest.error = '${assertion.expression} --> $errorMsg';
-         currentTest.posInfos = $v{assertion.getPosInfos()};
+         currentTest.posInfos = $v{assertion.pos};
          throw currentTest;
       };
    }
@@ -42,7 +42,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
          currentTest.done = true;
-         print('\n${assertion.file.fileName}:${assertion.lineNumber} [OK] ' + $v{assertion.expression});
+         print('\n${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ' + $v{assertion.expression});
       };
    }
 }

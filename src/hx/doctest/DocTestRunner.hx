@@ -6,12 +6,12 @@ package hx.doctest;
 
 import haxe.PosInfos;
 import haxe.Timer;
-import hx.doctest.internal.Either2;
-import hx.doctest.internal.Logger;
+
 import hx.doctest.internal.DocTestUtils;
+import hx.doctest.internal.Logger;
+import hx.doctest.internal.Range;
 
 using StringTools;
-
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -30,16 +30,14 @@ class DocTestRunner {
             Sys.exit(exitCode);
          #elseif js
             var isPhantomJSDirectExecution = untyped __js__("(typeof phantom !== 'undefined')");
-            if(isPhantomJSDirectExecution) {
+            if (isPhantomJSDirectExecution)
                untyped __js__("phantom.exit(exitCode)");
-            } else {
+            else {
                var isPhantomJSWebPage = untyped __js__("!!(typeof window != 'undefined' && window.callPhantom && window._phantom)");
-               if (isPhantomJSWebPage) {
+               if (isPhantomJSWebPage)
                   untyped __js__("window.callPhantom({cmd:'doctest:exit', 'exitCode':exitCode})");
-               } else {
-                  // nodejs
-                  untyped __js__("process.exit(exitCode)");
-               }
+               else
+                  untyped __js__("process.exit(exitCode)"); // nodejs
             }
          #elseif flash
             flash.system.System.exit(exitCode);
@@ -57,23 +55,23 @@ class DocTestRunner {
     *
     * @return number of failing tests
     */
-   function run(expectedMinNumberOfTests = 0, logSummary:Bool = true):Int {
+   function run(expectedMinNumberOfTests = 0, logTestExecutions = true, logTestSummary = true):Int {
       if (results == null)
-         results = new DefaultDocTestResults();
+         results = new DefaultDocTestResults(this);
 
       final startTime = Timer.stamp();
       final thisClass = Type.getClass(this);
       final thisClassName = Type.getClassName(thisClass);
 
+      final prevMaxLevel = Logger.maxLevel;
+      if(!logTestExecutions)
+         Logger.maxLevel = Level.OFF;
+
       /*
        * look for functions starting with "test" and invoke them
        */
       Logger.log(INFO, 'Looking for test cases in [${thisClassName}]...');
-      final funcNames = new Array<String>();
-      for (funcName in Type.getInstanceFields(thisClass)) {
-         if (funcName.startsWith("test"))
-            funcNames.push(funcName);
-      }
+      final funcNames = [ for (funcName in Type.getInstanceFields(thisClass)) if (funcName.startsWith("test")) funcName ];
       funcNames.sort((a, b) -> a < b ? -1 : a > b ? 1 : 0);
       for (funcName in funcNames) {
          final func:Dynamic = Reflect.field(this, funcName);
@@ -85,32 +83,35 @@ class DocTestRunner {
          }
       }
 
+      Logger.maxLevel = prevMaxLevel;
+
       final timeSpent:Float = Math.round(1000 * (Timer.stamp() - startTime)) / 1000;
-      final testsOK = results.getSuccessCount();
-      final testsFailed = results.getFailureCount();
+      final testsPassed = results.testsPassed;
+      final testsFailed = results.testsFailed;
+
       if (testsFailed == 0) {
-         if (expectedMinNumberOfTests > 0 && testsOK < expectedMinNumberOfTests) {
+         if (testsPassed < expectedMinNumberOfTests) {
             Logger.log(ERROR, "**********************************************************");
-            Logger.log(ERROR, '$expectedMinNumberOfTests tests expected but only $testsOK found!');
+            Logger.log(ERROR, '$expectedMinNumberOfTests tests expected but only $testsPassed found!', null, DocTestUtils.currentPos());
             Logger.log(ERROR, "**********************************************************");
             return 1;
-         } else if (testsOK == 0) {
+         }
+
+         if (testsPassed == 0) {
             Logger.log(WARN, "**********************************************************");
             Logger.log(WARN, 'No test assertions were found!');
             Logger.log(WARN, "**********************************************************");
-         } else {
-            if (logSummary) {
-               Logger.log(INFO, "**********************************************************");
-               Logger.log(INFO, 'All $testsOK test(s) were SUCCESSFUL within $timeSpent seconds.');
-               Logger.log(INFO, "**********************************************************");
-            }
+         } else if (logTestSummary) {
+            Logger.log(INFO, "**********************************************************");
+            Logger.log(INFO, 'All $testsPassed test(s) PASSED within $timeSpent seconds.');
+            Logger.log(INFO, "**********************************************************");
          }
          return 0;
       }
 
-      if (logSummary) {
+      if (logTestSummary) {
          Logger.log(ERROR, "**********************************************************");
-         Logger.log(ERROR, '$testsFailed of ${testsOK + testsFailed} test(s) FAILED:');
+         Logger.log(ERROR, '$testsFailed of ${testsPassed + testsFailed} test(s) FAILED:');
          results.logFailures();
       }
       return testsFailed;
@@ -130,13 +131,6 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-   function assertSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
-      results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
-
-
-   /**
-    * for use within manually created test method
-    */
    function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
       results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', pos);
 
@@ -144,8 +138,15 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-    function assertFalse(result:Bool, ?pos:PosInfos):Void
+   function assertFalse(result:Bool, ?pos:PosInfos):Void
       results.add(!result, 'assertFalse($result)', pos);
+
+
+   /**
+    * for use within manually created test method
+    */
+   function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void
+      results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', pos);
 
 
    /**
@@ -165,13 +166,6 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-   function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void
-      results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', pos);
-
-
-   /**
-    * for use within manually created test method
-    */
    function assertNotSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
       results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', pos);
 
@@ -186,6 +180,13 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
+   function assertSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
+      results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
+
+
+   /**
+    * for use within manually created test method
+    */
    function assertTrue(result:Bool, ?pos:PosInfos):Void
       results.add(result, 'assertTrue($result)', pos);
 
@@ -195,55 +196,114 @@ class DocTestRunner {
     */
    function fail(msg:String = "This code location should not never be reached.", ?pos:PosInfos):Void
       results.add(false, msg, pos);
+
+
+   @:allow(hx.doctest.DocTestResults)
+   function onDocTestResult(result:DocTestResult) {
+      Logger.log(result.testPassed ? OK : ERROR, result.msg, null, {
+         fileName: DocTestUtils.getFileName(result.pos.fileName),
+         lineNumber: result.pos.lineNumber,
+         className: result.pos.className,
+         methodName: result.pos.methodName,
+         customParams: result.pos.customParams
+      });
+   }
 }
 
 
 interface DocTestResults {
-   function add(success:Bool, msg:String, pos:Either2<SourceLocation,haxe.PosInfos>):Void;
-   function getSuccessCount():Int;
+
+   var tests(default, null):Array<DocTestResult>;
+   var testsPassed(default, null):Int;
+   var testsFailed(default, null):Int;
+
+   function add(success:Bool, msg:String, pos:haxe.PosInfos, ?charsOfLine:Range):Void;
+
+   /**
+    * @deprecated use `DocTestResults#testsFailed`
+    */
+   @:deprecated
    function getFailureCount():Int;
+
+   /**
+    * @deprecated use `DocTestResults#testsPassed`
+    */
+   @:deprecated
+   function getSuccessCount():Int;
+
+   /**
+    * Logs all test failures using `haxe.Log.trace()`, except for test failures on **sys**
+    * targets where `Sys.stderr()` is used.
+    */
    function logFailures():Void;
 }
 
 
+@:nullSafety
+class DocTestResult {
+   public final date = Date.now();
+   public final testPassed:Bool;
+   public final msg:String;
+   public final pos:haxe.PosInfos;
+   public final charsOfLine:Null<Range>;
+
+
+   public function new(testPassed:Bool, msg:String, pos:haxe.PosInfos, ?charsOfLine:Range) {
+      this.testPassed = testPassed;
+      this.msg = msg;
+      this.pos = pos;
+      this.charsOfLine = charsOfLine;
+   }
+
+
+   public function toString():String {
+      return
+         '${pos.fileName}:${pos.lineNumber}: ' +
+         (charsOfLine == null ? "" : 'characters ${charsOfLine.start}-${charsOfLine.end}: ') +
+         '[${testPassed ? "OK" : "ERROR"}] $msg';
+   }
+}
+
+
+@:nullSafety
 class DefaultDocTestResults implements DocTestResults {
 
-   var _testsPassed = 0;
-   final _testsFailed = new Array<LogEvent>();
+   public var testsPassed(default, null) = 0;
+   public var testsFailed(default, null) = 0;
+   public var tests(default, null):Array<DocTestResult> = [];
+
+   final runner:DocTestRunner;
 
 
-   inline
-   public function new() {
+   public function new(runner:DocTestRunner)
+      this.runner = runner;
+
+
+   public function add(success:Bool, msg:String, pos:haxe.PosInfos, ?charsOfLine:Range):Void {
+      final result = new DocTestResult(success, msg, pos, charsOfLine);
+      if (success)
+         testsPassed++;
+      else
+         testsFailed++;
+      tests.push(result);
+      runner.onDocTestResult(result);
    }
 
 
-   public function add(success:Bool, msg:String, pos:Either2<SourceLocation,haxe.PosInfos>):Void {
-      if (success) {
-         var event = new LogEvent(OK, msg, pos);
-         event.log(false);
-         _testsPassed++;
-      } else {
-         var event = new LogEvent(ERROR, msg, pos);
-         event.log(false);
-         _testsFailed.push(event);
-      }
-   }
+   @:deprecated
+   public function getFailureCount():Int return testsFailed;
 
 
-   public function getSuccessCount():Int
-      return _testsPassed;
+   @:deprecated
+   public function getSuccessCount():Int return testsFailed;
 
 
-   public function getFailureCount():Int
-      return _testsFailed.length;
-
-
-   public function logFailures():Void {
-      for (event in _testsFailed)
-         event.log(true);
-   }
+   public function logFailures():Void
+      for (result in tests)
+         if (!result.testPassed)
+            Logger.log(ERROR, result.msg, result.charsOfLine, result.pos);
 
 
    public function toString():String
-      return 'DocTestResults[successCount=${getSuccessCount()}, failureCount=${getFailureCount()}]';
+      return 'DocTestResults[successCount=${testsPassed}, failureCount=${testsFailed}]';
 }

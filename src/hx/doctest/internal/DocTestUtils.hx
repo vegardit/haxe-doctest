@@ -7,18 +7,28 @@ package hx.doctest.internal;
 import haxe.CallStack;
 import haxe.macro.MacroStringTools;
 
-
 using StringTools;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+#if !(js||lua||python)
+@:nullSafety
+#end
 @:noDoc @:dox(hide)
 class DocTestUtils {
 
-   public static function deepEquals(left:Dynamic, right:Dynamic):Bool {
+   inline
+   public static function currentPos(?pos:haxe.PosInfos):Null<haxe.PosInfos>
+      return pos;
+
+
+   public static function deepEquals(left:Null<Dynamic>, right:Null<Dynamic>):Bool {
 
       if (left == right)
+         return true;
+
+      if (left == null || right == null)
          return true;
 
       // match regular pattern
@@ -30,9 +40,11 @@ class DocTestUtils {
 
       // compare arrays
       if (Std.is(left, Array) && Std.is(right, Array)) {
-         if (left.length == right.length) {
-            for (i in 0...left.length) {
-               if (!deepEquals(left[i], right[i]))
+         var leftArr:Array<Any> = left;
+         var rightArr:Array<Any> = right;
+         if (leftArr.length == rightArr.length) {
+            for (i in 0...leftArr.length) {
+               if (!deepEquals(leftArr[i], rightArr[i]))
                   return false;
             }
             return true;
@@ -87,14 +99,14 @@ class DocTestUtils {
                }
                if (elem2 != null) switch(elem2) {
                   case Method(classname, method):
-                     if (classname.startsWith("hx.doctest.")) {
+                     if (classname != null && classname.startsWith("hx.doctest.")) {
                         stack = stack.slice(0, i);
                         break;
                      }
                   default:
                }
             case Method(classname, method):
-               if (classname.startsWith("hx.doctest.")) {
+               if (classname != null && classname.startsWith("hx.doctest.")) {
                   stack = stack.slice(0, i);
                   break;
                }
@@ -105,10 +117,15 @@ class DocTestUtils {
    }
 
 
+   inline
+   public static function getFileName(filePath:String):String
+      return substringAfterLast("/" + filePath.replace("\\", "/"), "/");
+
+
    #if macro
    public static function implementsInterface(clazz:haxe.macro.Type.ClassType, interfaceName:String):Bool {
       for(iface in clazz.interfaces)
-         if(iface.t.toString() == interfaceName)
+         if (iface.t.toString() == interfaceName)
             return true;
       return false;
    }
@@ -151,11 +168,12 @@ class DocTestUtils {
 
       while (files.length > 0) {
          var file = files.shift();
+         if (file == null) continue;
          if (sys.FileSystem.isDirectory(file)) {
             files = files.concat(sys.FileSystem.readDirectory(file).map((s) -> '$file/$s'));
          } else {
             file = file.replace("\\", "/");
-            if(filePattern.match(file))
+            if (filePattern.match(file))
                onFile(file);
          }
       }

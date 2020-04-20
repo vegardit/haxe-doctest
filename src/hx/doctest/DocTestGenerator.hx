@@ -51,6 +51,7 @@ typedef DocTestGeneratorConfig = {
  *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:nullSafety
 class DocTestGenerator {
 
    @:keep

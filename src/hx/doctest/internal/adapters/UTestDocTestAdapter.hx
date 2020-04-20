@@ -10,6 +10,7 @@ import haxe.macro.Expr;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:nullSafety
 @:noDoc @:dox(hide)
 class UTestDocTestAdapter extends DocTestAdapter {
 
@@ -28,7 +29,7 @@ class UTestDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
       return macro {
-         utest.Assert.fail('${assertion.expression} --> $errorMsg', $v{assertion.getPosInfos()});
+         utest.Assert.fail('${assertion.expression} --> $errorMsg', $v{assertion.pos});
       };
    }
 
@@ -36,7 +37,7 @@ class UTestDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
-         utest.Assert.pass('${assertion.file.fileName}:${assertion.lineNumber} [OK] ${assertion.expression}', $v{assertion.getPosInfos()});
+         utest.Assert.pass('${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ${assertion.expression}', $v{assertion.pos});
       };
    }
 

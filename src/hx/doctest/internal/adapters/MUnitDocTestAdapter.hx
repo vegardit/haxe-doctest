@@ -11,6 +11,7 @@ import hx.doctest.internal.DocTestAssertion;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:nullSafety
 @:noDoc @:dox(hide)
 class MUnitDocTestAdapter extends DocTestAdapter {
 
@@ -29,7 +30,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
       return macro {
-         massive.munit.Assert.fail('${assertion.expression} --> $errorMsg', $v{assertion.getPosInfos()});
+         massive.munit.Assert.fail('${assertion.expression} --> $errorMsg', $v{assertion.pos});
       };
    }
 
@@ -37,7 +38,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
-         mconsole.Console.info('\n${assertion.file.fileName}:${assertion.lineNumber} [OK] ' + $v{assertion.expression});
+         mconsole.Console.info('\n${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ' + $v{assertion.expression});
       };
    }
 

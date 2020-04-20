@@ -11,6 +11,7 @@ import hx.doctest.internal.DocTestAssertion;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:nullSafety
 @:noDoc @:dox(hide)
 @:abstract
 class DocTestAdapter {

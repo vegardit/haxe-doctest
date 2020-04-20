@@ -4,30 +4,55 @@
  */
 package hx.doctest.internal;
 
+import haxe.EnumTools.EnumValueTools;
+
 using hx.doctest.internal.DocTestUtils;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
+@:nullSafety
 @:noDoc @:dox(hide)
 class Logger {
+
+   public static var maxLevel = Level.DEBUG;
 
    #if flash
    @:keep
    static final __static_init = {
-      haxe.Log.trace = function(v:Dynamic, ?pos: haxe.PosInfos ):Void {
+      haxe.Log.trace = function(v:Dynamic, ?pos:haxe.PosInfos ):Void {
          flash.Lib.trace(pos == null ? '$v' : '${pos.fileName}:${pos.lineNumber}: $v');
       }
    }
    #end
 
+
    /**
     * @param pos will be automatically populated by Haxe if not specified, see https://haxe.org/manual/debugging-posinfos.html
     */
-   public static function log(level:Level, msg:String, ?pos:haxe.PosInfos):LogEvent {
-      final event = new LogEvent(level, msg, pos);
-      event.log();
-      return event;
+   public static function log(level:Level, msg:String, ?charsOfLine:Range, ?pos:haxe.PosInfos):Void {
+      if (EnumValueTools.getIndex(level) < EnumValueTools.getIndex(Logger.maxLevel))
+         return;
+
+      var charRange = charsOfLine == null ? "" : 'characters ${charsOfLine.start}-${charsOfLine.end}: ';
+      switch (level) {
+         case DEBUG:
+            #if debug
+               haxe.Log.trace('$charRange[DEBUG] ${msg}', pos);
+            #end
+
+         case ERROR:
+            #if sys
+               // on sys targets we directly write to STDERR
+               Sys.stderr().writeString((pos == null ? "" : '${pos.fileName}:${pos.lineNumber}: ') + '$charRange[ERROR] ${msg}\n');
+               Sys.stderr().flush();
+            #else
+               haxe.Log.trace('$charRange[ERROR] ${msg}', pos);
+            #end
+
+         default:
+            haxe.Log.trace('$charRange[${level}] ${msg}', pos);
+      }
    }
 }
 
@@ -39,89 +64,5 @@ enum Level {
    OK;
    WARN;
    ERROR;
-}
-
-
-@:noDoc @:dox(hide)
-typedef SourceLocation = {
-   var filePath: String;
-   var lineNumber: Int;
-   var charStart: Int;
-   var charEnd: Int;
-}
-
-
-
-@:noDoc @:dox(hide)
-class LogEvent {
-   public final level:Level;
-   public final msg:String;
-   public final pos:Either2<SourceLocation,haxe.PosInfos>;
-
-
-   inline
-   private static function getPosInfosFromSourceLocation(loc:SourceLocation, withFullPath:Bool):haxe.PosInfos
-      return {fileName: withFullPath ? loc.filePath : getFileName(loc.filePath) , lineNumber: loc.lineNumber, className: "", methodName: ""};
-
-   inline
-   private static function getFileName(filePath:String):String
-      return ("/" + filePath).substringAfterLast("/");
-
-
-   public function new(level:Level, msg:String, pos:Either2<SourceLocation,haxe.PosInfos>) {
-      this.level = level;
-      this.msg = msg;
-      this.pos = pos;
-   }
-
-
-   public function log(withDetailedLocation = true):Void {
-      switch(level) {
-         case DEBUG:
-            #if debug
-            switch (pos.value){
-               case a(loc): haxe.Log.trace('[DEBUG] ${msg}', getPosInfosFromSourceLocation(loc, withDetailedLocation));
-               case b(loc): haxe.Log.trace('[DEBUG] ${msg}', loc);
-            }
-            #end
-
-         case ERROR:
-            #if sys
-               // on sys targets we directly write to STDERR
-               Sys.stderr().writeString('${toStringInternal(withDetailedLocation)}\n');
-               Sys.stderr().flush();
-            #else
-               switch (pos.value){
-                  case a(loc): haxe.Log.trace('[ERROR] ${msg}', getPosInfosFromSourceLocation(loc, withDetailedLocation));
-                  case b(loc): haxe.Log.trace('[ERROR] ${msg}', loc);
-               }
-            #end
-
-         default:
-            switch (pos.value){
-               case a(loc): haxe.Log.trace('[${level}] ${msg}', getPosInfosFromSourceLocation(loc, withDetailedLocation));
-               case b(loc): haxe.Log.trace('[${level}] ${msg}', loc);
-            }
-      }
-   }
-
-
-   function toStringInternal(withDetailedLocation = true):String {
-      switch (pos.value){
-         //SourceLocation:
-         case a(loc):
-            if (withDetailedLocation)
-               return '${loc.filePath}:${loc.lineNumber}: characters ${loc.charStart}-${loc.charEnd}: [${level}] ${msg}';
-            return '${getFileName(loc.filePath)}:${loc.lineNumber}: [${level}] ${msg}';
-
-         //haxe.PosInfos:
-         case b(loc):
-            var filePath = withDetailedLocation ? loc.fileName : getFileName(loc.fileName);
-            return '${filePath}:${loc.lineNumber}: [${level}] ${msg}';
-      }
-   }
-
-
-   public function toString():String
-      return toStringInternal(true);
+   OFF;
 }
