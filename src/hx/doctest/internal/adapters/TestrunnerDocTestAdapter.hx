@@ -30,7 +30,7 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
       return macro {
-         results.add(false, '${assertion.expression} --> $errorMsg', $v{assertion.pos}, $v{assertion.charsOfLine});
+         results.add(false, '${assertion.expression} --> $errorMsg', cast $v{assertion.pos});
       };
    }
 
@@ -38,7 +38,7 @@ class TestrunnerDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
-         results.add(true, '${assertion.expression}', $v{assertion.pos});
+         results.add(true, '${assertion.expression}', cast $v{assertion.pos});
       };
    }
 

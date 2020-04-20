@@ -32,7 +32,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
          currentTest.done = true;
          currentTest.success = false;
          currentTest.error = '${assertion.expression} --> $errorMsg';
-         currentTest.posInfos = $v{assertion.pos};
+         currentTest.posInfos = cast $v{assertion.pos};
          throw currentTest;
       };
    }

@@ -5,6 +5,7 @@
 package hx.doctest.internal;
 
 import haxe.EnumTools.EnumValueTools;
+import hx.doctest.PosInfosExt;
 
 using hx.doctest.internal.DocTestUtils;
 
@@ -29,28 +30,33 @@ class Logger {
    /**
     * @param pos will be automatically populated by Haxe if not specified, see https://haxe.org/manual/debugging-posinfos.html
     */
-   public static function log(level:Level, msg:String, ?charsOfLine:Range, ?pos:haxe.PosInfos):Void {
+   public static function log(level:Level, msg:String, ?pos:haxe.PosInfos):Void {
       if (EnumValueTools.getIndex(level) < EnumValueTools.getIndex(Logger.maxLevel))
          return;
 
-      var charRange = charsOfLine == null ? "" : 'characters ${charsOfLine.start}-${charsOfLine.end}: ';
+      var posExt:PosInfosExt = cast pos;
+      var charsOfLine:String = "";
+      if (posExt.charStart != null && posExt.charEnd != null) {
+         charsOfLine = 'characters ${posExt.charStart}-${posExt.charEnd}: ';
+      }
+
       switch (level) {
          case DEBUG:
             #if debug
-               haxe.Log.trace('$charRange[DEBUG] ${msg}', pos);
+               haxe.Log.trace('$charsOfLine[DEBUG] ${msg}', pos);
             #end
 
          case ERROR:
             #if sys
                // on sys targets we directly write to STDERR
-               Sys.stderr().writeString((pos == null ? "" : '${pos.fileName}:${pos.lineNumber}: ') + '$charRange[ERROR] ${msg}\n');
+               Sys.stderr().writeString((pos == null ? "" : '${pos.fileName}:${pos.lineNumber}: ') + '$charsOfLine[ERROR] ${msg}\n');
                Sys.stderr().flush();
             #else
-               haxe.Log.trace('$charRange[ERROR] ${msg}', pos);
+               haxe.Log.trace('$charsOfLine[ERROR] ${msg}', pos);
             #end
 
          default:
-            haxe.Log.trace('$charRange[${level}] ${msg}', pos);
+            haxe.Log.trace('$charsOfLine[${level}] ${msg}', pos);
       }
    }
 }

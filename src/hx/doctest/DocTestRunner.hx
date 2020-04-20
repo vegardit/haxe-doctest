@@ -9,7 +9,6 @@ import haxe.Timer;
 
 import hx.doctest.internal.DocTestUtils;
 import hx.doctest.internal.Logger;
-import hx.doctest.internal.Range;
 
 using StringTools;
 
@@ -92,7 +91,7 @@ class DocTestRunner {
       if (testsFailed == 0) {
          if (testsPassed < expectedMinNumberOfTests) {
             Logger.log(ERROR, "**********************************************************");
-            Logger.log(ERROR, '$expectedMinNumberOfTests tests expected but only $testsPassed found!', null, DocTestUtils.currentPos());
+            Logger.log(ERROR, '$expectedMinNumberOfTests tests expected but only $testsPassed found!', DocTestUtils.currentPos());
             Logger.log(ERROR, "**********************************************************");
             return 1;
          }
@@ -200,13 +199,16 @@ class DocTestRunner {
 
    @:allow(hx.doctest.DocTestResults)
    function onDocTestResult(result:DocTestResult) {
-      Logger.log(result.testPassed ? OK : ERROR, result.msg, null, {
-         fileName: DocTestUtils.getFileName(result.pos.fileName),
+      var pos:PosInfosExt = {
+         fileName: DocTestUtils.getFileName(result.pos.fileName), // only display file name
          lineNumber: result.pos.lineNumber,
          className: result.pos.className,
          methodName: result.pos.methodName,
-         customParams: result.pos.customParams
-      });
+         customParams: result.pos.customParams,
+         charStart: null, // don't display character range
+         charEnd: null // don't display character range
+      }
+      Logger.log(result.testPassed ? OK : ERROR, result.msg, pos);
    }
 }
 
@@ -217,7 +219,7 @@ interface DocTestResults {
    var testsPassed(default, null):Int;
    var testsFailed(default, null):Int;
 
-   function add(success:Bool, msg:String, pos:haxe.PosInfos, ?charsOfLine:Range):Void;
+   function add(success:Bool, msg:String, pos:haxe.PosInfos):Void;
 
    /**
     * @deprecated use `DocTestResults#testsFailed`
@@ -244,22 +246,20 @@ class DocTestResult {
    public final date = Date.now();
    public final testPassed:Bool;
    public final msg:String;
-   public final pos:haxe.PosInfos;
-   public final charsOfLine:Null<Range>;
+   public final pos:PosInfosExt;
 
 
-   public function new(testPassed:Bool, msg:String, pos:haxe.PosInfos, ?charsOfLine:Range) {
+   public function new(testPassed:Bool, msg:String, pos:haxe.PosInfos) {
       this.testPassed = testPassed;
       this.msg = msg;
-      this.pos = pos;
-      this.charsOfLine = charsOfLine;
+      this.pos = cast pos;
    }
 
 
    public function toString():String {
       return
          '${pos.fileName}:${pos.lineNumber}: ' +
-         (charsOfLine == null ? "" : 'characters ${charsOfLine.start}-${charsOfLine.end}: ') +
+         (pos.charStart == null ? "" : 'characters ${pos.charStart}-${pos.charEnd}: ') +
          '[${testPassed ? "OK" : "ERROR"}] $msg';
    }
 }
@@ -279,8 +279,8 @@ class DefaultDocTestResults implements DocTestResults {
       this.runner = runner;
 
 
-   public function add(success:Bool, msg:String, pos:haxe.PosInfos, ?charsOfLine:Range):Void {
-      final result = new DocTestResult(success, msg, pos, charsOfLine);
+   public function add(success:Bool, msg:String, pos:haxe.PosInfos):Void {
+      final result = new DocTestResult(success, msg, pos);
       if (success)
          testsPassed++;
       else
@@ -301,7 +301,7 @@ class DefaultDocTestResults implements DocTestResults {
    public function logFailures():Void
       for (result in tests)
          if (!result.testPassed)
-            Logger.log(ERROR, result.msg, result.charsOfLine, result.pos);
+            Logger.log(ERROR, result.msg, result.pos);
 
 
    public function toString():String

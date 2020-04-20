@@ -44,7 +44,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
             new tink.testrunner.Assertion(
                false,
                '${assertion.expression} --> $errorMsg',
-               $v{assertion.pos}
+               cast $v{assertion.pos}
             ))
          );
       };
@@ -59,7 +59,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
             new tink.testrunner.Assertion(
                true,
                $v{assertion.expression},
-               $v{assertion.pos}
+               cast $v{assertion.pos}
             ))
          );
       };

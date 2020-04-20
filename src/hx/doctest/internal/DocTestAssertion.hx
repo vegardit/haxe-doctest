@@ -12,8 +12,7 @@ package hx.doctest.internal;
 class DocTestAssertion {
 
    public final expression:String;
-   public final pos:haxe.PosInfos;
-   public final charsOfLine:Range;
+   public final pos:PosInfosExt;
 
    public function new(file:SourceFile, expression:String, lineNumber:Int, charStart:Int, charEnd:Int) {
       this.expression = expression;
@@ -21,8 +20,9 @@ class DocTestAssertion {
          fileName: file.filePath,
          lineNumber: lineNumber,
          className: "",
-         methodName: ""
+         methodName: "",
+         charStart: charStart,
+         charEnd: charEnd
       };
-      charsOfLine = { start: charStart, end: charEnd };
    }
 }
