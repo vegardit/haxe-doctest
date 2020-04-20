@@ -98,6 +98,11 @@ class SourceFile {
             return true;
          }
 
+         if (lineTrimmed.startsWith("#else if ")) {
+            currentLine = CompilerConditionElseIf(lineTrimmed.substringAfter("#else if ").trim());
+            return true;
+         }
+
          var docTestExpression = line.substringAfter(docTestIdentifier).trim();
          if (docTestExpression == "")
             continue;

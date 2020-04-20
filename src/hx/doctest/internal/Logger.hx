@@ -20,9 +20,8 @@ class Logger {
    #if flash
    @:keep
    static final __static_init = {
-      haxe.Log.trace = function(v:Dynamic, ?pos:haxe.PosInfos ):Void {
+      haxe.Log.trace = function(v:Dynamic, ?pos:haxe.PosInfos):Void
          flash.Lib.trace(pos == null ? '$v' : '${pos.fileName}:${pos.lineNumber}: $v');
-      }
    }
    #end
 
