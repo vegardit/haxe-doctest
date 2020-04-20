@@ -16,7 +16,7 @@ using hx.doctest.internal.DocTestUtils;
 @:noDoc @:dox(hide)
 class Logger {
 
-   public static var maxLevel = Level.DEBUG;
+   public static var maxLevel = Level.INFO;
 
    #if flash
    @:keep

@@ -69,15 +69,15 @@ class DocTestRunner {
       /*
        * look for functions starting with "test" and invoke them
        */
-      Logger.log(INFO, 'Looking for test cases in [${thisClassName}]...');
+      Logger.log(DEBUG, 'Looking for test cases in [${thisClassName}]...');
       final funcNames = [ for (funcName in Type.getInstanceFields(thisClass)) if (funcName.startsWith("test")) funcName ];
       funcNames.sort((a, b) -> a < b ? -1 : a > b ? 1 : 0);
       for (funcName in funcNames) {
          final func:Dynamic = Reflect.field(this, funcName);
          if (Reflect.isFunction(func)) {
-            Logger.log(INFO, "**********************************************************");
-            Logger.log(INFO, 'Invoking [${thisClassName}#$funcName()]...');
-            Logger.log(INFO, "**********************************************************");
+            Logger.log(DEBUG, "**********************************************************");
+            Logger.log(DEBUG, 'Invoking [${thisClassName}#$funcName()]...');
+            Logger.log(DEBUG, "**********************************************************");
             Reflect.callMethod(this, func, []);
          }
       }
