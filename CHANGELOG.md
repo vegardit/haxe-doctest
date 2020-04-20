@@ -6,6 +6,18 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+## [3.1.0] - 2020-04-20
+
+### Added
+- typedef `hx.doctest.PosInfosExt`
+- class `hx.doctest.DocTestRunner.DocTestResult`
+- property `hx.doctest.DocTestRunner.DocTestResults#tests:Array<DocTestResult>`
+- property `hx.doctest.DocTestRunner.DocTestResults#testsPassed:Int`
+- property `hx.doctest.DocTestRunner.DocTestResults#testsFailed:Int`
+
+### Changed
+- deprecated method `hx.doctest.DocTestRunner.DocTestResults#getSuccessCount()`
+- deprecated method `hx.doctest.DocTestRunner.DocTestResults#getFailureCount()`
 
 ### Fixed
 - wrong character position is reported on test failure
