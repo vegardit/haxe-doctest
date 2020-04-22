@@ -11,7 +11,7 @@ git:
 
 cache:
   directories:
-    - $HOME/haxe
+    - $HOME/haxe/lib
     - $HOME/.cache/luarocks
 
 haxe:
@@ -23,6 +23,7 @@ env:
   - HAXE_TARGET=cs
   - HAXE_TARGET="interp -D eval-stack"
   - HAXE_TARGET=flash
+  - HAXE_TARGET=hl
   - HAXE_TARGET=java
   - HAXE_TARGET="java -D jvm"
   - HAXE_TARGET=js
@@ -36,8 +37,8 @@ matrix:
   fast_finish: true
   allow_failures:
     - haxe: development
-    - env: HAXE_TARGET="java -D jvm" # no idea why it fails on travis. works locally
     - env: HAXE_TARGET=flash  # see https://github.com/travis-ci/travis-ci/issues/8481
+    - env: HAXE_TARGET="java -D jvm" # no idea why it fails on travis. works locally
     - os: osx
   exclude:
     - haxe: development
@@ -56,7 +57,7 @@ install:
   - haxelib install utest
   - haxelib install tink_testrunner
   # install node 12 LTS as workaround for https://github.com/back2dos/travix/issues/120
-  - |- 
+  - |-
     if [ "$HAXE_TARGET" == "js" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash && \
       source $HOME/.nvm/nvm.sh && \
