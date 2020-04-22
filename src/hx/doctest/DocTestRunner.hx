@@ -130,7 +130,7 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-   function assertEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
+   function assertEquals(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', pos);
 
 
@@ -165,21 +165,21 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-   function assertNotSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
+   function assertNotSame(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', pos);
 
 
    /**
     * for use within manually created test method
     */
-   function assertNotEquals(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
+   function assertNotEquals(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(!DocTestUtils.deepEquals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', pos);
 
 
    /**
     * for use within manually created test method
     */
-   function assertSame(leftResult:Dynamic, rightResult:Dynamic, ?pos:PosInfos):Void
+   function assertSame(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
 
 
