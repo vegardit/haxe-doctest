@@ -96,7 +96,6 @@ class DocTestGenerator {
       var totalAssertionsCount = 0;
 
       final parser = new hscript.Parser();
-      final compilerConditions = new Array<Bool>();
 
       /*
        * iterate over all matched files
@@ -104,6 +103,7 @@ class DocTestGenerator {
       Logger.log(INFO, 'Activated via @:build on [${Context.getLocalClass().get().module}]');
       Logger.log(INFO, 'Generating test cases for test framework [${doctestAdapter.getFrameworkName()}]...');
       DocTestUtils.walkDirectory(config.srcFolder, new EReg(config.srcFilePathPattern, ""), function(srcFilePath) {
+         final compilerConditions = new Array<Bool>();
          final src = new SourceFile(srcFilePath, config.docTestLineIdentifier, config.docTestNextLineIdentifier);
 
          var testMethodAssertions = new Array<Expr>();

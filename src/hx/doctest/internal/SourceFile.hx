@@ -78,12 +78,7 @@ class SourceFile {
          }
          currentLineNumber++;
 
-         if (lineTrimmed == "#else") {
-            currentLine = CompilerConditionElse;
-            return true;
-         }
-
-         if (lineTrimmed == "#end") {
+         if (lineTrimmed.startsWith("#end")) {
             currentLine = CompilerConditionEnd;
             return true;
          }
@@ -100,6 +95,11 @@ class SourceFile {
 
          if (lineTrimmed.startsWith("#else if ")) {
             currentLine = CompilerConditionElseIf(lineTrimmed.substringAfter("#else if ").trim());
+            return true;
+         }
+
+         if (lineTrimmed.startsWith("#else")) {
+            currentLine = CompilerConditionElse;
             return true;
          }
 

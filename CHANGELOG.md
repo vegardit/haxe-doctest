@@ -6,6 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 
 ## [Unreleased]
 
+
+### Fixed
+- compiler conditionals are sometimes interpreted wrong
+
+
 ## [3.1.0] - 2020-04-20
 
 ### Added
