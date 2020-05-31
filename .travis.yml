@@ -51,12 +51,12 @@ install:
   #- haxelib git travix https://github.com/back2dos/travix && pushd . && cd $(haxelib config)travix/git && haxe build-neko.hxml && popd
   #- haxelib run travix install
   - haxelib dev haxe-doctest .
-  - haxelib install travix
-  - haxelib install hscript
-  - haxelib install hx3compat
-  - haxelib install munit
-  - haxelib install utest
-  - haxelib install tink_testrunner
+  - haxelib --always install travix
+  - haxelib --always install hscript
+  - haxelib --always install hx3compat
+  - haxelib --always install munit
+  - haxelib --always install utest
+  - haxelib --always install tink_testrunner
   # install node 12 LTS as workaround for https://github.com/back2dos/travix/issues/120
   - |-
     if [ "$HAXE_TARGET" == "js" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then
