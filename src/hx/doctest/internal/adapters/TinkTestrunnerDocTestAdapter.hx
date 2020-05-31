@@ -41,12 +41,8 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
       return macro {
          cases.push(new hx.doctest.internal.adapters.TinkTestrunnerDocTestAdapter.SingeAssertionCase(
             null,
-            new tink.testrunner.Assertion(
-               false,
-               '${assertion.expression} --> $errorMsg',
-               cast $v{assertion.pos}
-            ))
-         );
+            new tink.testrunner.Assertion(false, $v{'${assertion.expression} --> $errorMsg'}, cast $v{assertion.pos})
+         ));
       };
    }
 
@@ -56,12 +52,8 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
       return macro {
          cases.push(new hx.doctest.internal.adapters.TinkTestrunnerDocTestAdapter.SingeAssertionCase(
             null,
-            new tink.testrunner.Assertion(
-               true,
-               $v{assertion.expression},
-               cast $v{assertion.pos}
-            ))
-         );
+            new tink.testrunner.Assertion(true, $v{assertion.expression}, cast $v{assertion.pos})
+         ));
       };
    }
 

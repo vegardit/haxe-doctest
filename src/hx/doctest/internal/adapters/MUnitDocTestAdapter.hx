@@ -30,7 +30,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
       return macro {
-         massive.munit.Assert.fail('${assertion.expression} --> $errorMsg', cast $v{assertion.pos});
+         massive.munit.Assert.fail($v{'${assertion.expression} --> $errorMsg'}, cast $v{assertion.pos});
       };
    }
 
@@ -38,7 +38,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
-         mconsole.Console.info('\n${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ' + $v{assertion.expression});
+         mconsole.Console.info($v{'\n${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ${assertion.expression}'});
       };
    }
 

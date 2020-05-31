@@ -29,7 +29,7 @@ class UTestDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
       return macro {
-         utest.Assert.fail('${assertion.expression} --> $errorMsg', cast $v{assertion.pos});
+         utest.Assert.fail($v{'${assertion.expression} --> $errorMsg'}, cast $v{assertion.pos});
       };
    }
 
@@ -37,7 +37,7 @@ class UTestDocTestAdapter extends DocTestAdapter {
    override
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
-         utest.Assert.pass('${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ${assertion.expression}', cast $v{assertion.pos});
+         utest.Assert.pass($v{'${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ${assertion.expression}'}, cast $v{assertion.pos});
       };
    }
 

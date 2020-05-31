@@ -31,7 +31,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
       return macro {
          currentTest.done = true;
          currentTest.success = false;
-         currentTest.error = '${assertion.expression} --> $errorMsg';
+         currentTest.error = $v{'${assertion.expression} --> $errorMsg'};
          currentTest.posInfos = cast $v{assertion.pos};
          throw currentTest;
       };
@@ -42,7 +42,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
          currentTest.done = true;
-         print('\n${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ' + $v{assertion.expression});
+         print($v{'\n${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ${assertion.expression}'});
       };
    }
 }
