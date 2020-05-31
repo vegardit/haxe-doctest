@@ -7,8 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 ## [Unreleased]
 
 
+## [3.1.1] - 2020-05-31
+
 ### Fixed
 - compiler conditionals are sometimes interpreted wrong
+- [Issue #11](https://github.com/vegardit/haxe-doctest/issues/11) Error `Unknown identifier : assertion` on Haxe 4.2-dev
 
 
 ## [3.1.0] - 2020-04-20
@@ -46,7 +49,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and
 ## [2.0.0] - 2019-05-19
 
 ### Added
-- new comparions operators === and !== to assert reference equality/inequality
+- new comparisons operators === and !== to assert reference equality/inequality
 - multiline support for assertions
 
 ### Changed
