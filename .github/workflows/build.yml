@@ -19,7 +19,8 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
-        haxe: 
+        haxe:
+          - 4.2.1
           - 4.1.5
           - 4.0.5
 
@@ -57,13 +58,16 @@ jobs:
     - name: Set up Python 3
       uses: actions/setup-python@v2 # https://github.com/actions/setup-python
       with:
-        python-version: 3.8
+        python-version: 3.9
 
-    - name: Configure Python 3
+    - name: Configure Python 3 on Windows
       if: runner.os == 'Windows'
       shell: cmd
       # workaround for https://github.com/actions/setup-python/issues/123
-      run: mklink "%pythonLocation%\python3.exe" "%pythonLocation%\python.exe"
+      run:
+        if not exist "%pythonLocation%\python.exe" (
+          mklink "%pythonLocation%\python3.exe" "%pythonLocation%\python.exe"
+        )
 
     - name: Install Haxe ${{ matrix.haxe }}
       uses: krdlab/setup-haxe@v1 # https://github.com/krdlab/setup-haxe
@@ -81,10 +85,9 @@ jobs:
           echo "::endgroup::"
         done
 
-        haxelib git travix https://github.com/sebthom/travix
+        haxelib git travix https://github.com/back2dos/travix
         pushd . 
         cd $(haxelib config)travix/git
-        git checkout github_actions2 
         haxe build-neko.hxml -lib hx3compat
         popd
 
@@ -121,7 +124,7 @@ jobs:
 
     - name: Test [lua]
       continue-on-error: ${{ runner.os != 'Linux' }}
-      run:  haxelib run travix lua
+      run: haxelib run travix lua
 
     - name: Test [neko]
       run: haxelib run travix neko
