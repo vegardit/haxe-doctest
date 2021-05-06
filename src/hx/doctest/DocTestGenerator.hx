@@ -302,7 +302,7 @@ class DocTestGenerator {
                   // generate a new testMethod if required
                   if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
                      // for haxe-unit and munit we create a new test-method per assertion:
-                     Std.is(doctestAdapter, HaxeUnitDocTestAdapter) || Std.is(doctestAdapter, MUnitDocTestAdapter)
+                     Types.isInstanceOf(doctestAdapter, HaxeUnitDocTestAdapter) || Types.isInstanceOf(doctestAdapter, MUnitDocTestAdapter)
                   ) {
                      testMethodsCount++;
                      final testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';

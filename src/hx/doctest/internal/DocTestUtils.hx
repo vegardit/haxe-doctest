@@ -8,6 +8,8 @@ import haxe.CallStack;
 import haxe.Constraints.IMap;
 import haxe.macro.MacroStringTools;
 
+import hx.doctest.internal.Types;
+
 using StringTools;
 
 /**
@@ -42,14 +44,14 @@ class DocTestUtils {
          return false;
 
       // match regular pattern
-      if (Std.is(right, EReg))
+      if (Types.isInstanceOf(right, EReg))
          return cast(right, EReg).match(Std.string(left));
 
-      if (Std.is(left, String))
+      if (Types.isInstanceOf(left, String))
          return false;
 
       // compare arrays
-      if (Std.is(left, Array) && Std.is(right, Array)) {
+      if (Types.isInstanceOf(left, Array) && Types.isInstanceOf(right, Array)) {
          var leftArr:Array<Dynamic> = left;
          var rightArr:Array<Dynamic> = right;
          if (leftArr.length == rightArr.length) {
@@ -62,7 +64,7 @@ class DocTestUtils {
       }
 
       // compare maps
-      if (Std.is(left, IMap) && Std.is(right, IMap)) {
+      if (Types.isInstanceOf(left, IMap) && Types.isInstanceOf(right, IMap)) {
          var leftMap:IMap<Dynamic,Dynamic> = cast left;
          var rightMap:IMap<Dynamic,Dynamic> = cast right;
 

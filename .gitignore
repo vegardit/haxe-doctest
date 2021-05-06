@@ -5,6 +5,7 @@
 
 
 # ---> Temp files
+.history
 *.tmp
 *.bak
 *.swp
