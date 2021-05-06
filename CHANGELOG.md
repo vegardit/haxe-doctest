@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [3.1.2] - 2021-05-06
+
 ### Fixed
 - "Warning: Std.is is deprecated. Use Std.isOfType instead." on Haxe 4.2
 
