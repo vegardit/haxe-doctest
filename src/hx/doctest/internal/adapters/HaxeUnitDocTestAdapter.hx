@@ -6,6 +6,7 @@ package hx.doctest.internal.adapters;
 
 import haxe.macro.Expr;
 import hx.doctest.internal.DocTestAssertion;
+import hx.doctest.internal.Either2;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -27,11 +28,15 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
 
 
    override
-   public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
+   public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr {
+      final errorMsgExpr:ExprOf<String> = switch(errorMsg.value) {
+        case a(str): macro { $v{str} };
+        case b(expr): expr;
+      }
       return macro {
          currentTest.done = true;
          currentTest.success = false;
-         currentTest.error = $v{'${assertion.expression} --> $errorMsg'};
+         currentTest.error = $v{'${assertion.expression} --> '} + $errorMsgExpr;
          currentTest.posInfos = cast $v{assertion.pos};
          throw currentTest;
       };

@@ -7,6 +7,7 @@ package hx.doctest.internal.adapters;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import hx.doctest.internal.DocTestAssertion;
+import hx.doctest.internal.Either2;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -20,7 +21,7 @@ class DocTestAdapter {
       throw "Not implemented";
 
 
-   public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr
+   public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr
       throw "Not implemented";
 
 

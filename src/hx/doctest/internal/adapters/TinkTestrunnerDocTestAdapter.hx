@@ -5,10 +5,10 @@
 package hx.doctest.internal.adapters;
 
 #if macro
-
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
+import hx.doctest.internal.Either2;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
@@ -37,11 +37,15 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
 
    override
-   public function generateTestFail(assertion:DocTestAssertion, errorMsg:String):Expr {
+   public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr {
+      final errorMsgExpr:ExprOf<String> = switch(errorMsg.value) {
+        case a(str): macro { $v{str} };
+        case b(expr): expr;
+      }
       return macro {
          cases.push(new hx.doctest.internal.adapters.TinkTestrunnerDocTestAdapter.SingeAssertionCase(
             null,
-            new tink.testrunner.Assertion(false, $v{'${assertion.expression} --> $errorMsg'}, cast $v{assertion.pos})
+            new tink.testrunner.Assertion(false, $v{'${assertion.expression} --> '} + $errorMsgExpr, cast $v{assertion.pos})
          ));
       };
    }

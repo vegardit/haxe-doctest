@@ -146,7 +146,7 @@ class DocTestGenerator {
                      }
 
                      final testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
-                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` not same instance as `$right`.");
+                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` not same instance as `" + right + "`.");
 
                      testMethodAssertions.push(macro {
                         final left = $leftExpr;
@@ -179,7 +179,7 @@ class DocTestGenerator {
                      }
 
                      final testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
-                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is same instance right side.");
+                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is same instance right side.");
 
                      testMethodAssertions.push(macro {
                         final left = $leftExpr;
@@ -211,7 +211,7 @@ class DocTestGenerator {
                      }
 
                      final testSuccessExpr = doctestAdapter.generateTestSuccess(assertion);
-                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, "Expected `$right` but was `$left`.");
+                     final testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Expected `" + right + "` but was `" + left + "`.");
 
                      testMethodAssertions.push(macro {
                         var left:Dynamic = "nothing";
@@ -263,22 +263,22 @@ class DocTestGenerator {
                      switch(comparator) {
                         case OpEq:
                            comparisonExpr = macro hx.doctest.internal.DocTestUtils.deepEquals(left, right);
-                           testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` does not equal `$right`.");
+                           testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` does not equal `" + right +"`.");
                         case OpNotEq:
                            comparisonExpr = macro !hx.doctest.internal.DocTestUtils.deepEquals(left, right);
-                           testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` equals `$right`.");
+                           testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` equals `" + right + "`.");
                         case OpLte:
                            comparisonExpr = macro left <= right;
-                           testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not lower than or equal `$right`.");
+                           testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not lower than or equal `" + right + "`.");
                         case OpLt:
                            comparisonExpr = macro left < right;
-                           testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not lower than `$right`.");
+                           testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not lower than `" + right + "`.");
                         case OpGt:
                            comparisonExpr = macro left > right;
-                           testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not greater than `$right`.");
+                           testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not greater than `" + right + "`.");
                         case OpGte:
                            comparisonExpr = macro left >= right;
-                           testFailedExpr = doctestAdapter.generateTestFail(assertion, "Left side `$left` is not greater than or equal `$right`.");
+                           testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not greater than or equal `" + right + "`.");
                         default: throw "Should never be reached";
                      }
 
