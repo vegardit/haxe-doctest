@@ -8,6 +8,7 @@ import haxe.EnumTools.EnumValueTools;
 import hx.doctest.PosInfosExt;
 
 using hx.doctest.internal.DocTestUtils;
+using hx.doctest.internal.OS;
 
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
@@ -15,6 +16,8 @@ using hx.doctest.internal.DocTestUtils;
 @:nullSafety
 @:noDoc @:dox(hide)
 class Logger {
+
+   private static final NEW_LINE = OS.isWindows ? "\r\n" : "\n";
 
    public static var maxLevel = Level.INFO;
 
@@ -47,9 +50,10 @@ class Logger {
             #end
 
          case ERROR:
-            #if sys
+            #if (sys && !hl) // TODO don't write to STDERR on hl, results in strange output for TestRunner#runAndExit()
                // on sys targets we directly write to STDERR
-               Sys.stderr().writeString((pos == null ? "" : '${pos.fileName}:${pos.lineNumber}: ') + '$charsOfLine[ERROR] ${msg}\n');
+               Sys.stdout().flush();
+               Sys.stderr().writeString((pos == null ? "" : '${pos.fileName}:${pos.lineNumber}: ') + '$charsOfLine[ERROR] ${msg}${NEW_LINE}');
                Sys.stderr().flush();
             #else
                haxe.Log.trace('$charsOfLine[ERROR] ${msg}', pos);
