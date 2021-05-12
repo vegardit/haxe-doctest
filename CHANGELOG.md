@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.5] - 2021-05-12
+
+### Changed
+- make hx.doctest.internal.Logger.log function dynamic
+
 
 ## [3.1.4] - 2021-05-11
 
