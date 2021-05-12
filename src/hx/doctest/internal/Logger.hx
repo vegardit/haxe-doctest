@@ -33,7 +33,7 @@ class Logger {
    /**
     * @param pos will be automatically populated by Haxe if not specified, see https://haxe.org/manual/debugging-posinfos.html
     */
-   public static function log(level:Level, msg:String, ?pos:haxe.PosInfos):Void {
+   public dynamic static function log(level:Level, msg:String, ?pos:haxe.PosInfos):Void {
       if (EnumValueTools.getIndex(level) < EnumValueTools.getIndex(Logger.maxLevel))
          return;
 
@@ -50,7 +50,7 @@ class Logger {
             #end
 
          case ERROR:
-            #if (sys && !hl) // TODO don't write to STDERR on hl, results in strange output for TestRunner#runAndExit()
+            #if (sys2 && !hl) // TODO don't write to STDERR on hl, results in strange output for TestRunner#runAndExit()
                // on sys targets we directly write to STDERR
                Sys.stdout().flush();
                Sys.stderr().writeString((pos == null ? "" : '${pos.fileName}:${pos.lineNumber}: ') + '$charsOfLine[ERROR] ${msg}${NEW_LINE}');
