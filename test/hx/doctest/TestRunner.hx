@@ -52,15 +52,12 @@ class TestRunner {
       MUnitTest.main();
       #end
 
-      #if !(flash || nodejs || php)
+      #if !(flash || php)
       /*
-       * 1) fails on nodejs with:
-       *    tink_testrunner/0,7,2/src/tink/testrunner/Reporter.hx:180: characters 4-15 : Accessing this field requires a system platform (php,neko,cpp,etc.)
-       *
-       * 2) fails on Flash with:
+       * 1) fails on Flash with:
        *    Not supported yet.
        *
-       * 3) fails on PHP with:
+       * 2) fails on PHP with:
        *    Fatal error: Uncaught Error: Call to undefined method Attribute::Off() in haxe-doctest/bin/php/lib/ANSI.php:110
        *    Stack trace:
        *    #0 haxe-doctest/bin/php/lib/ANSI.php(145): ANSI::__hx__init()
