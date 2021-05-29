@@ -60,7 +60,7 @@ class ExampleEntity {
     * >>> new ExampleEntity(" foo ").name == " foo "
     * </code></pre>
     */
-   public var name:String;
+   public var name:Null<String>;
 
    /**
     * <pre>code>
@@ -69,7 +69,7 @@ class ExampleEntity {
     * >>> new ExampleEntity("foo") throws nothing
     * </code></pre>
     */
-   public function new(name:String) {
+   public function new(name:Null<String>) {
       if (name == null)
          throw "[name] must not be null";
       this.name = name;
@@ -85,8 +85,10 @@ class ExampleEntity {
     * >>> new ExampleEntity(" foo ").isValidName() == true
     * </code></pre>
     */
-   public function isValidName():Bool
-      return name != null && StringTools.trim(name).length > 0;
+   public function isValidName():Bool {
+      final n = name;
+      return n != null && StringTools.trim(n).length > 0;
+   }
 
    /**
     * Checks if the name property is valid.

@@ -11,7 +11,6 @@ import hx.doctest.internal.Either2;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:nullSafety
 @:noDoc @:dox(hide)
 class UTestDocTestAdapter extends DocTestAdapter {
 

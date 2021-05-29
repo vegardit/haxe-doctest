@@ -22,6 +22,7 @@ class TinkTestrunnerUnitTest extends Suite.BasicSuite {
    }
 
    function new() {
+      #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275
       super({name: Type.getClassName(Type.getClass(this))}, []);
    }
 }

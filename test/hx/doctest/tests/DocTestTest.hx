@@ -34,6 +34,7 @@ class DocTestTest extends DocTestRunner {
    /**
     * Manually added test method to do some additional non-doctest based testing
     */
+   @:nullSafety(Off)
    function testManual() {
       assertEquals("a", "a");
       try {

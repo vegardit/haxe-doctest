@@ -45,6 +45,7 @@ class DocTestUtils {
 
       // match regular pattern
       if (Types.isInstanceOf(right, EReg))
+         #if python @:nullSafety(Off) #end // TODO
          return cast(right, EReg).match(Std.string(left));
 
       if (Types.isInstanceOf(left, String))
@@ -89,8 +90,10 @@ class DocTestUtils {
 
       // compare objects and anonymous structures
       if (Reflect.isObject(left) && Reflect.isObject(right)) {
+         #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275
          final clsLeft = Type.getClass(left);
          final clsLeftName = clsLeft == null ? null : Type.getClassName(clsLeft);
+         #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275
          final clsRight = Type.getClass(right);
          final clsRightName = clsRight == null ? null : Type.getClassName(clsRight);
 
@@ -141,6 +144,8 @@ class DocTestUtils {
             default:
          }
       }
+
+      #if lua @:nullSafety(Off) #end
       return "  " + CallStack.toString(stack).split("\n").join("\n  ") + "\n";
    }
 
@@ -201,6 +206,7 @@ class DocTestUtils {
             files = files.concat(sys.FileSystem.readDirectory(file).map((s) -> '$file/$s'));
          else {
             file = file.replace("\\", "/");
+            #if python @:nullSafety(Off) #end
             if (filePattern.match(file))
                onFile(file);
          }

@@ -18,9 +18,6 @@ using StringTools;
 @:abstract
 class DocTestRunner {
 
-   var results:DocTestResults;
-
-
    static function exit(exitCode:Int):Void {
       #if travix
          travix.Logger.exit(exitCode);
@@ -45,7 +42,11 @@ class DocTestRunner {
    }
 
 
+   var results:DocTestResults;
+
+
    public function new() {
+      results = new DefaultDocTestResults(this);
    }
 
 
@@ -55,10 +56,8 @@ class DocTestRunner {
     * @return number of failing tests
     */
    function run(expectedMinNumberOfTests = 0, logTestExecutions = true, logTestSummary = true):Int {
-      if (results == null)
-         results = new DefaultDocTestResults(this);
-
       final startTime = Timer.stamp();
+      #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275
       final thisClass = Type.getClass(this);
       final thisClassName = Type.getClassName(thisClass);
 
@@ -73,8 +72,8 @@ class DocTestRunner {
       final funcNames = [ for (funcName in Type.getInstanceFields(thisClass)) if (funcName.startsWith("test")) funcName ];
       funcNames.sort((a, b) -> a < b ? -1 : a > b ? 1 : 0);
       for (funcName in funcNames) {
-         final func:Dynamic = Reflect.field(this, funcName);
-         if (Reflect.isFunction(func)) {
+         final func:Null<Dynamic> = Reflect.field(this, funcName);
+         if (func != null && Reflect.isFunction(func)) {
             Logger.log(DEBUG, "**********************************************************");
             Logger.log(DEBUG, 'Invoking [${thisClassName}#$funcName()]...');
             Logger.log(DEBUG, "**********************************************************");
@@ -130,6 +129,7 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
+   @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertEquals(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', pos);
 
@@ -137,34 +137,44 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-   function assertFalse(result:Bool, ?pos:PosInfos):Void
+   function assertFalse(result:Bool, ?pos:PosInfos):Void {
+      if(pos == null) throw '[pos] must not be null';
       results.add(!result, 'assertFalse($result)', pos);
+   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void
+   function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void {
+      if(pos == null) throw '[pos] must not be null';
+
       results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', pos);
+   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertMax(result:Int, max:Int, ?pos:PosInfos):Void
+   function assertMax(result:Int, max:Int, ?pos:PosInfos):Void {
+      if(pos == null) throw '[pos] must not be null';
       results.add(result <= max, 'assertMax($result, $max)', pos);
+   }
 
 
    /**
     * for use within manually created test method
     */
-   function assertMin(result:Int, min:Int, ?pos:PosInfos):Void
+   function assertMin(result:Int, min:Int, ?pos:PosInfos):Void {
+      if(pos == null) throw '[pos] must not be null';
       results.add(result >= min, 'assertMin($result, $min)', pos);
+   }
 
 
    /**
     * for use within manually created test method
     */
+   @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertNotSame(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', pos);
 
@@ -172,6 +182,7 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
+   @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertNotEquals(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(!DocTestUtils.deepEquals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', pos);
 
@@ -179,6 +190,7 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
+   @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertSame(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
 
@@ -186,15 +198,19 @@ class DocTestRunner {
    /**
     * for use within manually created test method
     */
-   function assertTrue(result:Bool, ?pos:PosInfos):Void
+   function assertTrue(result:Bool, ?pos:PosInfos):Void {
+      if(pos == null) throw '[pos] must not be null';
       results.add(result, 'assertTrue($result)', pos);
+   }
 
 
    /**
     * for use within manually created test method
     */
-   function fail(msg:String = "This code location should not never be reached.", ?pos:PosInfos):Void
+   function fail(msg:String = "This code location should not never be reached.", ?pos:PosInfos):Void {
+      if(pos == null) throw '[pos] must not be null';
       results.add(false, msg, pos);
+   }
 
 
    @:allow(hx.doctest.DocTestResults)
@@ -241,7 +257,6 @@ interface DocTestResults {
 }
 
 
-@:nullSafety
 class DocTestResult {
    public final date = Date.now();
    public final testPassed:Bool;
@@ -265,7 +280,6 @@ class DocTestResult {
 }
 
 
-@:nullSafety
 class DefaultDocTestResults implements DocTestResults {
 
    public var testsPassed(default, null) = 0;

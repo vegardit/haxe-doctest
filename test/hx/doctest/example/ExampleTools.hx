@@ -24,9 +24,11 @@ class ExampleTools {
     * >>> ExampleTools.toArray("", 0)    !== []
     * </code></pre>
     */
-   public static function toArray<T>(item:T, times:Int):Array<T> {
-      final arr = [];
-      for (i in 0...times) arr.push(item);
+   public static function toArray<T>(item:Null<T>, times:Int):Array<Null<T>> {
+      final arr:Array<Null<T>> = [];
+      for (i in 0...times)
+         #if (python||php) @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10274
+         arr.push(item);
       return arr;
    }
 

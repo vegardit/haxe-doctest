@@ -7,7 +7,6 @@ package hx.doctest.internal;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:nullSafety
 @:noDoc @:dox(hide)
 class DocTestAssertion {
 

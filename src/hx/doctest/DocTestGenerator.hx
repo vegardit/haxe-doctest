@@ -51,7 +51,6 @@ typedef DocTestGeneratorConfig = {
  *
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:nullSafety
 class DocTestGenerator {
 
    @:keep
@@ -283,14 +282,15 @@ class DocTestGenerator {
                      }
 
                      testMethodAssertions.push(macro {
-                        var left:Dynamic;
+                        var left:Null<Dynamic>;
                         try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
-                        var right:Dynamic;
+                        var right:Null<Dynamic>;
                         try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
 
                         if ($comparisonExpr) {
                            $testSuccessExpr;
                         } else {
+                           @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
                            $testFailedExpr;
                         }
                      });

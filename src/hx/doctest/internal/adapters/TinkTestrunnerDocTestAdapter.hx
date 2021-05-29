@@ -12,7 +12,6 @@ import hx.doctest.internal.Either2;
 /**
  * @author Sebastian Thomschke, Vegard IT GmbH
  */
-@:nullSafety
 @:noDoc @:dox(hide)
 class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
@@ -92,7 +91,7 @@ class SingeAssertionCase extends tink.testrunner.Case.BasicCase {
    final assertion:tink.testrunner.Assertion;
 
 
-   public function new(pos:haxe.PosInfos, assertion:tink.testrunner.Assertion) {
+   public function new(pos:Null<haxe.PosInfos>, assertion:tink.testrunner.Assertion) {
       super(pos);
       this.assertion = assertion;
    }
