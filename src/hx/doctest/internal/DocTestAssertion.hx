@@ -24,4 +24,8 @@ class DocTestAssertion {
          charEnd: charEnd
       };
    }
+
+   public function toString():String {
+      return 'DocTestAssertion[pos="${pos.fileName}:${pos.lineNumber}", expr={ $expression }]';
+   }
 }
