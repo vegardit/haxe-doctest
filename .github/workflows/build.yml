@@ -22,13 +22,13 @@ jobs:
       fail-fast: false
       matrix:
         os: 
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+        - ubuntu-latest
+        - macos-latest
+        - windows-latest
         haxe:
-          - 4.2.3
-          - 4.1.5
-          - 4.0.5
+        - 4.2.3
+        - 4.1.5
+        - 4.0.5
 
     steps:
     - name: Show environment variables
