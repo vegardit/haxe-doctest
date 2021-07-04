@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Changed
+- Improved null safety support
+
+
 ## [3.1.5] - 2021-05-12
 
 ### Changed

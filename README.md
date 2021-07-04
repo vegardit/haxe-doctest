@@ -284,14 +284,14 @@ Errors will show up as navigable events in the FlashDevelop's result panel.
 ### Using `haxelib git`
 
 ```
-haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest master D:\haxe-projects\haxe-doctest
+haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest main D:\haxe-projects\haxe-doctest
 ```
 
 ###  Using Git
 
-1. check-out the master branch
+1. check-out the main branch
    ```
-   git clone https://github.com/vegardit/haxe-doctest --branch master --single-branch D:\haxe-projects\haxe-doctest --depth=1
+   git clone https://github.com/vegardit/haxe-doctest --branch main --single-branch D:\haxe-projects\haxe-doctest --depth=1
    ```
 
 2. register the development release with haxe
