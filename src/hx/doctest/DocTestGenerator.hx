@@ -181,8 +181,8 @@ class DocTestGenerator {
                      final testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is same instance right side.");
 
                      testMethodAssertions.push(macro {
-                        final left = $leftExpr;
-                        final right = $rightExpr;
+                        @:nullSafety(Off) final left = $leftExpr;
+                        @:nullSafety(Off) final right = $rightExpr;
                         if (left != right)
                            $testSuccessExpr;
                         else
@@ -214,9 +214,9 @@ class DocTestGenerator {
 
                      testMethodAssertions.push(macro {
                         var left:Dynamic = "nothing";
-                        try { $leftExpr; } catch (ex:Dynamic) left = ex;
+                        try { @:nullSafety(Off) $leftExpr; } catch (ex:Dynamic) left = ex;
                         var right:Dynamic;
-                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
+                        try { @:nullSafety(Off) right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex;
 
                         if (hx.doctest.internal.DocTestUtils.deepEquals(left, right))
                            $testSuccessExpr;
@@ -267,25 +267,25 @@ class DocTestGenerator {
                            comparisonExpr = macro !hx.doctest.internal.DocTestUtils.deepEquals(left, right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` equals `" + right + "`.");
                         case OpLte:
-                           comparisonExpr = macro left <= right;
+                           comparisonExpr = macro @:nullSafety(Off) (left <= right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not lower than or equal `" + right + "`.");
                         case OpLt:
-                           comparisonExpr = macro left < right;
+                           comparisonExpr = macro @:nullSafety(Off) (left < right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not lower than `" + right + "`.");
                         case OpGt:
-                           comparisonExpr = macro left > right;
+                           comparisonExpr = macro @:nullSafety(Off) (left > right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not greater than `" + right + "`.");
                         case OpGte:
-                           comparisonExpr = macro left >= right;
+                           comparisonExpr = macro @:nullSafety(Off) (left >= right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not greater than or equal `" + right + "`.");
                         default: throw "Should never be reached";
                      }
 
                      testMethodAssertions.push(macro {
                         var left:Null<Dynamic>;
-                        try { left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
+                        try { @:nullSafety(Off) left = $leftExpr; } catch (ex:Dynamic) left = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
                         var right:Null<Dynamic>;
-                        try { right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
+                        try { @:nullSafety(Off) right = $rightExpr; } catch (ex:Dynamic) right = "exception: " + ex + hx.doctest.internal.DocTestUtils.exceptionStackAsString();
 
                         if ($comparisonExpr) {
                            $testSuccessExpr;
