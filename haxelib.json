@@ -11,6 +11,6 @@
    "description": "Python inspired doc-testing for Haxe. Allows unit-testing based on test assertions in haxedoc. Integrates with Haxe Unit, MUnit, Tink Testrunner and UTest",
    "contributors": ["vegardit"],
    "releasenote": "See https://github.com/vegardit/haxe-doctest/blob/main/CHANGELOG.md",
-   "version": "3.1.5",
+   "version": "3.1.6",
    "dependencies": {"hscript": ""}
 }
