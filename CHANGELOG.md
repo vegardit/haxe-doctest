@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+### Fixed
+- Warning `__js__ is deprecated, use js.Syntax.code instead`
+
+
 ## [3.1.8] - 2021-07-04
 
 ### Changed

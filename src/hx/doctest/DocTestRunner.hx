@@ -25,15 +25,15 @@ class DocTestRunner {
          #if sys
             Sys.exit(exitCode);
          #elseif js
-            var isPhantomJSDirectExecution = untyped __js__("(typeof phantom !== 'undefined')");
+            var isPhantomJSDirectExecution = js.Syntax.code("(typeof phantom !== 'undefined')");
             if (isPhantomJSDirectExecution)
-               untyped __js__("phantom.exit(exitCode)");
+               js.Syntax.code("phantom.exit(exitCode)");
             else {
-               var isPhantomJSWebPage = untyped __js__("!!(typeof window != 'undefined' && window.callPhantom && window._phantom)");
+               var isPhantomJSWebPage = js.Syntax.code("!!(typeof window != 'undefined' && window.callPhantom && window._phantom)");
                if (isPhantomJSWebPage)
-                  untyped __js__("window.callPhantom({cmd:'doctest:exit', 'exitCode':exitCode})");
+                  js.Syntax.code("window.callPhantom({cmd:'doctest:exit', 'exitCode':exitCode})");
                else
-                  untyped __js__("process.exit(exitCode)"); // nodejs
+                  js.Syntax.code("process.exit(exitCode)"); // nodejs
             }
          #elseif flash
             flash.system.System.exit(exitCode);
