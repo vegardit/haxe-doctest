@@ -14,14 +14,16 @@ import haxe.macro.*;
 @:noDoc @:dox(hide)
 @:noCompletion
 class Macros {
-   static final __static_init = {
-      #if (haxe_ver < 4)
-         throw 'ERROR: As of haxe-doctest 3.0.0, Haxe 4.x or higher is required!';
-      #end
+
+   #if (haxe_ver < 4)
+   static var __static_init(default, never) = {
+      throw '[ERROR] As of haxe-doctest 3.0.0, Haxe 4.x or higher is required!';
    };
+   #end
 
    macro
    public static function configureNullSafety() {
+      #if (haxe_ver >= 4)
       haxe.macro.Compiler.nullSafety("hx.doctest",
          #if (haxe_ver < 4.1)
             Strict // Haxe 4.x does not have StrictThreaded
@@ -29,6 +31,7 @@ class Macros {
             StrictThreaded
          #end
       );
+      #end
       return macro {}
    }
 }

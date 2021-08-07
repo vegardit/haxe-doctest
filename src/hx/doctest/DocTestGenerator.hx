@@ -53,13 +53,6 @@ typedef DocTestGeneratorConfig = {
  */
 class DocTestGenerator {
 
-   @:keep
-   static final __static_init = {
-      #if (haxe_ver < 4)
-         throw 'ERROR: As of haxe-doctests 3.0.0, Haxe 4.x or higher is required!';
-      #end
-   };
-
    static final MAX_ASSERTIONS_PER_TEST_METHOD =
       Context.defined("lua") ? 30 : // to avoid "too many local variables" with Lua target
       100; // to avoid "error: code too large" with Java target

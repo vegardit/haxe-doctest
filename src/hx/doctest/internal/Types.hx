@@ -16,9 +16,9 @@ class Types {
    public static inline function isInstanceOf(v:Dynamic, t:Dynamic):Bool {
       return
          #if (haxe_ver < 4.2)
-         Std.is(v, t);
+            Std.is(v, t);
          #else
-         Std.isOfType(v, t);
+            Std.isOfType(v, t);
          #end
    }
 
