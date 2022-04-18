@@ -14,16 +14,3 @@ updates:
     labels:
       - gha
       - dependencies
-  - package-ecosystem: maven
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "09:00"
-    commit-message:
-      prefix: fix
-      prefix-development: chore
-      include: scope
-    labels:
-      - mvn
-      - dependencies
