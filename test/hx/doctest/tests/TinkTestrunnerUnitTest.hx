@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016-2021 Vegard IT GmbH (https://vegardit.com) and contributors.
+ * SPDX-FileCopyrightText: © Vegard IT GmbH (https://vegardit.com) and contributors
+ * SPDX-FileContributor: Sebastian Thomschke, Vegard IT GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 package hx.doctest.tests;
@@ -11,8 +12,6 @@ import tink.testrunner.Suite;
 
 /**
  * Performs doc-testing with Tink Testrunner.
- *
- * @author Sebastian Thomschke, Vegard IT GmbH
  */
 @:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
 class TinkTestrunnerUnitTest extends Suite.BasicSuite {

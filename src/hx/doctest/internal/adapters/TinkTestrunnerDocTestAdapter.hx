@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2016-2021 Vegard IT GmbH (https://vegardit.com) and contributors.
+ * SPDX-FileCopyrightText: © Vegard IT GmbH (https://vegardit.com) and contributors
+ * SPDX-FileContributor: Sebastian Thomschke, Vegard IT GmbH
  * SPDX-License-Identifier: Apache-2.0
  */
 package hx.doctest.internal.adapters;
@@ -9,9 +10,7 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 
 import hx.doctest.internal.Either2;
-/**
- * @author Sebastian Thomschke, Vegard IT GmbH
- */
+
 @:noDoc @:dox(hide)
 class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
