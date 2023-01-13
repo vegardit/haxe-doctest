@@ -71,7 +71,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
       for (classMember in contextFields) {
          if (classMember.name == "new") {
-             switch(classMember.kind) {
+             switch (classMember.kind) {
                case FFun(func):
                   exprs.unshift(func.expr);
                   func.expr = {expr: EBlock(exprs), pos:Context.currentPos()};

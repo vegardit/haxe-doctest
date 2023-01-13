@@ -47,7 +47,7 @@ class SourceFile {
                break;
             }
          }
-      } catch(e:haxe.io.Eof) {
+      } catch (e:haxe.io.Eof) {
          // ignore --> bug in Haxe http://old.haxe.org/forum/thread/4494
       }
       fileInput.seek(0, SeekBegin);
@@ -69,7 +69,7 @@ class SourceFile {
             line = lineAhead == null ? fileInput.readLine() : lineAhead;
             lineTrimmed = line.trim();
             lineAhead = null;
-         } catch(e:haxe.io.Eof) {
+         } catch (e:haxe.io.Eof) {
             // bug in Haxe http://old.haxe.org/forum/thread/4494 / https://github.com/HaxeFoundation/haxe/issues/5418
             break;
          }
@@ -109,7 +109,7 @@ class SourceFile {
          while (!isLastLine()) {
             try {
                lineAhead = fileInput.readLine().trim();
-            } catch(e:haxe.io.Eof) {
+            } catch (e:haxe.io.Eof) {
                // bug in Haxe http://old.haxe.org/forum/thread/4494 / https://github.com/HaxeFoundation/haxe/issues/5418
                lineAhead = null;
                break;

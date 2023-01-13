@@ -60,7 +60,7 @@ class DocTestRunner {
       final thisClassName = Type.getClassName(thisClass);
 
       final prevMaxLevel = Logger.maxLevel;
-      if(!logTestExecutions)
+      if (!logTestExecutions)
          Logger.maxLevel = Level.OFF;
 
       /*
@@ -136,7 +136,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertFalse(result:Bool, ?pos:PosInfos):Void {
-      if(pos == null) throw '[pos] must not be null';
+      if (pos == null) throw '[pos] must not be null';
       results.add(!result, 'assertFalse($result)', pos);
    }
 
@@ -145,7 +145,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertInRange(result:Int, min:Int, max:Int, ?pos:PosInfos):Void {
-      if(pos == null) throw '[pos] must not be null';
+      if (pos == null) throw '[pos] must not be null';
 
       results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', pos);
    }
@@ -155,7 +155,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertMax(result:Int, max:Int, ?pos:PosInfos):Void {
-      if(pos == null) throw '[pos] must not be null';
+      if (pos == null) throw '[pos] must not be null';
       results.add(result <= max, 'assertMax($result, $max)', pos);
    }
 
@@ -164,7 +164,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertMin(result:Int, min:Int, ?pos:PosInfos):Void {
-      if(pos == null) throw '[pos] must not be null';
+      if (pos == null) throw '[pos] must not be null';
       results.add(result >= min, 'assertMin($result, $min)', pos);
    }
 
@@ -197,7 +197,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function assertTrue(result:Bool, ?pos:PosInfos):Void {
-      if(pos == null) throw '[pos] must not be null';
+      if (pos == null) throw '[pos] must not be null';
       results.add(result, 'assertTrue($result)', pos);
    }
 
@@ -206,7 +206,7 @@ class DocTestRunner {
     * for use within manually created test method
     */
    function fail(msg:String = "This code location should not never be reached.", ?pos:PosInfos):Void {
-      if(pos == null) throw '[pos] must not be null';
+      if (pos == null) throw '[pos] must not be null';
       results.add(false, msg, pos);
    }
 

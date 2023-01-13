@@ -26,9 +26,9 @@ class UTestDocTestAdapter extends DocTestAdapter {
 
    override
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr {
-      final errorMsgExpr:ExprOf<String> = switch(errorMsg.value) {
-        case a(str): macro { $v{str} };
-        case b(expr): expr;
+      final errorMsgExpr:ExprOf<String> = switch (errorMsg.value) {
+         case a(str): macro {$v{str}};
+         case b(expr): expr;
       }
       return macro {
          utest.Assert.fail($v{'${assertion.expression} --> '} + $errorMsgExpr, cast $v{assertion.pos});

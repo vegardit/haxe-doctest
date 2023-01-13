@@ -64,8 +64,8 @@ class DocTestUtils {
 
       // compare maps
       if (Types.isInstanceOf(left, IMap) && Types.isInstanceOf(right, IMap)) {
-         var leftMap:IMap<Dynamic,Dynamic> = cast left;
-         var rightMap:IMap<Dynamic,Dynamic> = cast right;
+         var leftMap:IMap<Dynamic, Dynamic> = cast left;
+         var rightMap:IMap<Dynamic, Dynamic> = cast right;
 
          var leftKeys:Array<Dynamic> = [for (k in leftMap.keys()) k];
          var rightKeys:Array<Dynamic> = [for (k in rightMap.keys()) k];
@@ -99,7 +99,7 @@ class DocTestUtils {
             return false;
 
          final clsLeftFields = Reflect.fields(left);
-         clsLeftFields.sort((x, y) ->  x > y ? 1 : x == y ? 0 : -1);
+         clsLeftFields.sort((x, y) -> x > y ? 1 : x == y ? 0 : -1);
          final clsRightFields = Reflect.fields(right);
          clsRightFields.sort((x, y) -> x > y ? 1 : x == y ? 0 : -1);
          if (deepEquals(clsLeftFields, clsRightFields)) {
@@ -120,13 +120,13 @@ class DocTestUtils {
       var i = -1;
       for (elem in stack) {
          i++;
-         switch(elem) {
+         switch (elem) {
             case FilePos(elem2, file, line):
                if (file.startsWith("hx/doctest")) {
                   stack = stack.slice(0, i);
                   break;
                }
-               if (elem2 != null) switch(elem2) {
+               if (elem2 != null) switch (elem2) {
                   case Method(classname, method):
                      if (classname != null && classname.startsWith("hx.doctest.")) {
                         stack = stack.slice(0, i);
@@ -155,7 +155,7 @@ class DocTestUtils {
 
    #if macro
    public static function implementsInterface(clazz:haxe.macro.Type.ClassType, interfaceName:String):Bool {
-      for(iface in clazz.interfaces)
+      for (iface in clazz.interfaces)
          if (iface.t.toString() == interfaceName)
             return true;
       return false;

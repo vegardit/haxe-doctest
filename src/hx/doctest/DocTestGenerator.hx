@@ -52,7 +52,7 @@ typedef DocTestGeneratorConfig = {
  */
 class DocTestGenerator {
 
-   static final MAX_ASSERTIONS_PER_TEST_METHOD =
+   static final MAX_ASSERTIONS_PER_TEST_METHOD = //
       Context.defined("lua") ? 30 : // to avoid "too many local variables" with Lua target
       100; // to avoid "error: code too large" with Java target
 
@@ -292,9 +292,10 @@ class DocTestGenerator {
                      continue;
 
                   // generate a new testMethod if required
-                  if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD ||
+                  if (testMethodAssertions.length == MAX_ASSERTIONS_PER_TEST_METHOD
                      // for haxe-unit and munit we create a new test-method per assertion:
-                     Types.isInstanceOf(doctestAdapter, HaxeUnitDocTestAdapter) || Types.isInstanceOf(doctestAdapter, MUnitDocTestAdapter)
+                     || Types.isInstanceOf(doctestAdapter, HaxeUnitDocTestAdapter) 
+                     || Types.isInstanceOf(doctestAdapter, MUnitDocTestAdapter)
                   ) {
                      testMethodsCount++;
                      final testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
