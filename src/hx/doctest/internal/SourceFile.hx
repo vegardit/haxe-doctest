@@ -61,6 +61,15 @@ class SourceFile {
       return fileInput == null || fileInput.eof();
 
 
+   function extractCondition(line:String, startToken:String) {
+      var condition = line.substringAfter(startToken);
+      if (condition.contains("#else")) condition = condition.substringBefore("#else");
+      if (condition.contains("/*")) condition = condition.substringBefore("/*");
+      if (condition.contains("//")) condition = condition.substringBefore("//");
+      return condition.trim();
+   }
+
+
    public function nextLine():Bool {
       while (!isLastLine()) {
          var line:String;
@@ -81,17 +90,17 @@ class SourceFile {
          }
 
          if (lineTrimmed.startsWith("#if ")) {
-            currentLine = CompilerConditionStart(lineTrimmed.substringAfter("#if ").trim());
+            currentLine = CompilerConditionStart(extractCondition(lineTrimmed, "#if "));
             return true;
          }
 
          if (lineTrimmed.startsWith("#elseif ")) {
-            currentLine = CompilerConditionElseIf(lineTrimmed.substringAfter("#elseif ").trim());
+            currentLine = CompilerConditionElseIf(extractCondition(lineTrimmed, "#elseif "));
             return true;
          }
 
          if (lineTrimmed.startsWith("#else if ")) {
-            currentLine = CompilerConditionElseIf(lineTrimmed.substringAfter("#else if ").trim());
+            currentLine = CompilerConditionElseIf(extractCondition(lineTrimmed, "#else if "));
             return true;
          }
 
