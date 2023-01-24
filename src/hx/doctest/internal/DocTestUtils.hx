@@ -7,8 +7,6 @@ package hx.doctest.internal;
 
 import haxe.CallStack;
 import haxe.Constraints.IMap;
-import haxe.macro.MacroStringTools;
-
 import hx.doctest.internal.Types;
 
 using StringTools;
@@ -16,7 +14,7 @@ using StringTools;
 @:noDoc @:dox(hide)
 class DocTestUtils {
 
-   inline
+   inline //
    public static function currentPos(?pos:haxe.PosInfos):Null<haxe.PosInfos>
       return pos;
 
@@ -44,7 +42,7 @@ class DocTestUtils {
       // match regular pattern
       if (Types.isInstanceOf(right, EReg))
          #if python @:nullSafety(Off) #end // TODO
-         return cast(right, EReg).match(Std.string(left));
+      return cast(right, EReg).match(Std.string(left));
 
       if (Types.isInstanceOf(left, String))
          return false;
@@ -83,7 +81,7 @@ class DocTestUtils {
       if (Reflect.isEnumValue(left) && Reflect.isEnumValue(right)) {
          final leftEnum:EnumValue = left;
          final rightEnum:EnumValue = right;
-         return leftEnum.equals(rightEnum);
+         return Type.enumEq(leftEnum, rightEnum);
       }
 
       // compare objects and anonymous structures
@@ -113,7 +111,6 @@ class DocTestUtils {
 
       return false;
    }
-
 
    public static function exceptionStackAsString():String {
       var stack = CallStack.exceptionStack();
@@ -148,18 +145,18 @@ class DocTestUtils {
    }
 
 
-   inline
+   inline //
    public static function getFileName(filePath:String):String
       return substringAfterLast("/" + filePath.replace("\\", "/"), "/");
 
 
    #if macro
-   public static function implementsInterface(clazz:haxe.macro.Type.ClassType, interfaceName:String):Bool {
-      for (iface in clazz.interfaces)
-         if (iface.t.toString() == interfaceName)
-            return true;
-      return false;
-   }
+      public static function implementsInterface(clazz:haxe.macro.Type.ClassType, interfaceName:String):Bool {
+         for (iface in clazz.interfaces)
+            if (iface.t.toString() == interfaceName)
+               return true;
+         return false;
+      }
    #end
 
 
@@ -192,23 +189,23 @@ class DocTestUtils {
 
 
    #if (sys || macro)
-   public static function walkDirectory(directory:String, filePattern:EReg, onFile:String -> Void):Void {
-      var files:Array<String> = sys.FileSystem
-         .readDirectory(directory)
-         .map((s) -> '$directory/$s');
+      public static function walkDirectory(directory:String, filePattern:EReg, onFile:String->Void):Void {
+         var files:Array<String> = sys.FileSystem
+            .readDirectory(directory)
+            .map((s) -> '$directory/$s');
 
-      while (files.length > 0) {
-         var file = files.shift();
-         if (file == null) continue;
-         if (sys.FileSystem.isDirectory(file))
-            files = files.concat(sys.FileSystem.readDirectory(file).map((s) -> '$file/$s'));
-         else {
-            file = file.replace("\\", "/");
-            #if python @:nullSafety(Off) #end
-            if (filePattern.match(file))
-               onFile(file);
+         while (files.length > 0) {
+            var file = files.shift();
+            if (file == null) continue;
+            if (sys.FileSystem.isDirectory(file))
+               files = files.concat(sys.FileSystem.readDirectory(file).map((s) -> '$file/$s'));
+            else {
+               file = file.replace("\\", "/");
+               #if python @:nullSafety(Off) #end
+               if (filePattern.match(file))
+                  onFile(file);
+            }
          }
       }
-   }
    #end
 }

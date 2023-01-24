@@ -8,7 +8,6 @@ package hx.doctest.internal.adapters;
 #if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
-
 import hx.doctest.internal.Either2;
 
 @:noDoc @:dox(hide)
@@ -16,29 +15,30 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
    final testMethods:Array<String> = [];
 
-   inline
+
+   inline //
    public function new() {
    }
 
 
-   override
+   override //
    public function getFrameworkName():String {
       return "tink.testrunner";
    }
 
 
-   override
+   override //
    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
       testMethods.push(methodName);
       return super.generateTestMethod(methodName, descr, assertions);
    }
 
 
-   override
+   override //
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr {
-      final errorMsgExpr:ExprOf<String> = switch(errorMsg.value) {
-        case a(str): macro { $v{str} };
-        case b(expr): expr;
+      final errorMsgExpr:ExprOf<String> = switch (errorMsg.value) {
+         case a(str): macro {$v{str}};
+         case b(expr): expr;
       }
       return macro {
          cases.push(new hx.doctest.internal.adapters.TinkTestrunnerDocTestAdapter.SingeAssertionCase(
@@ -49,7 +49,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
    }
 
 
-   override
+   override //
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
          cases.push(new hx.doctest.internal.adapters.TinkTestrunnerDocTestAdapter.SingeAssertionCase(
@@ -60,7 +60,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
    }
 
 
-   override
+   override //
    public function onFinish(contextFields:Array<Field>) {
       final exprs:Array<Expr> = [];
       for (testMethod in testMethods) {
@@ -71,10 +71,10 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
       for (classMember in contextFields) {
          if (classMember.name == "new") {
-             switch (classMember.kind) {
+            switch (classMember.kind) {
                case FFun(func):
                   exprs.unshift(func.expr);
-                  func.expr = {expr: EBlock(exprs), pos:Context.currentPos()};
+                  func.expr = {expr: EBlock(exprs), pos: Context.currentPos()};
                   return;
                default:
             }
@@ -87,6 +87,7 @@ class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
 @:noDoc @:dox(hide)
 class SingeAssertionCase extends tink.testrunner.Case.BasicCase {
+
    final assertion:tink.testrunner.Assertion;
 
 
@@ -96,7 +97,7 @@ class SingeAssertionCase extends tink.testrunner.Case.BasicCase {
    }
 
 
-   override
+   override //
    function execute():tink.testrunner.Assertions
       return assertion;
 }

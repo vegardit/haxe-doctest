@@ -21,6 +21,7 @@ class MUnitTest extends TestSuite {
       runner.run([MUnitTest]);
    }
 
+
    public function new() {
       super();
 
@@ -28,7 +29,7 @@ class MUnitTest extends TestSuite {
    }
 }
 
-@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder: "test"}))
 class MUnitDocTests {
 
    public function new() {

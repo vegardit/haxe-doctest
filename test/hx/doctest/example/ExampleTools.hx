@@ -24,9 +24,10 @@ class ExampleTools {
     */
    public static function toArray<T>(item:Null<T>, times:Int):Array<Null<T>> {
       final arr:Array<Null<T>> = [];
-      for (i in 0...times)
-         #if (python||php) @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10274
+      for (i in 0...times) {
+         #if (python || php) @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10274
          arr.push(item);
+      }
       return arr;
    }
 
@@ -40,7 +41,7 @@ class ExampleTools {
     * >>> ExampleTools.toPos(1, 2)       !== { y:2, x:1 }
     * </code></pre>
     */
-   public static function toPos(x: Null<Int>, y: Null<Int>): {x:Null<Int>, y:Null<Int>}
+   public static function toPos(x:Null<Int>, y:Null<Int>):{x:Null<Int>, y:Null<Int>}
       return {x: x, y: y}
 
    #if (sys && (foo || bar))

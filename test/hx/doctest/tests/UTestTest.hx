@@ -8,7 +8,7 @@ package hx.doctest.tests;
 /**
  * Performs doc-testing with UTest.
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder: "test"}))
 @:build(utest.utils.TestBuilder.build())
 class UTestTest extends utest.Test {
 
@@ -18,6 +18,7 @@ class UTestTest extends utest.Test {
       new PrintReportNoExit(runner);
       runner.run();
    }
+
 
    @:keep
    public function new() {
@@ -31,7 +32,8 @@ class PrintReportNoExit extends utest.ui.text.PrintReport {
       super(runner);
    }
 
-   override
+
+   override //
    function complete(result:utest.ui.common.PackageResult) {
       this.result = result;
       if (handler != null) handler(this);

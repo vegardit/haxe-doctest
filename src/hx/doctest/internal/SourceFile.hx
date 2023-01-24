@@ -10,20 +10,23 @@ using hx.doctest.internal.DocTestUtils;
 
 @:noDoc @:dox(hide)
 class SourceFile {
+
    static final REGEX_PACKAGE_NAME = ~/package\s+(([a-zA-Z_]{1}[a-zA-Z]*){2,10}\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,30}((\.([a-zA-Z_]{1}[a-zA-Z0-9_]*){1,61})*)?)\s?;/g;
+
 
    public var currentLine(default, null):Null<LineType>;
    public var currentLineNumber(default, null) = 0;
-
+   //
    public var docTestIdentifier(default, null):String;
    public var docTestNextLineIdentifier(default, null):String;
-
+   //
    public var filePath(default, null):String;
    public var fileName(default, null):String;
-
+   //
    public var haxePackage(default, null):String;
    public var haxeModuleName(default, null):String;
    public var haxeModuleFQName(default, null):String;
+
 
    var fileInput:sys.io.FileInput;
    var lines:Array<String>;

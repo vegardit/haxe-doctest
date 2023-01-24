@@ -12,7 +12,7 @@ import hx.doctest.DocTestGenerator;
 /**
  * Performs doc-testing with Haxe Unit.
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder: "test"}))
 class HaxeUnitTest extends TestCase {
 
    public static function main() {
@@ -20,6 +20,7 @@ class HaxeUnitTest extends TestCase {
       runner.add(new HaxeUnitTest());
       runner.run();
    }
+
 
    function new() {
       super();

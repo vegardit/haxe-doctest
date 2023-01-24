@@ -32,6 +32,7 @@ class ExampleEntity {
 
    private static var SINGLETON:ExampleEntity = new ExampleEntity("singleton");
 
+
    /**
     * <pre><code>
     * >>> ExampleEntity.getSingleton() ==  ExampleEntity.getSingleton()
@@ -51,6 +52,7 @@ class ExampleEntity {
    #end
    public static function getSingleton()
       return SINGLETON;
+
 
    /**
     * <pre><code>

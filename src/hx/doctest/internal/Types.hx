@@ -13,12 +13,11 @@ package hx.doctest.internal;
 class Types {
 
    public static inline function isInstanceOf(v:Dynamic, t:Dynamic):Bool {
-      return
+      return //
          #if (haxe_ver < 4.2)
             Std.is(v, t);
          #else
             Std.isOfType(v, t);
          #end
    }
-
 }

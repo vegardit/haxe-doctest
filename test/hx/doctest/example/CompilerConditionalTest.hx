@@ -48,14 +48,12 @@ class CompilerConditionalTest {
        * </code></pre>
        */
    #end
-
-
-   #if !(dummy5 || dummy6)
-      /**
-       * <pre><code>
-       * >>> true == true
-       * </code></pre>
-       */
+   #if !(dummy5 || dummy6) //
+   /**
+    * <pre><code>
+    * >>> true == true
+    * </code></pre>
+    */
    #else
       /**
        * <pre><code>

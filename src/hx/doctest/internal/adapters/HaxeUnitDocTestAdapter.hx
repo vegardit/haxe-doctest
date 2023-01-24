@@ -12,23 +12,22 @@ import hx.doctest.internal.Either2;
 @:noDoc @:dox(hide)
 class HaxeUnitDocTestAdapter extends DocTestAdapter {
 
-
-   inline
+   inline //
    public function new() {
    }
 
 
-   override
+   override //
    public function getFrameworkName():String {
       return "haxe.unit";
    }
 
 
-   override
+   override //
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr {
       final errorMsgExpr:ExprOf<String> = switch (errorMsg.value) {
-        case a(str): macro {$v{str}};
-        case b(expr): expr;
+         case a(str): macro {$v{str}};
+         case b(expr): expr;
       }
       return macro {
          currentTest.done = true;
@@ -40,7 +39,7 @@ class HaxeUnitDocTestAdapter extends DocTestAdapter {
    }
 
 
-   override
+   override //
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
          currentTest.done = true;

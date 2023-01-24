@@ -13,12 +13,13 @@ import tink.testrunner.Suite;
 /**
  * Performs doc-testing with Tink Testrunner.
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder: "test"}))
 class TinkTestrunnerUnitTest extends Suite.BasicSuite {
 
    public static function main() {
       Runner.run(Batch.ofSuite(new TinkTestrunnerUnitTest()));
    }
+
 
    function new() {
       #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275

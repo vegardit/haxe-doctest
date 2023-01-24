@@ -13,23 +13,22 @@ import hx.doctest.internal.Either2;
 @:noDoc @:dox(hide)
 class MUnitDocTestAdapter extends DocTestAdapter {
 
-
-   inline
+   inline //
    public function new() {
    }
 
 
-   override
+   override //
    public function getFrameworkName():String {
       return "massive.munit";
    }
 
 
-   override
+   override //
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr {
       final errorMsgExpr:ExprOf<String> = switch (errorMsg.value) {
-        case a(str): macro {$v{str}};
-        case b(expr): expr;
+         case a(str): macro {$v{str}};
+         case b(expr): expr;
       }
       return macro {
          massive.munit.Assert.fail($v{'${assertion.expression} --> '} + $errorMsgExpr, cast $v{assertion.pos});
@@ -37,7 +36,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
    }
 
 
-   override
+   override //
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
          mconsole.Console.info($v{'\n${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ${assertion.expression}'});
@@ -45,7 +44,7 @@ class MUnitDocTestAdapter extends DocTestAdapter {
    }
 
 
-   override
+   override //
    public function generateTestMethod(methodName:String, descr:String, assertions:Array<Expr>):Field {
       final field = super.generateTestMethod(methodName, descr, assertions);
       field.meta.push({name: "Test", pos: Context.currentPos()});

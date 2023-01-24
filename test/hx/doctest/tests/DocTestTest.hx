@@ -10,8 +10,8 @@ import hx.doctest.DocTestRunner;
 /**
  * Performs doc-testing with DocTestRunner.
  */
-@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"src"}))
-@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder:"test"}))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder: "src"}))
+@:build(hx.doctest.DocTestGenerator.generateDocTests({srcFolder: "test"}))
 class DocTestTest extends DocTestRunner {
 
    public static function main() {
@@ -26,9 +26,11 @@ class DocTestTest extends DocTestRunner {
       );
    }
 
+
    function new() {
       super();
    }
+
 
    /**
     * Manually added test method to do some additional non-doctest based testing
@@ -45,10 +47,10 @@ class DocTestTest extends DocTestRunner {
          s = null;
          s = s.toLowerCase(); // throws NPE ... except on PHP and C++
          #if (!php && !cpp)
-         fail(); // should never be reached
+            fail(); // should never be reached
          #end
       } catch (e:Dynamic) {
-        // expected
+         // expected
       }
    }
 }

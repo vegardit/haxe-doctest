@@ -11,6 +11,7 @@ class DocTestAssertion {
    public final expression:String;
    public final pos:PosInfosExt;
 
+
    public function new(file:SourceFile, expression:String, lineNumber:Int, charStart:Int, charEnd:Int) {
       this.expression = expression;
       pos = {
@@ -22,6 +23,7 @@ class DocTestAssertion {
          charEnd: charEnd
       };
    }
+
 
    public function toString():String {
       return 'DocTestAssertion[pos="${pos.fileName}:${pos.lineNumber}", expr={ $expression }]';

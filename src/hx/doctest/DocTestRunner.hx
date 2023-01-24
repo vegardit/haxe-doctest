@@ -7,7 +7,6 @@ package hx.doctest;
 
 import haxe.PosInfos;
 import haxe.Timer;
-
 import hx.doctest.internal.DocTestUtils;
 import hx.doctest.internal.Logger;
 
@@ -21,6 +20,8 @@ class DocTestRunner {
          travix.Logger.exit(exitCode);
       #else
          #if sys
+            Sys.stderr().flush();
+            Sys.stdout().flush();
             Sys.exit(exitCode);
          #elseif js
             final isPhantomJSDirectExecution = js.Syntax.code("(typeof phantom !== 'undefined')");
@@ -67,7 +68,10 @@ class DocTestRunner {
        * look for functions starting with "test" and invoke them
        */
       Logger.log(DEBUG, 'Looking for test cases in [${thisClassName}]...');
-      final funcNames = [ for (funcName in Type.getInstanceFields(thisClass)) if (funcName.startsWith("test")) funcName ];
+      final funcNames = [
+         for (funcName in Type.getInstanceFields(thisClass))
+            if (funcName.startsWith("test")) funcName
+      ];
       funcNames.sort((a, b) -> a < b ? -1 : a > b ? 1 : 0);
       for (funcName in funcNames) {
          final func:Null<Dynamic> = Reflect.field(this, funcName);
@@ -113,7 +117,6 @@ class DocTestRunner {
       return testsFailed;
    }
 
-
    /**
     * Runs the accumulated doc tests and exits the process with exit code 0 in case all
     * tests were passed or 1 in case test failures occured.
@@ -123,14 +126,12 @@ class DocTestRunner {
       exit(exitCode);
    }
 
-
    /**
     * for use within manually created test method
     */
    @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertEquals(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(DocTestUtils.deepEquals(leftResult, rightResult), 'assertEquals($leftResult, $rightResult)', pos);
-
 
    /**
     * for use within manually created test method
@@ -139,7 +140,6 @@ class DocTestRunner {
       if (pos == null) throw '[pos] must not be null';
       results.add(!result, 'assertFalse($result)', pos);
    }
-
 
    /**
     * for use within manually created test method
@@ -150,7 +150,6 @@ class DocTestRunner {
       results.add(result >= min && result <= max, 'assertInRange($result, $min, $max)', pos);
    }
 
-
    /**
     * for use within manually created test method
     */
@@ -158,7 +157,6 @@ class DocTestRunner {
       if (pos == null) throw '[pos] must not be null';
       results.add(result <= max, 'assertMax($result, $max)', pos);
    }
-
 
    /**
     * for use within manually created test method
@@ -168,14 +166,12 @@ class DocTestRunner {
       results.add(result >= min, 'assertMin($result, $min)', pos);
    }
 
-
    /**
     * for use within manually created test method
     */
    @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertNotSame(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(leftResult != rightResult, 'assertNotSame($leftResult, $rightResult)', pos);
-
 
    /**
     * for use within manually created test method
@@ -184,14 +180,12 @@ class DocTestRunner {
    function assertNotEquals(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(!DocTestUtils.deepEquals(leftResult, rightResult), 'assertNotEquals($leftResult, $rightResult)', pos);
 
-
    /**
     * for use within manually created test method
     */
    @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertSame(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
-
 
    /**
     * for use within manually created test method
@@ -201,7 +195,6 @@ class DocTestRunner {
       results.add(result, 'assertTrue($result)', pos);
    }
 
-
    /**
     * for use within manually created test method
     */
@@ -209,7 +202,6 @@ class DocTestRunner {
       if (pos == null) throw '[pos] must not be null';
       results.add(false, msg, pos);
    }
-
 
    @:allow(hx.doctest.DocTestResults)
    function onDocTestResult(result:DocTestResult) {
@@ -233,7 +225,9 @@ interface DocTestResults {
    var testsPassed(default, null):Int;
    var testsFailed(default, null):Int;
 
+
    function add(success:Bool, msg:String, pos:haxe.PosInfos):Void;
+
 
    /**
     * @deprecated use `DocTestResults#testsFailed`
@@ -256,6 +250,7 @@ interface DocTestResults {
 
 
 class DocTestResult {
+
    public final date = Date.now();
    public final testPassed:Bool;
    public final msg:String;
@@ -270,10 +265,9 @@ class DocTestResult {
 
 
    public function toString():String {
-      return
-         '${pos.fileName}:${pos.lineNumber}: ' +
-         (pos.charStart == null ? "" : 'characters ${pos.charStart}-${pos.charEnd}: ') +
-         '[${testPassed ? "OK" : "ERROR"}] $msg';
+      return '${pos.fileName}:${pos.lineNumber}: '
+         + (pos.charStart == null ? "" : 'characters ${pos.charStart}-${pos.charEnd}: ')
+         + '[${testPassed ? "OK" : "ERROR"}] $msg';
    }
 }
 
@@ -283,6 +277,7 @@ class DefaultDocTestResults implements DocTestResults {
    public var testsPassed(default, null) = 0;
    public var testsFailed(default, null) = 0;
    public var tests(default, null):Array<DocTestResult> = [];
+
 
    final runner:DocTestRunner;
 
@@ -303,11 +298,13 @@ class DefaultDocTestResults implements DocTestResults {
 
 
    @:deprecated
-   public function getFailureCount():Int return testsFailed;
+   public function getFailureCount():Int
+      return testsFailed;
 
 
    @:deprecated
-   public function getSuccessCount():Int return testsFailed;
+   public function getSuccessCount():Int
+      return testsFailed;
 
 
    public function logFailures():Void

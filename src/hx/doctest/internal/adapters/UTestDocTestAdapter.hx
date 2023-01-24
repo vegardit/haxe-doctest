@@ -12,19 +12,18 @@ import hx.doctest.internal.Either2;
 @:noDoc @:dox(hide)
 class UTestDocTestAdapter extends DocTestAdapter {
 
-
-   inline
+   inline //
    public function new() {
    }
 
 
-   override
+   override //
    public function getFrameworkName():String {
       return "utest";
    }
 
 
-   override
+   override //
    public function generateTestFail(assertion:DocTestAssertion, errorMsg:Either2<String, ExprOf<String>>):Expr {
       final errorMsgExpr:ExprOf<String> = switch (errorMsg.value) {
          case a(str): macro {$v{str}};
@@ -36,7 +35,7 @@ class UTestDocTestAdapter extends DocTestAdapter {
    }
 
 
-   override
+   override //
    public function generateTestSuccess(assertion:DocTestAssertion):Expr {
       return macro {
          utest.Assert.pass($v{'${assertion.pos.fileName}:${assertion.pos.lineNumber} [OK] ${assertion.expression}'}, cast $v{assertion.pos});
@@ -44,7 +43,7 @@ class UTestDocTestAdapter extends DocTestAdapter {
    }
 
 
-   override
+   override //
    public function onFinish(contextFields:Array<Field>) {
       final cls = Context.getLocalClass().get();
       cls.meta.remove(":utestProcessed");
