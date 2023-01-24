@@ -34,7 +34,7 @@ class Logger {
       if (EnumValueTools.getIndex(level) < EnumValueTools.getIndex(Logger.maxLevel))
          return;
 
-      var posExt:PosInfosExt = cast pos;
+      final posExt:PosInfosExt = cast pos;
       var charsOfLine:String = "";
       if (posExt.charStart != null && posExt.charEnd != null) {
          charsOfLine = 'characters ${posExt.charStart}-${posExt.charEnd}: ';

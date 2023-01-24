@@ -51,8 +51,8 @@ class DocTestUtils {
 
       // compare arrays
       if (Types.isInstanceOf(left, Array) && Types.isInstanceOf(right, Array)) {
-         var leftArr:Array<Dynamic> = left;
-         var rightArr:Array<Dynamic> = right;
+         final leftArr:Array<Dynamic> = left;
+         final rightArr:Array<Dynamic> = right;
          if (leftArr.length == rightArr.length) {
             for (i in 0...leftArr.length)
                if (!deepEquals(leftArr[i], rightArr[i]))
@@ -64,11 +64,11 @@ class DocTestUtils {
 
       // compare maps
       if (Types.isInstanceOf(left, IMap) && Types.isInstanceOf(right, IMap)) {
-         var leftMap:IMap<Dynamic, Dynamic> = cast left;
-         var rightMap:IMap<Dynamic, Dynamic> = cast right;
+         final leftMap:IMap<Dynamic, Dynamic> = cast left;
+         final rightMap:IMap<Dynamic, Dynamic> = cast right;
 
-         var leftKeys:Array<Dynamic> = [for (k in leftMap.keys()) k];
-         var rightKeys:Array<Dynamic> = [for (k in rightMap.keys()) k];
+         final leftKeys:Array<Dynamic> = [for (k in leftMap.keys()) k];
+         final rightKeys:Array<Dynamic> = [for (k in rightMap.keys()) k];
 
          if (deepEquals(leftKeys, rightKeys)) {
             for (key in leftKeys)

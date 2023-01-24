@@ -23,11 +23,11 @@ class DocTestRunner {
          #if sys
             Sys.exit(exitCode);
          #elseif js
-            var isPhantomJSDirectExecution = js.Syntax.code("(typeof phantom !== 'undefined')");
+            final isPhantomJSDirectExecution = js.Syntax.code("(typeof phantom !== 'undefined')");
             if (isPhantomJSDirectExecution)
                js.Syntax.code("phantom.exit(exitCode)");
             else {
-               var isPhantomJSWebPage = js.Syntax.code("!!(typeof window != 'undefined' && window.callPhantom && window._phantom)");
+               final isPhantomJSWebPage = js.Syntax.code("!!(typeof window != 'undefined' && window.callPhantom && window._phantom)");
                if (isPhantomJSWebPage)
                   js.Syntax.code("window.callPhantom({cmd:'doctest:exit', 'exitCode':exitCode})");
                else
@@ -213,7 +213,7 @@ class DocTestRunner {
 
    @:allow(hx.doctest.DocTestResults)
    function onDocTestResult(result:DocTestResult) {
-      var pos:PosInfosExt = {
+      final pos:PosInfosExt = {
          fileName: DocTestUtils.getFileName(result.pos.fileName), // only display file name
          lineNumber: result.pos.lineNumber,
          className: result.pos.className,

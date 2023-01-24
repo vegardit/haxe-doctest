@@ -14,7 +14,7 @@ import hx.doctest.internal.Either2;
 @:noDoc @:dox(hide)
 class TinkTestrunnerDocTestAdapter extends DocTestAdapter {
 
-   var testMethods:Array<String> = [];
+   final testMethods:Array<String> = [];
 
    inline
    public function new() {
