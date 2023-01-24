@@ -67,7 +67,6 @@ jobs:
           /usr/local/share/man/man5/* \
           /usr/local/bin/idle3 \
           /usr/local/bin/2to3 \
-          /usr/local/bin/2to3 \
           /usr/local/bin/idle3 \
           /usr/local/bin/pydoc3 \
           /usr/local/bin/python3 \
@@ -86,6 +85,22 @@ jobs:
         if not exist "%pythonLocation%\python.exe" (
           mklink "%pythonLocation%\python3.exe" "%pythonLocation%\python.exe"
         )
+
+    - name: "Install Hashlink"
+      if: runner.os == 'Linux'
+      run: |
+        set -euxo pipefail
+        if ! hash hl 2>/dev/null; then
+          if [ ! -e /opt/hashlink ]; then
+            if [[ -n "${{ github.token }}" ]]; then
+              authHeader='-H "Authorization: token ${{ github.token }}"'
+            fi
+            latest_url=$(eval curl -fsSL ${authHeader:-} https://api.github.com/repos/HaxeFoundation/hashlink/releases | grep -o "https://.*/download/latest/hashlink-.*-linux-amd64.tar.gz")
+            curl -sSfL $latest_url | sudo tar -xz -C /opt/
+            mv /opt/hashlink-* /opt/hashlink
+          fi
+          echo "/opt/hashlink" >> $GITHUB_PATH
+        fi
 
     - name: "Install: Haxe ${{ matrix.haxe }}"
       uses: krdlab/setup-haxe@v1 # https://github.com/krdlab/setup-haxe
@@ -129,7 +144,6 @@ jobs:
       run: haxelib run travix flash
 
     - name: Test [hl]
-      if: runner.os != 'Linux' # prebuild linux binary available yet
       run: haxelib run travix hl
 
     - name: Test [java]
