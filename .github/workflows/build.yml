@@ -166,7 +166,6 @@ jobs:
         haxelib run travix java
 
     - name: Test [jvm]
-      continue-on-error: true # no idea why it fails on CI. works locally
       run: haxelib run travix java -D jvm
 
     - name: Test [lua]
