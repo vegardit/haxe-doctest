@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [3.1.10] - 2022-01-25
+
+### Changed
+- Explicitly flush stdout/stderr before exiting
+
+### Fixed
+- Improve parsing of compiler conditions
+
+
 ## [3.1.9] - 2021-08-01
 
 ### Fixed
