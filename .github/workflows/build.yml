@@ -48,15 +48,15 @@ jobs:
     - name: Git Checkout
       uses: actions/checkout@v3 #https://github.com/actions/checkout
 
-    - name: "Cache: Haxelib Repository"
-      if: ${{ !env.ACT }}
-      uses: actions/cache@v3
+    - name: "Cache: Restore"
+      id: cache-restore
+      if: ${{ !env.ACT }} # https://github.com/nektos/act#skipping-steps
+      uses: actions/cache/restore@v3
       with:
-        path: ${{ runner.tool_cache }}/haxe/${{ matrix.haxe }}/x64/lib
-        # https://github.com/actions/cache/issues/342#issuecomment-673371329
-        key: ${{ runner.os }}-haxelib-${{ matrix.haxe }}-${{ github.run_id }}
-        restore-keys: |
-          ${{ runner.os }}-haxelib-${{ matrix.haxe }}-
+        path: |
+          ${{ runner.tool_cache }}/haxe/lib
+          /opt/hashlink
+        key: ${{ runner.os }}-${{ matrix.haxe }}
 
     - name: "MacOS: Update brew formulas"
       if: runner.os == 'macOS'
@@ -79,7 +79,7 @@ jobs:
           /usr/local/bin/python3 \
           /usr/local/bin/python3-config
 
-    - name: "Install Hashlink"
+    - name: "Install: Hashlink"
       if: runner.os == 'Linux'
       run: |
         set -euxo pipefail
@@ -122,7 +122,20 @@ jobs:
 
     - name: "Install: Haxe Libraries"
       run: |
-        set -eu
+        set -eux
+
+        case "${{runner.os}}" in
+          Windows)
+              export HAXELIB_PATH="${{ runner.tool_cache }}\\haxe\\lib"
+              HAXELIB_PATH_UNIX=$(cygpath "$HAXELIB_PATH")
+            ;;
+          *)
+              export HAXELIB_PATH="${{ runner.tool_cache }}/haxe/lib"
+              HAXELIB_PATH_UNIX=$HAXELIB_PATH
+            ;;
+        esac
+        mkdir -p "$HAXELIB_PATH_UNIX"
+        echo "HAXELIB_PATH=$HAXELIB_PATH" >> $GITHUB_ENV
 
         haxelib config
 
@@ -136,7 +149,7 @@ jobs:
         # install latest travix version
         haxelib git travix https://github.com/back2dos/travix
         pushd .
-        cd $(haxelib config)travix/git
+        cd $HAXELIB_PATH_UNIX/travix/git
         haxe build-neko.hxml -lib hx3compat
         popd
 
@@ -192,6 +205,28 @@ jobs:
       run: haxelib run travix cpp
 
 
+    ##################################################
+    # Cache Update
+    # See https://github.com/actions/cache/issues/342
+    ##################################################
+    - name: "Cache: Delete Previous"
+      if: ${{ steps.cache-restore.outputs.cache-hit && !env.ACT }}
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+         gh extension install actions/gh-actions-cache
+         gh actions-cache delete ${{ runner.os }}-${{ matrix.haxe }} --confirm
+
+    - name: "Cache: Update"
+      uses: actions/cache/save@v3
+      if: ${{ always() && !env.ACT }} # save cache even fails
+      with:
+        path: |
+          ${{ runner.tool_cache }}/haxe/lib
+          /opt/hashlink
+        key: ${{ runner.os }}-${{ matrix.haxe }}
+
+
   ###########################################################
   cleanup:
   ###########################################################
@@ -201,7 +236,7 @@ jobs:
 
     steps:
     - name: "Delete intermediate build artifacts"
-      if: ${{ !env.ACT }}
+      if: ${{ !env.ACT }} # https://github.com/nektos/act#skipping-steps
       uses: geekyeggo/delete-artifact@v2 # https://github.com/GeekyEggo/delete-artifact/
       with:
         name: "*"
