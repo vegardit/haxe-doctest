@@ -15,7 +15,7 @@ import haxe.macro.*;
 class Macros {
 
    #if (haxe_ver < 4)
-      static final __static_init(default, never) = {
+      static var __static_init(default, never) = {
          throw '[ERROR] As of haxe-doctest 3.0.0, Haxe 4.x or higher is required!';
       };
    #end
