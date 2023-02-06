@@ -24,7 +24,7 @@ REM enable Flash logging
 REM add the flash target directory as trusted source to prevent "Only trusted local files may cause the Flash Player to exit."
 call :normalize_path %~dp0..\target
 set target_dir_absolute=%RETVAL%
-set "fptrust_dir=%HOME%\AppData\Roaming\Macromedia\Flash Player\#Security\FlashPlayerTrust"
+set "fptrust_dir=%APPDATA%\Roaming\Macromedia\Flash Player\#Security\FlashPlayerTrust"
 REM https://stackoverflow.com/questions/905226/what-is-equivalent-to-linux-mkdir-p-in-windows
 setlocal enableextensions
 if not exist "%fptrust_dir%" ( md "%fptrust_dir%" )
