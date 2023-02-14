@@ -386,7 +386,7 @@ class DocTestGenerator {
       while (true) {
          if (clazz.module == "hx.doctest.DocTestRunner") return new TestrunnerDocTestAdapter();
          if (clazz.module == "haxe.unit.TestCase") return new HaxeUnitDocTestAdapter();
-         #if tink_testrunner // to prevent "Type not found : tink.testrunner.Case" in TinkTestrunnerDocTestAdapter when tink_testrunner is not present
+         #if (tink_testrunner && haxe_ver < 4.3) // to prevent "Type not found : tink.testrunner.Case" in TinkTestrunnerDocTestAdapter when tink_testrunner is not present
          if (clazz.module == "tink.testrunner.Suite") return new TinkTestrunnerDocTestAdapter();
          #end
          if (clazz.implementsInterface("utest.ITest")) return new UTestDocTestAdapter();

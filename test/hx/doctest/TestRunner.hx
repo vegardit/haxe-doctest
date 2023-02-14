@@ -51,7 +51,7 @@ class TestRunner {
          MUnitTest.main();
       #end
 
-      #if !(flash || php) //
+      #if (!(flash || php) && haxe_ver < 4.3) //
          /*
           * 1) fails on Flash with:
           *    Not supported yet.
@@ -62,6 +62,9 @@ class TestRunner {
           *    #0 haxe-doctest/bin/php/lib/ANSI.php(145): ANSI::__hx__init()
           *    #1 haxe-doctest/bin/php/index.php(10): include_once('/Users/runner/w...')
           *    #2 haxe-doctest/bin/php/lib/tink/testrunner/AnsiFormatter.php(45): {closure}('ANSI')
+          *
+          * 3) fails on Haxe 4.3 with:
+          *    tink_core/2,0,2/src/tink/core/Promise.hx:297: characters 5-21 : Recursive implicit cast
           */
          trace("###################");
          trace("TinkTestrunnerUnitTest");

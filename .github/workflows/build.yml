@@ -57,6 +57,7 @@ jobs:
         - macos-latest
         - windows-latest
         haxe:
+        - nightly
         - 4.2.5
         - 4.1.5
         - 4.0.5
@@ -74,7 +75,7 @@ jobs:
       test-eval:   ${{ inputs.test-target == '' || inputs.test-target == 'eval' }}
       test-flash: |
         enabled: ${{ !startsWith(matrix.os, 'macos') }} # FlashPlayer hangs on MacOS
-        retries: 9  # workaround for random "Application crashed with an unhandled SIGSEGV"
+        allow-failure: ${{ startsWith(matrix.os, 'ubuntu') }} # workaround for random "Application crashed with an unhandled SIGSEGV"
       test-hl:     ${{ inputs.test-target == '' || inputs.test-target == 'hl' }}
       test-java:   ${{ inputs.test-target == '' || inputs.test-target == 'java' }}
       test-jvm:    ${{ inputs.test-target == '' || inputs.test-target == 'jvm' }}
