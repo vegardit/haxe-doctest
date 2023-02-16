@@ -299,18 +299,6 @@ haxelib git haxe-doctest https://github.com/vegardit/haxe-doctest main D:\haxe-p
    haxelib dev haxe-doctest D:\haxe-projects\haxe-doctest
    ```
 
-###  Using Subversion
-
-1. check-out the trunk
-   ```
-   svn checkout https://github.com/vegardit/haxe-doctest/trunk D:\haxe-projects\haxe-doctest
-   ```
-
-2. register the development release with haxe
-   ```
-   haxelib dev haxe-doctest D:\haxe-projects\haxe-doctest
-   ```
-
 
 ## <a name="license"></a>License
 
