@@ -76,9 +76,12 @@ class DocTestRunner {
       for (funcName in funcNames) {
          final func:Null<Dynamic> = Reflect.field(this, funcName);
          if (func != null && Reflect.isFunction(func)) {
-            Logger.log(DEBUG, "**********************************************************");
-            Logger.log(DEBUG, 'Invoking [${thisClassName}#$funcName()]...');
-            Logger.log(DEBUG, "**********************************************************");
+            if (!funcName.endsWith(DocTestUtils.GENERATED_TEST_METHOD_SUFFIX)) {
+               final pos = { className: thisClassName, methodName: funcName, fileName: thisClassName, lineNumber: 1}
+               Logger.log(INFO, "**********************************************************", pos);
+               Logger.log(INFO, 'Testing [${thisClassName}#$funcName()]...', pos);
+               Logger.log(INFO, "**********************************************************", pos);
+            }
             Reflect.callMethod(this, func, []);
          }
       }

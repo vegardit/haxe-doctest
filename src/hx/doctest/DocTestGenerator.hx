@@ -56,7 +56,6 @@ class DocTestGenerator {
       Context.defined("lua") ? 30 : // to avoid "too many local variables" with Lua target
       100; // to avoid "error: code too large" with Java target
 
-
    /**
     * <pre><code>
     * @:build(hx.doctest.DocTestGenerator.generateDocTests())
@@ -298,7 +297,7 @@ class DocTestGenerator {
                      || Types.isInstanceOf(doctestAdapter, MUnitDocTestAdapter) //
                   ) {
                      testMethodsCount++;
-                     final testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
+                     final testMethodName = 'test${src.haxeModuleName}_${testMethodsCount}${DocTestUtils.GENERATED_TEST_METHOD_SUFFIX}';
                      Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
                      contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
                      testMethodAssertions = new Array<Expr>();
@@ -367,7 +366,7 @@ class DocTestGenerator {
          // generate a new testMethod if required
          if (testMethodAssertions.length > 0) {
             testMethodsCount++;
-            final testMethodName = 'test${src.haxeModuleName}_$testMethodsCount';
+            final testMethodName = 'test${src.haxeModuleName}_${testMethodsCount}${DocTestUtils.GENERATED_TEST_METHOD_SUFFIX}';
             Logger.log(DEBUG, '|--> Generating function "${testMethodName}()"...');
             contextFields.push(doctestAdapter.generateTestMethod(testMethodName, 'Doc Testing [${src.filePath}] #${testMethodsCount}', testMethodAssertions));
             testMethodAssertions = new Array<Expr>();

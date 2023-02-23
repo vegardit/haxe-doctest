@@ -14,6 +14,8 @@ using StringTools;
 @:noDoc @:dox(hide)
 class DocTestUtils {
 
+   public static final GENERATED_TEST_METHOD_SUFFIX = "_doctest";
+
    inline //
    public static function currentPos(?pos:haxe.PosInfos):Null<haxe.PosInfos>
       return pos;
