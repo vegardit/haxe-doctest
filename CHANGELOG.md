@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [3.2.0] - 2022-02-23
+
+### Added
+- method `DocTestRunner.assertNull`
+- method `DocTestRunner.assertNotNull`
+
+
 ## [3.1.10] - 2022-01-25
 
 ### Changed
