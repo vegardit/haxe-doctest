@@ -184,6 +184,24 @@ class DocTestRunner {
     * for use within manually created test method
     */
    @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
+   function assertNotNull(result:Null<Dynamic>, ?pos:PosInfos):Void {
+      if (pos == null) throw '[pos] must not be null';
+      results.add(result != null, 'assertNotNull($result)', pos);
+   }
+
+   /**
+    * for use within manually created test method
+    */
+   @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
+   function assertNull(result:Null<Dynamic>, ?pos:PosInfos):Void {
+      if (pos == null) throw '[pos] must not be null';
+      results.add(result == null, 'assertNull($result)', pos);
+   }
+
+   /**
+    * for use within manually created test method
+    */
+   @:nullSafety(Off) // TODO https://github.com/HaxeFoundation/haxe/issues/10272
    function assertSame(leftResult:Null<Dynamic>, rightResult:Null<Dynamic>, ?pos:PosInfos):Void
       results.add(leftResult == rightResult, 'assertSame($leftResult, $rightResult)', pos);
 
