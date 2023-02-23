@@ -17,15 +17,16 @@ class OS {
    #end
 
    public static var isWindows(default, never):Bool = {
-      final os:String =
-         #if flash
-            flash.system.Capabilities.os
-         #elseif js
-            isNodeJS ? js.Syntax.code("process.platform") : js.Browser.navigator.platform
-         #else
-            Sys.systemName()
-         #end;
-      #if python @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10273
-      ~/win/i.match(os);
+      #if sys
+         Sys.systemName() == "Windows";
+      #else
+         final os:String =
+            #if flash
+               flash.system.Capabilities.os
+            #elseif js
+               isNodeJS ? js.Syntax.code("process.platform") : js.Browser.navigator.platform
+            #end;
+            ~/win/i.match(os);
+      #end
    }
 }
