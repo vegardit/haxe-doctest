@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+### Fixed
+- Results of tests comparing numbers with null values are inconsisent across targets
+
+
 ## [3.2.0] - 2022-02-23
 
 ### Added

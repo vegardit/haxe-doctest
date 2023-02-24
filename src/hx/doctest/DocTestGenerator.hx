@@ -258,16 +258,16 @@ class DocTestGenerator {
                            comparisonExpr = macro !hx.doctest.internal.DocTestUtils.deepEquals(left, right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` equals `" + right + "`.");
                         case OpLte:
-                           comparisonExpr = macro @:nullSafety(Off) (left <= right);
+                           comparisonExpr = macro (left != null && right != null && left <= right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not lower than or equal `" + right + "`.");
                         case OpLt:
-                           comparisonExpr = macro @:nullSafety(Off) (left < right);
+                           comparisonExpr = macro (left != null && right != null && left < right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not lower than `" + right + "`.");
                         case OpGt:
-                           comparisonExpr = macro @:nullSafety(Off) (left > right);
+                           comparisonExpr = macro (left != null && right != null && left > right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not greater than `" + right + "`.");
                         case OpGte:
-                           comparisonExpr = macro @:nullSafety(Off) (left >= right);
+                           comparisonExpr = macro (left != null && right != null && left >= right);
                            testFailedExpr = doctestAdapter.generateTestFail(assertion, macro "Left side `" + left + "` is not greater than or equal `" + right + "`.");
                         default: throw "Should never be reached";
                      }

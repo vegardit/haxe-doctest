@@ -6,6 +6,7 @@
 package hx.doctest.tests;
 
 import hx.doctest.DocTestRunner;
+import hx.doctest.internal.Logger;
 
 /**
  * Performs doc-testing with DocTestRunner.
@@ -15,15 +16,22 @@ import hx.doctest.DocTestRunner;
 class DocTestTest extends DocTestRunner {
 
    public static function main() {
-      var runner = new DocTestTest();
-      runner.runAndExit(
-        /* number of expected test cases */
-        #if flash
-        51
-        #else
-        53
-        #end
+      final runner = new DocTestTest();
+      final failures = runner.run(
+         /* number of expected test cases */
+         #if flash
+            51
+         #else
+            53
+         #end
       );
+
+      if (failures == 4) {
+         Logger.log(INFO, 'SUCCESS. ${failures} test failures are expected.');
+      } else if (failures < 4) {
+         Logger.log(ERROR, 'Expected 4 failing tests but only got: ${failures}');
+      }
+      DocTestRunner.exit(failures == 4 ? 0 : 1);
    }
 
 
