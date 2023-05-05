@@ -48,7 +48,7 @@ defaults:
 jobs:
   build:
     # https://github.com/vegardit/haxe-reusable-workflows/
-    uses: vegardit/haxe-reusable-workflows/.github/workflows/test-with-haxe.yml@v1
+    uses: vegardit/haxe-reusable-workflows/.github/workflows/test-with-haxe.yml@dev
     strategy:
       fail-fast: false
       matrix:
@@ -58,10 +58,13 @@ jobs:
         - windows-latest
         haxe:
         - nightly
+        - 4.3.1
         - 4.2.5
         - 4.1.5
         - 4.0.5
     with:
+      haxe-reusable-workflows-version: dev
+
       runner-os: ${{ matrix.os }}
       haxe-version: ${{ matrix.haxe }}
       haxe-libs: hx3compat hscript munit tink_testrunner utest
@@ -75,7 +78,7 @@ jobs:
       test-eval:   ${{ inputs.test-target == '' || inputs.test-target == 'eval' }}
       test-flash: |
         enabled: ${{ !startsWith(matrix.os, 'macos') }} # FlashPlayer hangs on MacOS
-        allow-failure: ${{ startsWith(matrix.os, 'ubuntu') }} # workaround for random "Application crashed with an unhandled SIGSEGV"
+        allow-failure: ${{ startsWith(matrix.os, 'ubuntu-') }} # workaround for random "Application crashed with an unhandled SIGSEGV"
       test-hl:     ${{ inputs.test-target == '' || inputs.test-target == 'hl' }}
       test-java:   ${{ inputs.test-target == '' || inputs.test-target == 'java' }}
       test-jvm:    ${{ inputs.test-target == '' || inputs.test-target == 'jvm' }}
