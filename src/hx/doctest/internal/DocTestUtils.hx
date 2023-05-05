@@ -87,11 +87,10 @@ class DocTestUtils {
       }
 
       // compare objects and anonymous structures
+      #if js @:nullSafety(Off) #end
       if (Reflect.isObject(left) && Reflect.isObject(right)) {
-         #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275
          final clsLeft = Type.getClass(left);
          final clsLeftName = clsLeft == null ? null : Type.getClassName(clsLeft);
-         #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275
          final clsRight = Type.getClass(right);
          final clsRightName = clsRight == null ? null : Type.getClassName(clsRight);
 

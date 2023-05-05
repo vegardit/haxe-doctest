@@ -9,6 +9,7 @@ import haxe.PosInfos;
 import haxe.Timer;
 import hx.doctest.internal.DocTestUtils;
 import hx.doctest.internal.Logger;
+import hx.doctest.internal.NullAnalysisHelper.asNonNull;
 
 using StringTools;
 
@@ -56,8 +57,8 @@ class DocTestRunner {
     */
    function run(expectedMinNumberOfTests = 0, logTestExecutions = true, logTestSummary = true):Int {
       final startTime = Timer.stamp();
-      #if js @:nullSafety(Off) #end // TODO https://github.com/HaxeFoundation/haxe/issues/10275
-      final thisClass = Type.getClass(this);
+      #if js @:nullSafety(Off) #end
+      final thisClass = asNonNull(Type.getClass(this));
       final thisClassName = Type.getClassName(thisClass);
 
       final prevMaxLevel = Logger.maxLevel;
