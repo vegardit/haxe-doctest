@@ -9,10 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [3.2.2] - 2022-05-06
+
+### Fixed
+- Compilation fails with false-positive Null Safety errors on Haxe >4.3
+
+
 ## [3.2.1] - 2022-02-24
 
 ### Fixed
-- Results of tests comparing numbers with null values are inconsisent across targets
+- Results of tests comparing numbers with null values are inconsistent across targets
 
 
 ## [3.2.0] - 2022-02-23
