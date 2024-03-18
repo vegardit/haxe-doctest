@@ -67,7 +67,13 @@ jobs:
 
       runner-os: ${{ matrix.os }}
       haxe-version: ${{ matrix.haxe }}
-      haxe-libs: hx3compat hscript munit tink_testrunner utest
+      haxe-libs: |
+        hx3compat
+        hscript
+        munit
+        tink_testrunner
+        utest
+        spoon@git:https://github.com/back2dos/no-spoon
 
       debug-with-ssh: ${{ inputs.debug-with-ssh || 'never' }}
       debug-with-ssh-only-for-actor: ${{ inputs.debug-with-ssh-only-for-actor || false }}

@@ -7,6 +7,8 @@ extraParams.hxml
 -lib munit
 -lib utest
 -lib tink_testrunner
+-lib spoon
+--macro hx.doctest.TestMacros.fixSystemNameOnLua()
 -dce full
 -debug
 -D dump=pretty

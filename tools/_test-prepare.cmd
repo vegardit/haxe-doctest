@@ -28,6 +28,7 @@ for %%i in (hscript hx3compat munit utest tink_testrunner) do (
       haxelib install %%i
    )
 )
+haxelib git spoon https://github.com/back2dos/no-spoon/
 
 goto :eof
 
