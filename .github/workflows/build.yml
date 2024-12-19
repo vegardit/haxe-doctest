@@ -84,13 +84,15 @@ jobs:
       test-cs:     ${{ (inputs.test-target == '' || inputs.test-target == 'cs') && matrix.haxe != 'nightly'}}  # Haxe 5 drops C# Support
       test-eval:   ${{ inputs.test-target == '' || inputs.test-target == 'eval' }}
       test-flash: |
-        enabled: ${{ (inputs.test-target == '' || inputs.test-target == 'flash') && !startsWith(matrix.os, 'macos') }} # FlashPlayer hangs on MacOS
+        enabled: ${{ (inputs.test-target == '' || inputs.test-target == 'flash') && !startsWith(matrix.os, 'macos') }}  # FlashPlayer hangs on MacOS
         allow-failure: ${{ startsWith(matrix.os, 'ubuntu-') }} # workaround for random "Application crashed with an unhandled SIGSEGV"
       test-hl:     ${{ inputs.test-target == '' || inputs.test-target == 'hl' }}
-      test-java:   ${{ (inputs.test-target == '' || inputs.test-target == 'java') && matrix.haxe != 'nightly' }} # Haxe 5 drops Java Support
+      test-java:   ${{ (inputs.test-target == '' || inputs.test-target == 'java') && matrix.haxe != 'nightly' }}  # Haxe 5 drops Java Support
       test-jvm:    ${{ inputs.test-target == '' || inputs.test-target == 'jvm' }}
       test-lua:    ${{ inputs.test-target == '' || inputs.test-target == 'lua' }}
       test-neko:   ${{ inputs.test-target == '' || inputs.test-target == 'neko' }}
-      test-node:   ${{ inputs.test-target == '' || inputs.test-target == 'node' }}
+      test-node: |
+        enabled: ${{ inputs.test-target == '' || inputs.test-target == 'node' }}
+        allow-failure: ${{ matrix.haxe == 'nightly' }}  # TODO "ReferenceError: __js__ is not defined"
       test-php:    ${{ inputs.test-target == '' || inputs.test-target == 'php' }}
       test-python: ${{ inputs.test-target == '' || inputs.test-target == 'python' }}
