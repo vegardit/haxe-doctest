@@ -7,7 +7,6 @@ package hx.doctest.internal;
 
 import haxe.CallStack;
 import haxe.Constraints.IMap;
-import hx.doctest.internal.Types;
 
 using StringTools;
 
@@ -42,15 +41,15 @@ class DocTestUtils {
          return false;
 
       // match regular pattern
-      if (Types.isInstanceOf(right, EReg))
+      if (Std.isOfType(right, EReg))
          #if python @:nullSafety(Off) #end // TODO
       return cast(right, EReg).match(Std.string(left));
 
-      if (Types.isInstanceOf(left, String))
+      if (Std.isOfType(left, String))
          return false;
 
       // compare arrays
-      if (Types.isInstanceOf(left, Array) && Types.isInstanceOf(right, Array)) {
+      if (Std.isOfType(left, Array) && Std.isOfType(right, Array)) {
          final leftArr:Array<Dynamic> = left;
          final rightArr:Array<Dynamic> = right;
          if (leftArr.length == rightArr.length) {
@@ -63,7 +62,7 @@ class DocTestUtils {
       }
 
       // compare maps
-      if (Types.isInstanceOf(left, IMap) && Types.isInstanceOf(right, IMap)) {
+      if (Std.isOfType(left, IMap) && Std.isOfType(right, IMap)) {
          final leftMap:IMap<Dynamic, Dynamic> = cast left;
          final rightMap:IMap<Dynamic, Dynamic> = cast right;
 

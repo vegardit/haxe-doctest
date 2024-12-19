@@ -14,23 +14,17 @@ import haxe.macro.*;
 @:noCompletion
 class Macros {
 
-   #if (haxe_ver < 4)
+   #if (haxe_ver < 4.2)
       static var __static_init(default, never) = {
-         throw '[ERROR] As of haxe-doctest 3.0.0, Haxe 4.x or higher is required!';
+         throw '[ERROR] Haxe 4.2 or higher is required!';
       };
    #end
 
 
    macro //
    public static function configureNullSafety() {
-      #if (haxe_ver >= 4)
-         haxe.macro.Compiler.nullSafety("hx.doctest",
-            #if (haxe_ver < 4.1)
-               Strict // Haxe 4.x does not have StrictThreaded
-            #else
-               StrictThreaded
-            #end
-         );
+      #if (haxe_ver >= 4.2)
+         haxe.macro.Compiler.nullSafety("hx.doctest", StrictThreaded);
       #end
       return macro {}
    }
