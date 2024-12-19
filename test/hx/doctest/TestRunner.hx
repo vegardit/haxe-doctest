@@ -24,7 +24,7 @@ class TestRunner {
       trace("###################");
       HaxeUnitTest.main();
 
-      #if !(eval || flash || js) //
+      #if (!(eval || flash || js) && haxe_ver < 5) //
          /*
           * MUnit seems broken on some platforms:
           *
@@ -44,6 +44,8 @@ class TestRunner {
           *     phantomjs://code/TestRunner.js:2334 in execute
           *     phantomjs://code/TestRunner.js:2320 in run
           *     phantomjs://code/TestRunner.js:1194 in main
+          *
+          * 4) fails on Haxe 5 with: "Type not found : haxe.StackItem"
           */
          trace("###################");
          trace("MUnitTest");
