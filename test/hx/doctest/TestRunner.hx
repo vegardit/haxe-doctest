@@ -77,12 +77,7 @@ class TestRunner {
       trace("###################");
       trace("UTestTest");
       trace("###################");
-      #if (haxe_ver < 4.99) //
-        /*
-         * fails on Haxe 5 with "utest/ui/text/PrintReport.hx:22: characters 10-18 : Type not found : neko.Web"
-         */
-        UTestTest.main();
-      #end
+      UTestTest.main();
 
       trace("###################");
       trace("DocTestTest");

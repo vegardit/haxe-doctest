@@ -4,6 +4,7 @@ extraParams.hxml
 -main hx.doctest.TestRunner
 -lib hscript
 -lib hx3compat
+-lib hx4compat
 -lib munit
 -lib utest
 -lib tink_testrunner

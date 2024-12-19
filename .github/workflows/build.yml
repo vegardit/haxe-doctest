@@ -69,6 +69,7 @@ jobs:
       haxe-version: ${{ matrix.haxe }}
       haxe-libs: |
         hx3compat
+        hx4compat@git:https://github.com/HaxeFoundation/hx4compat
         hscript
         munit
         tink_testrunner
