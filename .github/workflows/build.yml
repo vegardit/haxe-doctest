@@ -2,7 +2,7 @@
 # SPDX-FileContributor: Sebastian Thomschke, Vegard IT GmbH
 # SPDX-License-Identifier: Apache-2.0
 #
-# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 name: Build
 
 on:
@@ -52,13 +52,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
+        os:  # https://github.com/actions/runner-images#available-images
         - ubuntu-latest
         - macos-latest
         - windows-latest
         haxe:
         - nightly
-        - 4.3.4
+        - 4.3.6
         - 4.2.5
         - 4.1.5
         - 4.0.5
