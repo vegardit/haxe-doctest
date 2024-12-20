@@ -6,10 +6,12 @@
 name: Build
 
 on:
+  schedule:
+    - cron: '0 15 1 * *'
   push:
-    branches:
-    - '**'
-    tags-ignore:
+    branches-ignore:  # build all branches except:
+    - 'dependabot/**'  # prevent GHA triggered twice (once for commit to the branch and once for opening/syncing the PR)
+    tags-ignore:  # don't build tags
     - '**'
     paths-ignore:
     - '**/*.adoc'
@@ -17,13 +19,21 @@ on:
     - '.editorconfig'
     - '.git*'
     - '.github/*.yml'
+    - '.github/workflows/stale.yml'
     - 'tools'
   pull_request:
+    paths-ignore:
+    - '**/*.adoc'
+    - '**/*.md'
+    - '.editorconfig'
+    - '.git*'
+    - '.github/*.yml'
+    - 'tools'
   workflow_dispatch:
     # https://github.blog/changelog/2020-07-06-github-actions-manual-triggers-with-workflow_dispatch/
     inputs:
       debug-with-ssh:
-        description: "Start an SSH session for debugging purposes after tests ran:"
+        description: "Start an SSH session for debugging purposes at the end of the build:"
         default: never
         type: choice
         options: [ always, on_failure, on_failure_or_cancelled, never ]
@@ -41,12 +51,17 @@ on:
         type: choice
         options: [ "", cpp, cs, eval, flash, hl, java, jvm, lua, neko, node, php, python ]
 
+
 defaults:
   run:
     shell: bash
 
+
 jobs:
+
+  ###########################################################
   build:
+  ###########################################################
     # https://github.com/vegardit/haxe-reusable-workflows/
     uses: vegardit/haxe-reusable-workflows/.github/workflows/test-with-haxe.yml@dev
     strategy:
@@ -54,12 +69,16 @@ jobs:
       matrix:
         os:  # https://github.com/actions/runner-images#available-images
         - ubuntu-latest
-        - macos-latest
+        - macos-13 # Intel
         - windows-latest
         haxe:
         - nightly
+        - latest
         - 4.3.6
         - 4.2.5
+        include:
+        - os: macos-latest # ARM
+          haxe: 4.3.6
     with:
       haxe-reusable-workflows-version: dev
 
@@ -72,7 +91,7 @@ jobs:
         munit
         tink_testrunner
         utest
-        spoon@git:https://github.com/back2dos/no-spoon
+        no-spoon@git:https://github.com/back2dos/no-spoon
 
       debug-with-ssh: ${{ inputs.debug-with-ssh || 'never' }}
       debug-with-ssh-only-for-actor: ${{ inputs.debug-with-ssh-only-for-actor || false }}
