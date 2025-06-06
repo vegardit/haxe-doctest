@@ -25,7 +25,6 @@ _LOCAL/
 *.swo
 *.swp
 
-
 # patch
 *.orig
 *.rej
