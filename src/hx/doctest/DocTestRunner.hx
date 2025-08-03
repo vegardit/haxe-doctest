@@ -326,7 +326,7 @@ class DefaultDocTestResults implements DocTestResults {
 
    @:deprecated
    public function getSuccessCount():Int
-      return testsFailed;
+      return testsPassed;
 
 
    public function logFailures():Void
