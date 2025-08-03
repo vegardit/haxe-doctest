@@ -21,7 +21,7 @@ shift
 
 REM install common libs
 echo Checking required haxelibs...
-for %%i in (hscript hx3compat munit utest tink_testrunner) do (
+for %%i in (hscript hx3compat hx4compat munit utest tink_testrunner) do (
    haxelib list | findstr %%i >NUL
    if errorlevel 1 (
       echo Installing [%%i]...
