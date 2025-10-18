@@ -28,7 +28,11 @@ for %%i in (hscript hx3compat hx4compat munit utest tink_testrunner) do (
       haxelib install %%i
    )
 )
-haxelib git spoon https://github.com/back2dos/no-spoon/
+
+haxelib list | findstr no-spoon >NUL
+if errorlevel 1 (
+  haxelib git no-spoon https://github.com/back2dos/no-spoon 7c98cbbdb22eb3751b55de197ab652fb4df74a1d
+)
 
 goto :eof
 
